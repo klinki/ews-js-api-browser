@@ -1443,10 +1443,10 @@ export class Convert {
     // static ToBase64String(str: string): string {
     //     return base64Helper.btoa(str);
     // }
-    static FromBase64String(encodedStr: string): number[] {
+    static FromBase64String(encodedStr: string): Uint8Array {
         return b64.toByteArray(encodedStr);
     }
-    static ToBase64String(byteArray: number[]): string {
+    static ToBase64String(byteArray: Uint8Array): string {
         return b64.fromByteArray(byteArray);
     }
 }
@@ -23882,7 +23882,7 @@ export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable,
             }
             else {
                 //check for byte[] for base64 conversion to single element //todo: byte[] conversion to base64 using Buffer
-                let dictionaryObjectAsByteArray: number[] = ArrayHelper.OfType<number, number>(dictionaryObject, (item) => { return typeof item === 'number' });
+                let dictionaryObjectAsByteArray: Uint8Array = Uint8Array.from(ArrayHelper.OfType<number, number>(dictionaryObject, (item) => { return typeof item === 'number' }));
                 if (dictionaryObjectAsByteArray.length > 0 && dictionaryObjectAsByteArray.length === dictionaryObject.length) {
                     // Convert byte array to base64 string
                     dictionaryObjectType = UserConfigurationDictionaryObjectType.ByteArray;
@@ -28176,7 +28176,7 @@ export class AttachmentCollection extends ComplexPropertyCollection<Attachment> 
         if (argsLength === 2) {
             throw new Error("AttachmentCollection.ts - Can only use this method with base64 content");
             let fileAttachment: FileAttachment = new FileAttachment(this.owner);
-            fileAttachment.Name = name;
+            fileAttachment.Name = nameOrFileName;
             fileAttachment.FileName = fileNameOrContent;
             this.InternalAdd(fileAttachment);
             return fileAttachment;
@@ -28184,7 +28184,7 @@ export class AttachmentCollection extends ComplexPropertyCollection<Attachment> 
         if (argsLength == 3) {
             if (isContent === true) {
                 let fileAttachment: FileAttachment = new FileAttachment(this.owner);
-                fileAttachment.Name = name;
+                fileAttachment.Name = nameOrFileName;
                 fileAttachment.Base64Content = fileNameOrContent;
                 this.InternalAdd(fileAttachment);
                 return fileAttachment;
@@ -30349,7 +30349,7 @@ export abstract class PropertyDefinitionBase {
      *
      * @value {ExchangeVersion} The version.
      */
-    Version: ExchangeVersion;
+    abstract get Version(): ExchangeVersion;
 
     /**
      * Gets the type of the property.
@@ -31549,6 +31549,7 @@ export class DateTimePropertyDefinition extends PropertyDefinition {
                 super(propertyName, xmlElementName, uri, <PropertyDefinitionFlags>versionOrFlags, version);
                 break;
             default:
+                throw new Exception("Invalid number of arguments");
                 break;
         }
         this.isNullable = isNullable || false;
@@ -31838,6 +31839,7 @@ export abstract class TypedPropertyDefinition extends PropertyDefinition {
                 super(propertyName, xmlElementName, uri, <PropertyDefinitionFlags>versionOrFlags, version);
                 break;
             default:
+                throw new Exception("Invalid number of arguments");
                 break;
         }
         this.isNullable = isNullable || false;
@@ -73854,7 +73856,7 @@ export class MapiTypeConverter {
         var byteConverter = new MapiTypeConverterMapEntry(
             MapiTypeConverterTypeSystem.byteArray,                                      //byte[]
             (s) => StringHelper.IsNullOrEmpty(s) ? null : Convert.FromBase64String(s),  //Parse
-            (o) => Convert.ToBase64String(<number[]>o)                                  //ConvertToString
+            (o) => Convert.ToBase64String(<Uint8Array>o)                                  //ConvertToString
             );
 
         map.Add(
@@ -73864,7 +73866,7 @@ export class MapiTypeConverter {
         var byteArrayConverter = new MapiTypeConverterMapEntry(
             MapiTypeConverterTypeSystem.byteArray,                                      //byte[]
             (s) => StringHelper.IsNullOrEmpty(s) ? null : Convert.FromBase64String(s),  //Parse
-            (o) => Convert.ToBase64String(<number[]>o),                                 //ConvertToString
+            (o) => Convert.ToBase64String(<Uint8Array>o),                                 //ConvertToString
             true                                                                        //IsArray
             );
 
