@@ -30,8 +30,8 @@ export class Dictionary<TKey, TValue>{
     private keysToObjs: IndexerWithStringKey<TKey> = {}
     private objects: IndexerWithStringKey<TValue> = {};// {[key:string]:TValue};
     private keyPicker: StringKeyPicker<TKey>;
-    
-    
+
+
     /** get all keys */
     get Keys(): TKey[] {
         var keys: TKey[] = [];
@@ -48,7 +48,7 @@ export class Dictionary<TKey, TValue>{
         }
         return items;
     }
-    
+
     /** get all values */
     get Values(): TValue[] {
         var ret: TValue[] = [];
@@ -57,7 +57,7 @@ export class Dictionary<TKey, TValue>{
         }
         return ret;
     }
-    
+
     /** get number of objects in dictionary */
     get length(): number { return this.keys.length; }
     /** get number of objects in the dictionary */
@@ -70,11 +70,11 @@ export class Dictionary<TKey, TValue>{
         this.keyPicker = keyPickerFunc;
 
     }
-    
+
     /** get string values of all keys */
     getStringKeys(): string[] { return this.keys; }
-    
-    
+
+
     /** add value or update the value for key */
     Add(key: TKey, value: TValue): void { return this.addUpdate(key, value); }
     /** add value or update the value for key */
@@ -89,7 +89,7 @@ export class Dictionary<TKey, TValue>{
         this.keysToObjs[strKey] = key;
         this.objects[strKey] = value;
     }
-    
+
     /** Set value for key */
     set(key: TKey, value: TValue): void {
         this.addUpdate(key, value);
@@ -170,7 +170,7 @@ export class Dictionary<TKey, TValue>{
         var delObj: boolean = delete this.objects[strKey];
         return delKeyAr.length > 0 && delkeyObj && delObj;
     }
-    
+
     /** check if key exist */
     containsKey(key: string): boolean;
     containsKey(key: TKey): boolean;
@@ -201,7 +201,7 @@ export class StringPropertyDefinitionBaseDictionary<TKey extends string, TValue 
     //private keys: string[] = [];
     //private objects: StringPropertyDefinitionArray<TKey, TValue> = {};// {[key:string]:TValue};
 
-    
+
 }
 
 /**@internal */
@@ -576,7 +576,7 @@ export class DateTime {
         // 		break;
         // }
 
-        // Depending on the current culture, DateTime formatter will replace ':' with 
+        // Depending on the current culture, DateTime formatter will replace ':' with
         // the DateTimeFormatInfo.TimeSeparator property which may not be ':'. Force the proper string
         // to be used by using the InvariantCulture.
         return dateTime.Format(format);//, CultureInfo.InvariantCulture);
@@ -596,7 +596,7 @@ export class DateTime {
         // 		break;
         // }
 
-        // Depending on the current culture, DateTime formatter will 
+        // Depending on the current culture, DateTime formatter will
         // translate dates from one culture to another (e.g. Gregorian to Lunar).  The server
         // however, considers all dates to be in Gregorian, so using the InvariantCulture will
         // ensure this.
@@ -713,7 +713,7 @@ export class DateTime {
 
     /**
      *  Checks whether a given year is a leap year. This method returns true if year is a leap year, or false if not.
-     * @param {number}  year 
+     * @param {number}  year
      */
     public static IsLeapYear(year: number): boolean {
         if (year < 1 || year > 9999) {
@@ -944,7 +944,7 @@ export module EnumHelper {
 
     /**
      * Writes "," separated values from Enumertion anf enum Flags
-     * 
+     *
      * @export
      * @param {*} enumObj The Enumeration Object itself, for example 'ExchangeVersion' as the parameter Value.
      * @param {number} checkFlag Flag value(s) to convert to string
@@ -1189,7 +1189,7 @@ export class TypeSystem {
     }
 }
 
-//use this class to to work with node - https://github.com/jindw/xmldom - tested working with commit f053be7ceb. 
+//use this class to to work with node - https://github.com/jindw/xmldom - tested working with commit f053be7ceb.
 //This library creates DOMParser object like functionality in node.For browsers, skip xmldom library and use inbuilt browser object
 //var DOMParser = require('xmldom').DOMParser;
 //var dom = new DOMParser().parseFromString("xml data", 'text/xml');
@@ -1319,36 +1319,36 @@ export interface ParsedUrl {
     fragment: string;
 }
 export class UriHelper {
-    //RFC Appendix B - http://www.ietf.org/rfc/rfc3986.txt 
+    //RFC Appendix B - http://www.ietf.org/rfc/rfc3986.txt
     /*    Appendix B.  Parsing a URI Reference with a Regular Expression
-    
+
        As the "first-match-wins" algorithm is identical to the "greedy"
        disambiguation method used by POSIX regular expressions, it is
        natural and commonplace to use a regular expression for parsing the
        potential five components of a URI reference.
-    
+
        The following line is the regular expression for breaking-down a
        well-formed URI reference into its components.
-    
-    
-    
+
+
+
     Berners-Lee, et al.         Standards Track                    [Page 50]
     
     RFC 3986                   URI Generic Syntax               January 2005
-    
-    
+
+
           ^(([^:/?#]+):)?(//([^/?#]*))?([^?#]*)(\?([^#]*))?(#(.*))?
            12            3  4          5       6  7        8 9
-    
+
        The numbers in the second line above are only to assist readability;
        they indicate the reference points for each subexpression (i.e., each
        paired parenthesis).  We refer to the value matched for subexpression
        <n> as $<n>.  For example, matching the above expression to
-    
+
           http://www.ics.uci.edu/pub/ietf/uri/#Related
-    
+
        results in the following subexpression matches:
-    
+
           $1 = http:
           $2 = http
           $3 = //www.ics.uci.edu
@@ -1358,17 +1358,17 @@ export class UriHelper {
           $7 = <undefined>
           $8 = #Related
           $9 = Related
-    
+
        where <undefined> indicates that the component is not present, as is
        the case for the query component in the above example.  Therefore, we
        can determine the value of the five components as
-    
+
           scheme    = $2
           authority = $4
           path      = $5
           query     = $7
           fragment  = $9
-    
+
        Going in the opposite direction, we can recreate a URI reference from
        its components by using the algorithm of Section 5.3.
     */
@@ -2174,12 +2174,12 @@ export class TypeContainer {
      */
     public static AbsoluteDateTransition: typeof AbsoluteDateTransition;
 
-    /** 
+    /**
      * Type object of AbsoluteDayOfMonthTransition (not instance)
     */
     public static AbsoluteDayOfMonthTransition: typeof AbsoluteDayOfMonthTransition;
 
-    /** 
+    /**
      * Type object of RelativeDayOfMonthTransition (not instance)
     */
     public static RelativeDayOfMonthTransition: typeof RelativeDayOfMonthTransition;
@@ -2205,18 +2205,18 @@ export class Uri {
     ToString(): string {
         return this.url;
     }
-    
+
     toString(): string{
         return this.url;
     }
-    
+
     // GetDomain(): string {
     //     return UriHelper.getDomain(this.url);
     // }
     // GetHost(url: string): string {
     //     return this.GetDomain();
     // }
-    
+
     static ParseString(url: string) {
         return UriHelper.parseString(url);
     }
@@ -2567,7 +2567,7 @@ export class TimeSpan {
     }
     toString() {
         return this.duration.toISOString();
-    }    
+    }
 }
 
 module TimeSpan2 {
@@ -2761,7 +2761,7 @@ export class TimeZoneInfo {
 
     // static ConvertTime(dateTime: DateTime, sourceTZ: TimeZoneInfo, destinationTZ: TimeZoneInfo): DateTime {
     //     var returnDate = new DateTime(dateTime);
-    //     //var offset = returnDate.currentUtcOffset + destinationTZ.offset - sourceTZ.offset 
+    //     //var offset = returnDate.currentUtcOffset + destinationTZ.offset - sourceTZ.offset
     //     returnDate.utcOffset(destinationTZ.offset);
     //     return returnDate;
     // }
@@ -3133,8 +3133,8 @@ export module TimeZoneInfo {
         // ----- SECTION: internal utility methods ----------------*
 
         //
-        // When Windows sets the daylight transition start Jan 1st at 12:00 AM, it means the year starts with the daylight saving on. 
-        // We have to special case this value and not adjust it when checking if any date is in the daylight saving period. 
+        // When Windows sets the daylight transition start Jan 1st at 12:00 AM, it means the year starts with the daylight saving on.
+        // We have to special case this value and not adjust it when checking if any date is in the daylight saving period.
         //
         /** @internal */
         IsStartDateMarkerForBeginningOfYear(): boolean {
@@ -3145,8 +3145,8 @@ export module TimeZoneInfo {
         }
 
         //
-        // When Windows sets the daylight transition end Jan 1st at 12:00 AM, it means the year ends with the daylight saving on. 
-        // We have to special case this value and not adjust it when checking if any date is in the daylight saving period. 
+        // When Windows sets the daylight transition end Jan 1st at 12:00 AM, it means the year ends with the daylight saving on.
+        // We have to special case this value and not adjust it when checking if any date is in the daylight saving period.
         //
         /** @internal */
         IsEndDateMarkerForEndOfYear(): boolean {
@@ -3159,7 +3159,7 @@ export module TimeZoneInfo {
         //
         // ValidateAdjustmentRule -
         //
-        // Helper function that performs all of the validation checks for the 
+        // Helper function that performs all of the validation checks for the
         // factory methods and deserialization callback
         //
         private static ValidateAdjustmentRule(
@@ -3322,7 +3322,7 @@ export module TimeZoneInfo {
     }
 
 }
-			
+
 export interface ICalendarActionProvider {
 	Accept(sendResponse: boolean): Promise<CalendarActionResults>;
 	AcceptTentatively(sendResponse: boolean): Promise<CalendarActionResults>;
@@ -3341,7 +3341,7 @@ export interface ICustomUpdateSerializer {
 export interface IEnumerable<T> {
 	GetEnumerator(): Array<T>
 }
-			
+
  export interface IEwsHttpWebRequest {
 	Accept: string;
 	AllowAutoRedirect: boolean;
@@ -3373,7 +3373,7 @@ export interface IEnumerable<T> {
 
 
 
-			
+
 
 
 export interface IEwsHttpWebRequestFactory {
@@ -3386,9 +3386,9 @@ export interface IEwsHttpWebRequestFactory {
 
 
 
-			
 
-			
+
+
  export interface IEwsHttpWebResponse {
 	ContentEncoding: string;
 	ContentType: string;
@@ -3406,8 +3406,8 @@ export interface IEwsHttpWebRequestFactory {
 
 
 
-			
-			
+
+
  export interface IFileAttachmentContentHandler {
 	GetOutputStream(attachmentId: string): any /*System.IO.Stream*/;
 }
@@ -3417,8 +3417,8 @@ export interface IEwsHttpWebRequestFactory {
 
 
 
-			
-			
+
+
  export interface IJsonCollectionDeserializer {
 	CreateFromJsonCollection(jsonCollection: any[], service: ExchangeService): void;
 	UpdateFromJsonCollection(jsonCollection: any[], service: ExchangeService): void;
@@ -3429,7 +3429,7 @@ export interface IEwsHttpWebRequestFactory {
 
 
 
-			
+
 
 
 export interface IJsonSerializable {
@@ -3464,7 +3464,7 @@ export interface IRefParam<T> {
     setValue?: (value: T) => void;
 }
 
-			
+
  export interface ISearchStringProvider {
 	GetSearchString(): string;
 }
@@ -3474,11 +3474,11 @@ export interface IRefParam<T> {
 
 
 
-			
+
 export interface ISelfValidate {
     Validate(): any;
 }
-			
+
  export interface ITraceListener {
 	Trace(traceType: string, traceMessage: string): void;
 }
@@ -3488,7 +3488,7 @@ export interface ISelfValidate {
 
 
 
-			
+
 
 export interface HasEwsEnumAttribute {
     FromEwsEnumString(value: string): any
@@ -3605,7 +3605,7 @@ export module TypeGuards {
 //         Reflect.defineMetadata("AttachableAttribute", version, target);
 //     }
 // }
-//			
+//
 // class SchemaAttribute extends System.Attribute {
 //}
 //export = SchemaAttribute;
@@ -3614,8 +3614,8 @@ export module TypeGuards {
 //------------modulename->Microsoft.Exchange.WebServices.Data------------
 
 
-			
-//			
+
+//
 // class ServiceObjectDefinitionAttribute extends System.Attribute {
 //	XmlElementName: string;
 //	ReturnedByServer: boolean;
@@ -3628,36 +3628,36 @@ export module TypeGuards {
 //------------modulename->Microsoft.Exchange.WebServices.Data------------
 
 
-			
 
-/** 
+
+/**
  * Indicates which occurrence of a recurring task should be deleted
  */
 export enum AffectedTaskOccurrence {
-    
-    /** 
+
+    /**
      * All occurrences of the recurring task will be deleted.
      */
     AllOccurrences = 0,
-    
-    /** 
-     * Only the current occurrence of the recurring task will be deleted. 
+
+    /**
+     * Only the current occurrence of the recurring task will be deleted.
      */
     SpecifiedOccurrenceOnly = 1
 }
 
-/** 
+/**
  * Defines the type of aggregation to perform.
  */
 export enum AggregateType {
-    
-    /** 
-     * The maximum value is calculated. 
+
+    /**
+     * The maximum value is calculated.
      */
     Minimum = 0,
-    
-    /** 
-     * The minimum value is calculated. 
+
+    /**
+     * The minimum value is calculated.
      */
     Maximum = 1
 }
@@ -3666,22 +3666,22 @@ export enum AggregateType {
  * Defines the type of an appointment.
  */
 export enum AppointmentType {
-    
+
     /**
      * The appointment is non-recurring.
      */
     Single = 0,
-    
+
     /**
      * The appointment is an occurrence of a recurring appointment.
      */
     Occurrence = 1,
-    
+
     /**
      * The appointment is an exception of a recurring appointment.
      */
     Exception = 2,
-    
+
     /**
      * The appointment is the recurring master of a series.
      */
@@ -3690,7 +3690,7 @@ export enum AppointmentType {
 
 /**
  * @internal Defines the types of Autodiscover endpoints that are available.
- * 
+ *
  * [Flags]
  */
 export enum AutodiscoverEndpoints {
@@ -3699,32 +3699,32 @@ export enum AutodiscoverEndpoints {
      * No endpoints available.
      */
     None = 0,
-    
+
     /**
      * The "legacy" Autodiscover endpoint.
      */
     Legacy = 1,
-    
+
     /**
      * The SOAP endpoint.
      */
     Soap = 2,
-    
+
     /**
      * The WS-Security endpoint.
      */
     WsSecurity = 4,
-    
+
     /**
      * The WS-Security/SymmetricKey endpoint.
      */
     WSSecuritySymmetricKey = 8,
-    
+
     /**
      * The WS-Security/X509Cert endpoint.
      */
     WSSecurityX509Cert = 16,
-    
+
     /**
      * The OAuth endpoint
      */
@@ -3735,57 +3735,57 @@ export enum AutodiscoverEndpoints {
  * Defines the error codes that can be returned by the Autodiscover service.
  */
 export enum AutodiscoverErrorCode {
-  
+
   /**
    * There was no Error.
    */
   NoError = 0,
-  
+
   /**
    * The caller must follow the e-mail address redirection that was returned by Autodiscover.
    */
   RedirectAddress = 1,
-  
+
   /**
    * The caller must follow the URL redirection that was returned by Autodiscover.
    */
   RedirectUrl = 2,
-  
+
   /**
    * The user that was passed in the request is invalid.
    */
   InvalidUser = 3,
-  
+
   /**
    * The request is invalid.
    */
   InvalidRequest = 4,
-  
+
   /**
    * A specified setting is invalid.
    */
   InvalidSetting = 5,
-  
+
   /**
    * A specified setting is not available.
    */
   SettingIsNotAvailable = 6,
-  
+
   /**
    * The server is too busy to process the request.
    */
   ServerBusy = 7,
-  
+
   /**
    * The requested domain is not valid.
    */
   InvalidDomain = 8,
-  
+
   /**
    * The organization is not federated.
    */
   NotFederated = 9,
-  
+
   /**
    * Internal server error.
    */
@@ -3796,22 +3796,22 @@ export enum AutodiscoverErrorCode {
  * @internal Defines the types of response the Autodiscover service can return.
  */
 export enum AutodiscoverResponseType {
-  
+
   /**
    * The request returned an error.
    */
   Error = 0,
-  
+
   /**
    * A URL redirection is necessary.
    */
   RedirectUrl = 1,
-  
+
   /**
    * An address redirection is necessary.
    */
   RedirectAddress = 2,
-  
+
   /**
    * The request succeeded.
    */
@@ -3822,17 +3822,17 @@ export enum AutodiscoverResponseType {
  * Defines the type of data that can be requested via GetUserAvailability.
  */
 export enum AvailabilityData {
-    
+
     /**
      * Only return free/busy data.
      */
     FreeBusy = 0,
-    
+
     /**
      * Only return suggestions.
      */
     Suggestions = 1,
-    
+
     /**
      * Return both free/busy data and suggestions.
      */
@@ -3843,12 +3843,12 @@ export enum AvailabilityData {
  * Defines base property sets that are used as the base for custom property sets.
  */
 export enum BasePropertySet {
-  
+
   /**
    * Only includes the Id of items and folders.
    */
   IdOnly = 0,
-  
+
   /**
    * Includes all the first class properties of items and folders.
    */
@@ -3859,12 +3859,12 @@ export enum BasePropertySet {
  * Defines the type of body of an item.
  */
 export enum BodyType {
-  
+
   /**
    * The body is formatted in HTML.
    */
   HTML = 0,
-  
+
   /**
    * The body is in plain text.
    */
@@ -3875,22 +3875,22 @@ export enum BodyType {
  * Defines the type of change of a synchronization event.
  */
 export enum ChangeType {
-    
+
     /**
      * An item or folder was created.
      */
     Create = 0,
-    
+
     /**
      * An item or folder was modified.
      */
     Update = 1,
-    
+
     /**
      * An item or folder was deleted.
      */
     Delete = 2,
-    
+
     /**
      * An item's IsRead flag was changed.
      */
@@ -3974,19 +3974,19 @@ export enum ComparisonMode {
  * Defines how conflict resolutions are handled in update operations.
  */
 export enum ConflictResolutionMode {
-    
+
     /**
      * Local property changes are discarded.
      */
     NeverOverwrite = 0,
-    
+
     /**
      * Local property changes are applied to the server unless the server-side copy is more recent than the local copy.
      */
     AutoResolve = 1,
-    
+
     /**
-     * Local property changes overwrite server-side changes. 
+     * Local property changes overwrite server-side changes.
      */
     AlwaysOverwrite = 2
 }
@@ -3995,22 +3995,22 @@ export enum ConflictResolutionMode {
  * Defines the conflict types that can be returned in meeting time suggestions.
  */
 export enum ConflictType {
-    
+
     /**
      * There is a conflict with an indicidual attendee.
      */
     IndividualAttendeeConflict = 0,
-    
+
     /**
      * There is a conflict with at least one member of a group.
      */
     GroupConflict = 1,
-    
+
     /**
      * There is a conflict with at least one member of a group, but the group was too big for detailed information to be returned.
      */
     GroupTooBigConflict = 2,
-    
+
     /**
      * There is a conflict with an unresolvable attendee or an attendee that is not a user, group, or contact.
      */
@@ -4113,27 +4113,27 @@ export enum ContactSource {
  * Defines the containment mode for Contains search filters.
  */
 export enum ContainmentMode {
-    
+
     /**
      * The comparison is between the full string and the constant. The property value and the supplied constant are precisely the same.
      */
     FullString = 0,
-    
+
     /**
      * The comparison is between the string prefix and the constant.
      */
     Prefixed = 1,
-    
+
     /**
      * The comparison is between a substring of the string and the constant.
      */
     Substring = 2,
-    
+
     /**
      * The comparison is between a prefix on individual words in the string and the constant.
      */
     PrefixOnWords = 3,
-    
+
     /**
      * The comparison is between an exact phrase in the string and the constant.
      */
@@ -4145,47 +4145,47 @@ export enum ContainmentMode {
  * @internal Defines actions applicable to Conversation.
  */
 export enum ConversationActionType {
-    
+
     /**
      * Categorizes every current and future message in the conversation
      */
     AlwaysCategorize = 0,
-    
+
     /**
      * Deletes every current and future message in the conversation
      */
     AlwaysDelete = 1,
-    
+
     /**
      * Moves every current and future message in the conversation
      */
     AlwaysMove = 2,
-    
+
     /**
      * Deletes current item in context folder in the conversation
      */
     Delete = 3,
-    
+
     /**
      * Moves current item in context folder in the conversation
      */
     Move = 4,
-    
+
     /**
      * Copies current item in context folder in the conversation
      */
     Copy = 5,
-    
+
     /**
      * Marks current item in context folder in the conversation with provided read state
      */
     SetReadState = 6,
-    
+
     /**
      * Set retention policy.
      */
     SetRetentionPolicy = 7,
-    
+
     /**
      * Flag current items in context folder in the conversation with provided flag state.
      */
@@ -4196,17 +4196,17 @@ export enum ConversationActionType {
  * Defines the flag status of a Conversation.
  */
 export enum ConversationFlagStatus {
-    
+
     /**
      * Not Flagged
      */
     NotFlagged = 0,
-    
+
     /**
      * Flagged
      */
     Flagged = 1,
-    
+
     /**
      * Complete
      */
@@ -4230,7 +4230,7 @@ export enum ConversationQueryTraversal {
 }
 
 export module ConversationQueryTraversal {
-    
+
     /**RequiredServerVersionAttribute */
     export function RequiredServerVersion(value: ConversationQueryTraversal): ExchangeVersion {
         if (value <= 1) //<= ConversationQueryTraversal.Deep
@@ -4243,22 +4243,22 @@ export module ConversationQueryTraversal {
  * Defines the order in which conversation nodes should be returned by GetConversationItems.
  */
 export enum ConversationSortOrder {
-    
+
     /**
      * Tree order, ascending
      */
     TreeOrderAscending = 0,
-    
+
     /**
      * Tree order, descending.
      */
     TreeOrderDescending = 1,
-    
+
     /**
      * Chronological order, ascending.
      */
     DateOrderAscending = 2,
-    
+
     /**
      * Chronological order, descending.
      */
@@ -4269,17 +4269,17 @@ export enum ConversationSortOrder {
  * Defines the precision for returned DateTime values
  */
 export enum DateTimePrecision {
-    
+
     /**
      * Default value.  No SOAP header emitted.
      */
     Default = 0,
-    
+
     /**
      * Seconds
      */
     Seconds = 1,
-    
+
     /**
      * Milliseconds
      */
@@ -4288,57 +4288,57 @@ export enum DateTimePrecision {
 
 /**
  * Specifies the day of the week.
- * 
- * /remarks/    For the standard days of the week (Sunday, Monday...) the DayOfTheWeek enum value is the same as the System.DayOfWeek enum type. 
+ *
+ * /remarks/    For the standard days of the week (Sunday, Monday...) the DayOfTheWeek enum value is the same as the System.DayOfWeek enum type.
  * These values can be safely cast between the two enum types. The special days of the week (Day, Weekday and WeekendDay) are used for monthly and yearly recurrences and cannot be cast to System.DayOfWeek values.
  */
 export enum DayOfTheWeek {
-    
+
     /**
      * Sunday
      */
     Sunday = 0,
-    
+
     /**
      * Monday
      */
     Monday = 1,
-    
+
     /**
      * Tuesday
      */
     Tuesday = 2,
-    
+
     /**
      * Wednesday
      */
     Wednesday = 3,
-    
+
     /**
      * Thursday
      */
     Thursday = 4,
-    
+
     /**
      * Friday
      */
     Friday = 5,
-    
+
     /**
      * Saturday
      */
     Saturday = 6,
-    
+
     /**
      * Any day of the week
      */
     Day = 7,
-    
+
     /**
      * Any day of the usual business week (Monday-Friday)
      */
     Weekday = 8,
-    
+
     /**
      * Any weekend day (Saturday or Sunday)
      */
@@ -4349,68 +4349,68 @@ export enum DayOfTheWeek {
  * Defines the index of a week day within a month.
  */
 export enum DayOfTheWeekIndex {
-    
+
     /**
-     * The first specific day of the week in the month. For example, the first Tuesday of the month. 
+     * The first specific day of the week in the month. For example, the first Tuesday of the month.
      */
     First = 0,
-    
+
     /**
      * The second specific day of the week in the month. For example, the second Tuesday of the month.
      */
     Second = 1,
-    
+
     /**
      * The third specific day of the week in the month. For example, the third Tuesday of the month.
      */
     Third = 2,
-    
+
     /**
      * The fourth specific day of the week in the month. For example, the fourth Tuesday of the month.
      */
     Fourth = 3,
-    
+
     /**
      * The last specific day of the week in the month. For example, the last Tuesday of the month.
      */
     Last = 4
 }
 /**
- * Enum for the day of the week. 
+ * Enum for the day of the week.
  * System.DayOfWeek
  */
 export enum DayOfWeek {
-    
+
     /**
      * Sunday
      */
     Sunday = 0,
-    
+
     /**
      * Monday
      */
     Monday = 1,
-    
+
     /**
      * Tuesday
      */
     Tuesday = 2,
-    
+
     /**
      * Wednesday
      */
     Wednesday = 3,
-    
+
     /**
      * Thursday
      */
     Thursday = 4,
-    
+
     /**
      * Friday
      */
     Friday = 5,
-    
+
     /**
      * Saturday
      */
@@ -4421,47 +4421,47 @@ export enum DayOfWeek {
  * Defines the default sets of extended properties.
  */
 export enum DefaultExtendedPropertySet {
-    
+
     /**
      * The Meeting extended property set.
      */
     Meeting = 0,
-    
+
     /**
      * The Appointment extended property set.
      */
     Appointment = 1,
-    
+
     /**
      * The Common extended property set.
      */
     Common = 2,
-    
+
     /**
      * The PublicStrings extended property set.
      */
     PublicStrings = 3,
-    
+
     /**
      * The Address extended property set.
      */
     Address = 4,
-    
+
     /**
      * The InternetHeaders extended property set.
      */
     InternetHeaders = 5,
-    
+
     /**
      * The CalendarAssistant extended property set.
      */
     CalendarAssistant = 6,
-    
+
     /**
      * The UnifiedMessaging extended property set.
      */
     UnifiedMessaging = 7,
-    
+
     /**
      * The Task extended property set.
      */
@@ -4469,7 +4469,7 @@ export enum DefaultExtendedPropertySet {
 }
 
 /**
- * 
+ *
  */
 export enum DelegateFolderPermissionLevel {
 
@@ -4503,17 +4503,17 @@ export enum DelegateFolderPermissionLevel {
  * Represents deletion modes.
  */
 export enum DeleteMode {
-    
+
     /**
      * The item or folder will be permanently deleted.
      */
     HardDelete = 0,
-    
+
     /**
      * The item or folder will be moved to the dumpster. Items and folders in the dumpster can be recovered.
      */
     SoftDelete = 1,
-    
+
     /**
      * The item or folder will be moved to the mailbox' Deleted Items folder.
      */
@@ -4559,42 +4559,42 @@ export enum DisableReasonType {
  * @internal DNS record types.
  */
 export enum DnsRecordType {
-    
+
     /**
      * RFC 1034/1035 Address Record
      */
     A = 0x0001,//1
-    
+
     /**
      * Canonical Name Record
      */
     CNAME = 0x0005,//5
-    
+
     /**
      * Start of Authority Record
      */
     SOA = 0x0006,//6
-    
+
     /**
      * Pointer Record
      */
     PTR = 0x000c,//12
-    
+
     /**
      * Mail Exchange Record
      */
     MX = 0x000f,//15
-    
+
     /**
      * Text Record
      */
     TXT = 0x0010,//16,
-    
+
     /**
      * RFC 1886 (IPv6 Address)
      */
     AAAA = 0x001c,//28,
-    
+
     /**
      * Service location - RFC 2052
      */
@@ -4605,12 +4605,12 @@ export enum DnsRecordType {
  * Domain setting names.
  */
 export enum DomainSettingName {
-    
+
     /**
      * The external URL of the Exchange Web Services.
      */
     ExternalEwsUrl = 0,
-    
+
     /**
      * The version of the Exchange server hosting the URL of the Exchange Web Services.
      */
@@ -4619,46 +4619,46 @@ export enum DomainSettingName {
 
 /**
  * Defines the effective user rights associated with an item or folder.
- * 
+ *
  * [Flags]
  */
 export enum EffectiveRights {
-    
+
     /**
      * The user has no acces right on the item or folder.
      */
     None = 0,
-    
+
     /**
      * The user can create associated items (FAI)
      */
     CreateAssociated = 1,
-    
+
     /**
      * The user can create items.
      */
     CreateContents = 2,
-    
+
     /**
      * The user can create sub-folders.
      */
     CreateHierarchy = 4,
-    
+
     /**
      * The user can delete items and/or folders.
      */
     Delete = 8,
-    
+
     /**
      * The user can modify the properties of items and/or folders.
      */
     Modify = 16,
-    
+
     /**
      * The user can read the contents of items.
      */
     Read = 32,
-    
+
     /**
      * The user can view private items.
      */
@@ -4771,17 +4771,17 @@ export enum ElcFolderType {
  * Defines e-mail address entries for a contact.
  */
 export enum EmailAddressKey {
-    
+
     /**
      * The first e-mail address.
      */
     EmailAddress1 = 0,
-    
+
     /**
      * The second e-mail address.
      */
     EmailAddress2 = 1,
-    
+
     /**
      * The third e-mail address.
      */
@@ -4792,22 +4792,22 @@ export enum EmailAddressKey {
  * Defines the email position of an extracted entity.
  */
 export enum EmailPosition {
-    
+
     /**
      * The position is in the latest reply.
      */
     LatestReply = 0,
-    
+
     /**
      * The position is not in the latest reply.
      */
     Other = 1,
-    
+
     /**
      * The position is in the subject.
      */
     Subject = 2,
-    
+
     /**
      * The position is in the signature.
      */
@@ -4936,7 +4936,7 @@ export enum ExchangeVersion {
      * Functionality starting 10/05/2015
      */
     V2015_10_05 = 8,
-    
+
     /** internal tracking of any version not updated in **ews-javascript-api** */
     Exchange_Version_Not_Updated = 15000,
 }
@@ -4945,22 +4945,22 @@ export enum ExchangeVersion {
  * Defines the type of ExtensionInstallScope.
  */
 export enum ExtensionInstallScope {
-    
+
     /**
      * None
      */
     None = 0,
-    
+
     /**
      * User
      */
     User = 1,
-    
+
     /**
      * Organization
      */
     Organization = 2,
-    
+
     /**
      * Exchange Default
      */
@@ -4971,17 +4971,17 @@ export enum ExtensionInstallScope {
  * Defines the type of ExtensionType.
  */
 export enum ExtensionType {
-    
+
     /**
      * Default
      */
     Default = 0,
-    
+
     /**
      * Private
      */
     Private = 1,
-    
+
     /**
      * MarketPlace
      */
@@ -5128,57 +5128,57 @@ export module FileAsMapping {
  * Defines the follow-up actions that may be stamped on a message.
  */
 export enum FlaggedForAction {
-    
+
     /**
      * The message is flagged with any action.
      */
     Any = 0,
-    
+
     /**
      * The recipient is requested to call the sender.
      */
     Call = 1,
-    
+
     /**
      * The recipient is requested not to forward the message.
      */
     DoNotForward = 2,
-    
+
     /**
      * The recipient is requested to follow up on the message.
      */
     FollowUp = 3,
-    
+
     /**
      * The recipient received the message for information.
      */
     FYI = 4,
-    
+
     /**
      * The recipient is requested to forward the message.
      */
     Forward = 5,
-    
+
     /**
      * The recipient is informed that a response to the message is not required.
      */
     NoResponseNecessary = 6,
-    
+
     /**
      * The recipient is requested to read the message.
      */
     Read = 7,
-    
+
     /**
      * The recipient is requested to reply to the sender of the message.
      */
     Reply = 8,
-    
+
     /**
      * The recipient is requested to reply to everyone the message was sent to.
      */
     ReplyToAll = 9,
-    
+
     /**
      * The recipient is requested to review the message.
      */
@@ -5189,62 +5189,62 @@ export enum FlaggedForAction {
  * Defines permission levels for calendar folders.
  */
 export enum FolderPermissionLevel {
-    
+
     /**
      * No permission is granted.
      */
     None = 0,
-    
+
     /**
      * The Owner level.
      */
     Owner = 1,
-    
+
     /**
      * The Publishing Editor level.
      */
     PublishingEditor = 2,
-    
+
     /**
      * The Editor level.
      */
     Editor = 3,
-    
+
     /**
      * The Publishing Author level.
      */
     PublishingAuthor = 4,
-    
+
     /**
      * The Author level.
      */
     Author = 5,
-    
+
     /**
      * The Nonediting Author level.
      */
     NoneditingAuthor = 6,
-    
+
     /**
      * The Reviewer level.
      */
     Reviewer = 7,
-    
+
     /**
      * The Contributor level.
      */
     Contributor = 8,
-    
+
     /**
      * The Free/busy Time Only level. (Can only be applied to Calendar folders).
      */
     FreeBusyTimeOnly = 9,
-    
+
     /**
      * The Free/busy Time, Subject and Location level. (Can only be applied to Calendar folders).
      */
     FreeBusyTimeAndSubjectAndLocation = 10,
-    
+
     /**
      * The Custom level.
      */
@@ -5255,22 +5255,22 @@ export enum FolderPermissionLevel {
  * Defines a user's read access permission on items in a non-calendar folder.
  */
 export enum FolderPermissionReadAccess {
-    
+
     /**
      * The user has no read access on the items in the folder.
      */
     None = 0,
-    
+
     /**
      * The user can read the start and end date and time of appointments. (Can only be applied to Calendar folders).
      */
     TimeOnly = 1,
-    
+
     /**
      * The user can read the start and end date and time, subject and location of appointments. (Can only be applied to Calendar folders).
      */
     TimeAndSubjectAndLocation = 2,
-    
+
     /**
      * The user has access to the full details of items.
      */
@@ -5281,17 +5281,17 @@ export enum FolderPermissionReadAccess {
  * Defines the scope of FindFolders operations.
  */
 export enum FolderTraversal {
-    
+
     /**
      * Only direct sub-folders are retrieved.
      */
     Shallow = 0,
-    
+
     /**
      * The entire hierarchy of sub-folders is retrieved.
      */
     Deep = 1,
-    
+
     /**
      * Only soft deleted folders are retrieved.
      */
@@ -5302,38 +5302,38 @@ export enum FolderTraversal {
  * Defines the type of free/busy information returned by a GetUserAvailability operation.
  */
 export enum FreeBusyViewType {
-    
+
     /**
      * No view could be returned. This value cannot be specified in a call to GetUserAvailability.
      */
     None = 0,
-    
+
     /**
-     * Represents an aggregated free/busy stream. In cross-forest scenarios in which the target user in one forest does not have an Availability service configured, the Availability service of the requestor retrieves the target user's free/busy information from the free/busy public folder. 
+     * Represents an aggregated free/busy stream. In cross-forest scenarios in which the target user in one forest does not have an Availability service configured, the Availability service of the requestor retrieves the target user's free/busy information from the free/busy public folder.
      * Because public folders only store free/busy information in merged form, MergedOnly is the only available information.
      */
     MergedOnly = 1,
-    
+
     /**
      * Represents the legacy status information: free, busy, tentative, and OOF. This also includes the start/end times of the appointments. This view is richer than the legacy free/busy view because individual meeting start and end times are provided instead of an aggregated free/busy stream.
      */
     FreeBusy = 2,
-    
+
     /**
      * Represents all the properties in FreeBusy with a stream of merged free/busy availability information.
      */
     FreeBusyMerged = 3,
-    
+
     /**
      * Represents the legacy status information: free, busy, tentative, and OOF; the start/end times of the appointments; and various properties of the appointment such as subject, location, and importance.
      * This requested view will return the maximum amount of information for which the requesting user is privileged.
-     * If merged free/busy information only is available, as with requesting information for users in a Microsoft Exchange Server 2003 forest, MergedOnly will be returned. 
+     * If merged free/busy information only is available, as with requesting information for users in a Microsoft Exchange Server 2003 forest, MergedOnly will be returned.
      * Otherwise, FreeBusy or Detailed will be returned.
      */
     Detailed = 4,
-    
+
     /**
-     * Represents all the properties in Detailed with a stream of merged free/busy availability information. 
+     * Represents all the properties in Detailed with a stream of merged free/busy availability information.
      * If only merged free/busy information is available, for example if the mailbox exists on a computer running Exchange 2003, MergedOnly will be returned.
      * Otherwise, FreeBusyMerged or DetailedMerged will be returned.
      */
@@ -5375,22 +5375,22 @@ export enum GetUserPhotoStatus {
  * @internal Enumeration of reasons that a hanging request may disconnect.
  */
 export enum HangingRequestDisconnectReason {
-    
+
     /**
      * The server cleanly closed the connection.
      */
     Clean = 0,
-    
+
     /**
      * The client closed the connection.
      */
     UserInitiated = 1,
-    
+
     /**
      * The connection timed out do to a lack of a heartbeat received.
      */
     Timeout = 2,
-    
+
     /**
      * An exception occurred on the connection.
      */
@@ -5401,17 +5401,17 @@ export enum HangingRequestDisconnectReason {
  * Defines the hold action.
  */
 export enum HoldAction {
-    
+
     /**
      * Create new hold
      */
     Create = 0,
-    
+
     /**
      * Update query associated with a hold
      */
     Update = 1,
-    
+
     /**
      * Release the hold
      */
@@ -5422,27 +5422,27 @@ export enum HoldAction {
  * Defines the hold status.
  */
 export enum HoldStatus {
-    
+
     /**
      * Not on hold
      */
     NotOnHold = 0,
-    
+
     /**
      * Placing/removing hold is in-progress
      */
     Pending = 1,
-    
+
     /**
      * On hold
      */
     OnHold = 2,
-    
+
     /**
      * Some mailboxes are on hold and some are not
      */
     PartialHold = 3,
-    
+
     /**
      * The hold operation failed
      */
@@ -5639,32 +5639,32 @@ export enum IconIndex {
  * Defines supported Id formats in ConvertId operations.
  */
 export enum IdFormat {
-    
+
     /**
      * The EWS Id format used in Exchange 2007 RTM.
      */
     EwsLegacyId = 0,
-    
+
     /**
      * The EWS Id format used in Exchange 2007 SP1 and above.
      */
     EwsId = 1,
-    
+
     /**
      * The base64-encoded PR_ENTRYID property.
      */
     EntryId = 2,
-    
+
     /**
      * The hexadecimal representation  of the PR_ENTRYID property.
      */
     HexEntryId = 3,
-    
+
     /**
      * The Store Id format.
      */
     StoreId = 4,
-    
+
     /**
      * The Outlook Web Access Id format.
      */
@@ -5876,17 +5876,17 @@ export enum IdFormat {
  * Defines Instant Messaging address entries for a contact.
  */
 export enum ImAddressKey {
-    
+
     /**
      * The first Instant Messaging address.
      */
     ImAddress1 = 0,
-    
+
     /**
      * The second Instant Messaging address.
      */
     ImAddress2 = 1,
-    
+
     /**
      * The third Instant Messaging address.
      */
@@ -5897,17 +5897,17 @@ export enum ImAddressKey {
  * Defines the importance of an item.
  */
 export enum Importance {
-    
+
     /**
      * Low importance.
      */
     Low = 0,
-    
+
     /**
      * Normal importance.
      */
     Normal = 1,
-    
+
     /**
      * High importance.
      */
@@ -5918,17 +5918,17 @@ export enum Importance {
  * Defines the flag status of an Item.
  */
 export enum ItemFlagStatus {
-    
+
     /**
      * Not Flagged.
      */
     NotFlagged = 0,
-    
+
     /**
      * Flagged.
      */
     Flagged = 1,
-    
+
     /**
      * Complete.
      */
@@ -5940,37 +5940,37 @@ export enum ItemFlagStatus {
  * Item index error
  */
 export enum ItemIndexError {
-    
+
     /**
      * None
      */
     None = 0,
-    
+
     /**
      * Generic Error
      */
     GenericError = 1,
-    
+
     /**
      * Timeout
      */
     Timeout = 2,
-    
+
     /**
      * Stale Event
      */
     StaleEvent = 3,
-    
+
     /**
      * Mailbox Offline
      */
     MailboxOffline = 4,
-    
+
     /**
      * Too many attachments to index
      */
     AttachmentLimitReached = 5,
-    
+
     /**
      * Data is truncated
      */
@@ -6033,32 +6033,32 @@ export enum JsonTokenType {
  * Defines the legacy free/busy status associated with an appointment.
  */
 export enum LegacyFreeBusyStatus {
-    
+
     /**
      * The time slot associated with the appointment appears as free.
      */
     Free = 0,
-    
+
     /**
      * The time slot associated with the appointment appears as tentative.
      */
     Tentative = 1,
-    
+
     /**
      * The time slot associated with the appointment appears as busy.
      */
     Busy = 2,
-    
+
     /**
      * The time slot associated with the appointment appears as Out of Office.
      */
     OOF = 3,
-    
+
     /**
      * The time slot associated with the appointment appears as working else where.
      */
     WorkingElsewhere = 4,
-    
+
     /**
      * No free/busy status is associated with the appointment.
      */
@@ -6070,12 +6070,12 @@ export enum LegacyFreeBusyStatus {
  * Online Meeting Lobby Bypass options.
  */
 export enum LobbyBypass {
-    
+
     /**
      * Disabled.
      */
     Disabled = 0,
-    
+
     /**
      * Enabled for gateway participants.
      */
@@ -6086,32 +6086,32 @@ export enum LobbyBypass {
  * Source of resolution.
  */
 export enum LocationSource {
-    
+
     /**
      * Unresolved
      */
     None = 0,
-    
+
     /**
      * Resolved by external location services (such as Bing, Google, etc)
      */
     LocationServices = 1,
-    
+
     /**
      * Resolved by external phonebook services (such as Bing, Google, etc)
      */
     PhonebookServices = 2,
-    
+
     /**
      * Revolved by a GPS enabled device (such as cellphone)
      */
     Device = 3,
-    
+
     /**
      * Sourced from a contact card
      */
     Contact = 4,
-    
+
     /**
      * Sourced from a resource (such as a conference room)
      */
@@ -6161,7 +6161,7 @@ export module MailboxSearchLocation {
     export function RequiredServerVersion(value: MailboxSearchLocation): ExchangeVersion {
         if (value <= 2) //<= MailboxSearchLocation.All
             return ExchangeVersion.Exchange2013;
-        
+
         return ExchangeVersion.Exchange_Version_Not_Updated;
     }
 }
@@ -6170,42 +6170,42 @@ export module MailboxSearchLocation {
  * @internal Enum MailboxSearchScopeType
  */
 export enum MailboxSearchScopeType {
-    
+
     /**
      * The legacy exchange DN
      */
     LegacyExchangeDN = 0,
-    
+
     /**
      * The public folder
      */
     PublicFolder = 1,
-    
+
     /**
      * The recipient
      */
     Recipient = 2,
-    
+
     /**
      * The mailbox GUID
      */
     MailboxGuid = 3,
-    
+
     /**
      * All public folders
      */
     AllPublicFolders = 4,
-    
+
     /**
      * All mailboxes
      */
     AllMailboxes = 5,
-    
+
     /**
      * The saved search id
      */
     SavedSearchId = 6,
-    
+
     /**
      * The auto detect
      */
@@ -6300,137 +6300,137 @@ export module MailboxType {
  * Defines the MAPI type of an extended property.
  */
 export enum MapiPropertyType {
-    
+
     /**
      * The property is of type ApplicationTime.
      */
     ApplicationTime = 0,
-    
+
     /**
      * The property is of type ApplicationTimeArray.
      */
     ApplicationTimeArray = 1,
-    
+
     /**
      * The property is of type Binary.
      */
     Binary = 2,
-    
+
     /**
      * The property is of type BinaryArray.
      */
     BinaryArray = 3,
-    
+
     /**
      * The property is of type Boolean.
      */
     Boolean = 4,
-    
+
     /**
      * The property is of type CLSID.
      */
     CLSID = 5,
-    
+
     /**
      * The property is of type CLSIDArray.
      */
     CLSIDArray = 6,
-    
+
     /**
      * The property is of type Currency.
      */
     Currency = 7,
-    
+
     /**
      * The property is of type CurrencyArray.
      */
     CurrencyArray = 8,
-    
+
     /**
      * The property is of type Double.
      */
     Double = 9,
-    
+
     /**
      * The property is of type DoubleArray.
      */
     DoubleArray = 10,
-    
+
     /**
      * The property is of type Error.
      */
     Error = 11,
-    
+
     /**
      * The property is of type Float.
      */
     Float = 12,
-    
+
     /**
      * The property is of type FloatArray.
      */
     FloatArray = 13,
-    
+
     /**
      * The property is of type Integer.
      */
     Integer = 14,
-    
+
     /**
      * The property is of type IntegerArray.
      */
     IntegerArray = 15,
-    
+
     /**
      * The property is of type Long.
      */
     Long = 16,
-    
+
     /**
      * The property is of type LongArray.
      */
     LongArray = 17,
-    
+
     /**
      * The property is of type Null.
      */
     Null = 18,
-    
+
     /**
      * The property is of type Object.
      */
     Object = 19,
-    
+
     /**
      * The property is of type ObjectArray.
      */
     ObjectArray = 20,
-    
+
     /**
      * The property is of type Short.
      */
     Short = 21,
-    
+
     /**
      * The property is of type ShortArray.
      */
     ShortArray = 22,
-    
+
     /**
      * The property is of type SystemTime.
      */
     SystemTime = 23,
-    
+
     /**
      * The property is of type SystemTimeArray.
      */
     SystemTimeArray = 24,
-    
+
     /**
      * The property is of type String.
      */
     String = 25,
-    
+
     /**
      * The property is of type StringArray.
      */
@@ -6450,27 +6450,27 @@ export enum MapiTypeConverterTypeSystem {
  * The attendee is the organizer of the meeting.
  */
 export enum MeetingAttendeeType {
-    
+
     /**
      * The attendee is the organizer of the meeting.
      */
     Organizer = 0,
-    
+
     /**
      * The attendee is required.
      */
     Required = 1,
-    
+
     /**
      * The attendee is optional.
      */
     Optional = 2,
-    
+
     /**
      * The attendee is a room.
      */
     Room = 3,
-    
+
     /**
      * The attendee is a resource.
      */
@@ -6520,37 +6520,37 @@ export module MeetingRequestsDeliveryScope {
  * Defines the type of a meeting request.
  */
 export enum MeetingRequestType {
-    
+
     /**
      * Undefined meeting request type.
      */
     None = 0,
-    
+
     /**
      * The meeting request is an update to the original meeting.
      */
     FullUpdate = 1,
-    
+
     /**
      * The meeting request is an information update.
      */
     InformationalUpdate = 2,
-    
+
     /**
      * The meeting request is for a new meeting.
      */
     NewMeetingRequest = 3,
-    
+
     /**
      * The meeting request is outdated.
      */
     Outdated = 4,
-    
+
     /**
      * The meeting update is a silent update to an existing meeting.
      */
     SilentUpdate = 5,
-    
+
     /**
      * The meeting update was forwarded to a delegate, and this copy is informational.
      */
@@ -6561,32 +6561,32 @@ export enum MeetingRequestType {
  * Defines the types of response given to a meeting request.
  */
 export enum MeetingResponseType {
-    
+
     /**
      * The response type is unknown.
      */
     Unknown = 0,
-    
+
     /**
      * There was no response. The authenticated is the organizer of the meeting.
      */
     Organizer = 1,
-    
+
     /**
      * The meeting was tentatively accepted.
      */
     Tentative = 2,
-    
+
     /**
      * The meeting was accepted.
      */
     Accept = 3,
-    
+
     /**
      * The meeting was declined.
      */
     Decline = 4,
-    
+
     /**
      * No response was received for the meeting.
      */
@@ -6597,17 +6597,17 @@ export enum MeetingResponseType {
  * Defines the status of group members.
  */
 export enum MemberStatus {
-    
+
     /**
      * The member is unrecognized.
      */
     Unrecognized = 0,
-    
+
     /**
      * The member is normal.
      */
     Normal = 1,
-    
+
     /**
      * The member is demoted.
      */
@@ -6618,17 +6618,17 @@ export enum MemberStatus {
  * Defines how messages are disposed of in CreateItem and UpdateItem operations.
  */
 export enum MessageDisposition {
-    
+
     /**
      * Messages are saved but not sent.
      */
     SaveOnly = 0,
-    
+
     /**
      * Messages are sent and a copy is saved.
      */
     SendAndSaveCopy = 1,
-    
+
     /**
      * Messages are sent but no copy is saved.
      */
@@ -6639,62 +6639,62 @@ export enum MessageDisposition {
  * Defines months of the year.
  */
 export enum Month {
-    
+
     /**
      * January.
      */
     January = 1,
-    
+
     /**
      * February.
      */
     February = 2,
-    
+
     /**
      * March.
      */
     March = 3,
-    
+
     /**
      * April.
      */
     April = 4,
-    
+
     /**
      * May.
      */
     May = 5,
-    
+
     /**
      * June.
      */
     June = 6,
-    
+
     /**
      * July.
      */
     July = 7,
-    
+
     /**
      * August.
      */
     August = 8,
-    
+
     /**
      * September.
      */
     September = 9,
-    
+
     /**
      * October.
      */
     October = 10,
-    
+
     /**
      * November.
      */
     November = 11,
-    
+
     /**
      * December.
      */
@@ -6722,22 +6722,22 @@ export enum OffsetBasePoint {
  * Online Meeting Access Level options.
  */
 export enum OnlineMeetingAccessLevel {
-    
+
     /**
      * Locked.
      */
     Locked = 0,
-    
+
     /**
      * Invited.
      */
     Invited = 1,
-    
+
     /**
      * Internal.
      */
     Internal = 2,
-    
+
     /**
      * Everyone.
      */
@@ -6748,17 +6748,17 @@ export enum OnlineMeetingAccessLevel {
  * Defines the external audience of an Out of Office notification.
  */
 export enum OofExternalAudience {
-    
+
     /**
      * No external recipients should receive Out of Office notifications.
      */
     None = 0,
-    
+
     /**
      * Only recipients that are in the user's Contacts frolder should receive Out of Office notifications.
      */
     Known = 1,
-    
+
     /**
      * All recipients should receive Out of Office notifications.
      */
@@ -6769,17 +6769,17 @@ export enum OofExternalAudience {
  * Defines a user's Out of Office Assistant status.
  */
 export enum OofState {
-    
+
     /**
      * The assistant is diabled.
      */
     Disabled = 0,
-    
+
     /**
      * The assistant is enabled.
      */
     Enabled = 1,
-    
+
     /**
      * The assistant is scheduled.
      */
@@ -6790,22 +6790,22 @@ export enum OofState {
  * @internal Defines supported Outlook protocls.
  */
 export enum OutlookProtocolType {
-    
+
     /**
      * The Remote Procedure Call (RPC) protocol.
      */
     Rpc = 0,
-    
+
     /**
      * The Remote Procedure Call (RPC) over HTTP protocol.
      */
     RpcOverHttp = 1,
-    
+
     /**
      * The Web protocol.
      */
     Web = 2,
-    
+
     /**
      * The protocol is unknown.
      */
@@ -6837,42 +6837,42 @@ export enum PermissionScope {
  * The PhoneCallState enumeration
  */
 export enum PhoneCallState {
-    
+
     /**
      * Idle.
      */
     Idle = 0,
-    
+
     /**
      * Connecting.
      */
     Connecting = 1,
-    
+
     /**
      * Alerted.
      */
     Alerted = 2,
-    
+
     /**
      * Connected.
      */
     Connected = 3,
-    
+
     /**
      * Disconnected.
      */
     Disconnected = 4,
-    
+
     /**
      * Incoming.
      */
     Incoming = 5,
-    
+
     /**
      * Transferring.
      */
     Transferring = 6,
-    
+
     /**
      * Forwarding.
      */
@@ -6883,97 +6883,97 @@ export enum PhoneCallState {
  * Defines phone number entries for a contact.
  */
 export enum PhoneNumberKey {
-    
+
     /**
      * The assistant's phone number.
      */
     AssistantPhone = 0,
-    
+
     /**
      * The business fax number.
      */
     BusinessFax = 1,
-    
+
     /**
      * The business phone number.
      */
     BusinessPhone = 2,
-    
+
     /**
      * The second business phone number.
      */
     BusinessPhone2 = 3,
-    
+
     /**
      * The callback number.
      */
     Callback = 4,
-    
+
     /**
      * The car phone number.
      */
     CarPhone = 5,
-    
+
     /**
      * The company's main phone number.
      */
     CompanyMainPhone = 6,
-    
+
     /**
      * The home fax number.
      */
     HomeFax = 7,
-    
+
     /**
      * The home phone number.
      */
     HomePhone = 8,
-    
+
     /**
      * The second home phone number.
      */
     HomePhone2 = 9,
-    
+
     /**
      * The ISDN number.
      */
     Isdn = 10,
-    
+
     /**
      * The mobile phone number.
      */
     MobilePhone = 11,
-    
+
     /**
      * An alternate fax number.
      */
     OtherFax = 12,
-    
+
     /**
      * An alternate phone number.
      */
     OtherTelephone = 13,
-    
+
     /**
      * The pager number.
      */
     Pager = 14,
-    
+
     /**
      * The primary phone number.
      */
     PrimaryPhone = 15,
-    
+
     /**
      * The radio phone number.
      */
     RadioPhone = 16,
-    
+
     /**
      * The Telex number
      */
     Telex = 17,
-    
+
     /**
      * The TTY/TTD phone number.
      */
@@ -6984,22 +6984,22 @@ export enum PhoneNumberKey {
  * Defines a physical address index.
  */
 export enum PhysicalAddressIndex {
-    
+
     /**
      * None.
      */
     None = 0,
-    
+
     /**
      * The business address.
      */
     Business = 1,
-    
+
     /**
      * The home address.
      */
     Home = 2,
-    
+
     /**
      * The alternate address.
      */
@@ -7010,17 +7010,17 @@ export enum PhysicalAddressIndex {
  * Defines physical address entries for a contact.
  */
 export enum PhysicalAddressKey {
-    
+
     /**
      * The business address.
      */
     Business = 0,
-    
+
     /**
      * The home address.
      */
     Home = 1,
-    
+
     /**
      * An alternate address.
      */
@@ -7032,17 +7032,17 @@ export enum PhysicalAddressKey {
  * Online Meeting Presenters options.
  */
 export enum Presenters {
-    
+
     /**
      * Disabled.
      */
     Disabled = 0,
-    
+
     /**
      * Internal.
      */
     Internal = 1,
-    
+
     /**
      * Everyone.
      */
@@ -7053,12 +7053,12 @@ export enum Presenters {
  * Preview item base shape
  */
 export enum PreviewItemBaseShape {
-    
+
     /**
      * Default (all properties required for showing preview by default)
      */
     Default = 0,
-    
+
     /**
      * Compact (only a set of core properties)
      */
@@ -7069,12 +7069,12 @@ export enum PreviewItemBaseShape {
  * @internal Defines the type of PrivilegedLogonType.
  */
 export enum PrivilegedLogonType {
-    
+
     /**
      * Logon as Admin
      */
     Admin = 0,
-    
+
     /**
      * Logon as SystemService
      */
@@ -7086,7 +7086,7 @@ export enum PrivilegedLogonType {
  * @internal Interactive, charge against a copy of target mailbox budget.
  */
 export enum PrivilegedUserIdBudgetType {
-    
+
     /**
      * Interactive, charge against a copy of target mailbox budget.
      */
@@ -7105,53 +7105,53 @@ export enum PrivilegedUserIdBudgetType {
 
 /**
  * @internal Defines how a complex property behaves.
- * 
+ *
  * [Flags]
  */
 export enum PropertyDefinitionFlags {
-  
+
   /**
    * No specific behavior.
    */
   None = 0,
-  
+
   /**
    * The property is automatically instantiated when it is read.
    */
   AutoInstantiateOnRead = 1,
-  
+
   /**
-   * The existing instance of the property is reusable. 
+   * The existing instance of the property is reusable.
    */
   ReuseInstance = 2,
-  
+
   /**
    * The property can be set.
    */
   CanSet = 4,
-  
+
   /**
    * The property can be updated.
    */
   CanUpdate = 8,
-  
+
   /**
    * The property can be deleted.
    */
   CanDelete = 16,
-  
+
   /**
    * The property can be searched.
    */
   CanFind = 32,
-  
+
   /**
    * The property must be loaded explicitly
    */
   MustBeExplicitlyLoaded = 64,
-  
+
   /**
-   * Only meaningful for "collection" property. 
+   * Only meaningful for "collection" property.
    * With this flag, the item in the collection gets updated, instead of creating and adding new items to the collection.
    * Should be used together with the ReuseInstance flag.
    */
@@ -7178,22 +7178,22 @@ export enum RenderingMode {
  * Defines the location where a ResolveName operation searches for contacts.
  */
 export enum ResolveNameSearchLocation {
-    
+
     /**
      * The name is resolved against the Global Address List.
      */
     DirectoryOnly = 0,
-    
+
     /**
      * The name is resolved against the Global Address List and then against the Contacts folder if no match was found.
      */
     DirectoryThenContacts = 1,
-    
+
     /**
      * The name is resolved against the Contacts folder.
      */
     ContactsOnly = 2,
-    
+
     /**
      * The name is resolved against the Contacts folder and then against the Global Address List if no match was found.
      */
@@ -7202,61 +7202,61 @@ export enum ResolveNameSearchLocation {
 
 /**
  * Defines the response actions that can be taken on an item.
- * 
+ *
  * [Flags]
  */
 export enum ResponseActions {
-    
+
     /**
      * No action can be taken.
      */
     None = 0,
-    
+
     /**
      * The item can be accepted.
      */
     Accept = 1,
-    
+
     /**
      * The item can be tentatively accepted.
      */
     TentativelyAccept = 2,
-    
+
     /**
      * The item can be declined.
      */
     Decline = 4,
-    
+
     /**
      * The item can be replied to.
      */
     Reply = 8,
-    
+
     /**
      * The item can be replied to all.
      */
     ReplyAll = 16,
-    
+
     /**
      * The item can be forwarded.
      */
     Forward = 32,
-    
+
     /**
      * The item can be cancelled.
      */
     Cancel = 64,
-    
+
     /**
      * The item can be removed from the calendar.
      */
     RemoveFromCalendar = 128,
-    
+
     /**
      * The item's read receipt can be suppressed.
      */
     SuppressReadReceipt = 256,
-    
+
     /**
      * A reply to the item can be posted.
      */
@@ -7267,17 +7267,17 @@ export enum ResponseActions {
  * Defines the type of a ResponseMessage object.
  */
 export enum ResponseMessageType {
-    
+
     /**
      * The ResponseMessage is a reply to the sender of a message.
      */
     Reply = 0,
-    
+
     /**
      * The ResponseMessage is a reply to the sender and all the recipients of a message.
      */
     ReplyAll = 1,
-    
+
     /**
      * The ResponseMessage is a forward.
      */
@@ -7288,37 +7288,37 @@ export enum ResponseMessageType {
  * Defines the action of a retention policy tag.
  */
 export enum RetentionActionType {
-    
+
     /**
      * Never tags (RetentionEnabled = false) do not have retention action in the FAI.
      */
     None = 0,
-    
+
     /**
      * Expired items will be moved to the Deleted Items folder.
      */
     MoveToDeletedItems = 1,
-    
+
     /**
      * Expired items will be moved to the organizational folder specified in the ExpirationDestination field.
      */
     MoveToFolder = 2,
-    
+
     /**
      * Expired items will be soft deleted.
      */
     DeleteAndAllowRecovery = 3,
-    
+
     /**
      * Expired items will be hard deleted.
      */
     PermanentlyDelete = 4,
-    
+
     /**
      * Expired items will be tagged as expired.
      */
     MarkAsPastRetentionLimit = 5,
-    
+
     /**
      * Expired items will be moved to the archive.
      */
@@ -7329,12 +7329,12 @@ export enum RetentionActionType {
  * Defines the retention type.
  */
 export enum RetentionType {
-    
+
     /**
      * Delete retention.
      */
     Delete = 0,
-    
+
     /**
      * Archive retention.
      */
@@ -7345,124 +7345,124 @@ export enum RetentionType {
  * Defines the error codes identifying why a rule failed validation.
  */
 export enum RuleErrorCode {
-    
+
     /**
      * Active Directory operation failed.
      */
     ADOperationFailure = 0,
-    
+
     /**
      * The e-mail account specified in the FromConnectedAccounts predicate was not found.
      */
     ConnectedAccountNotFound = 1,
-    
+
     /**
-     * The Rule object in a CreateInboxRuleOperation has an Id. 
+     * The Rule object in a CreateInboxRuleOperation has an Id.
      * The Ids of new  rules are generated server side and should not be provided by the client.
      */
     CreateWithRuleId = 2,
-    
+
     /**
      * The value is empty. An empty value is not allowed for the property.
      */
     EmptyValueFound = 3,
-    
+
     /**
-     * There already is a rule with the same priority. 
+     * There already is a rule with the same priority.
      */
     DuplicatedPriority = 4,
-    
+
     /**
-     * There are multiple operations against the same rule. 
+     * There are multiple operations against the same rule.
      * Only one operation per rule is allowed.
      */
     DuplicatedOperationOnTheSameRule = 5,
-    
+
     /**
      * The folder does not exist in the user's mailbox.
      */
     FolderDoesNotExist = 6,
-    
+
     /**
      * The e-mail address is invalid.
      */
     InvalidAddress = 7,
-    
+
     /**
      * The date range is invalid.
      */
     InvalidDateRange = 8,
-    
+
     /**
      * The folder Id is invalid.
      */
     InvalidFolderId = 9,
-    
+
     /**
      * The size range is invalid.
      */
     InvalidSizeRange = 10,
-    
+
     /**
      * The value is invalid.
      */
     InvalidValue = 11,
-    
+
     /**
      * The message classification was not found.
      */
     MessageClassificationNotFound = 12,
-    
+
     /**
      * No action was specified. At least one action must be specified.
      */
     MissingAction = 13,
-    
+
     /**
      * The required parameter is missing.
      */
     MissingParameter = 14,
-    
+
     /**
      * The range value is missing.
      */
     MissingRangeValue = 15,
-    
+
     /**
      * The property cannot be modified.
      */
     NotSettable = 16,
-    
+
     /**
      * The recipient does not exist.
      */
     RecipientDoesNotExist = 17,
-    
+
     /**
      * The rule was not found.
      */
     RuleNotFound = 18,
-    
+
     /**
      * The size is less than zero.
      */
     SizeLessThanZero = 19,
-    
+
     /**
      * The string value is too big.
      */
     StringValueTooBig = 20,
-    
+
     /**
      * The address is unsupported.
      */
     UnsupportedAddress = 21,
-    
+
     /**
      * An unexpected error occured.
      */
     UnexpectedError = 22,
-    
+
     /**
      * The rule is not supported.
      */
@@ -7470,7 +7470,7 @@ export enum RuleErrorCode {
 }
 
 /**
- * Defines the available properties of a rule. 
+ * Defines the available properties of a rule.
  */
 export enum RuleProperty {
 
@@ -7946,7 +7946,7 @@ export module RuleProperty {
                 str2 = RuleProperty[value].replace(str, str + ":");
             }
         });
-        
+
         return str2 || RuleProperty[value];
     }
 }
@@ -7955,12 +7955,12 @@ export module RuleProperty {
  * Defines the scope of a search folder.
  */
 export enum SearchFolderTraversal {
-    
+
     /**
      * Items belonging to the root folder are retrieved.
      */
     Shallow = 0,
-    
+
     /**
      * Items belonging to the root folder and its sub-folders are retrieved.
      */
@@ -7971,12 +7971,12 @@ export enum SearchFolderTraversal {
  * Defines the page direction for mailbox search.
  */
 export enum SearchPageDirection {
-    
+
     /**
      * Navigate to next page.
      */
     Next = 0,
-    
+
     /**
      * Navigate to previous page.
      */
@@ -7987,12 +7987,12 @@ export enum SearchPageDirection {
  * Defines the type of search result.
  */
 export enum SearchResultType {
-    
+
     /**
      * Keyword statistics only.
      */
     StatisticsOnly = 0,
-    
+
     /**
      * Preview only.
      */
@@ -8003,17 +8003,17 @@ export enum SearchResultType {
  * Defines how meeting cancellations should be sent to attendees when an appointment is deleted.
  */
 export enum SendCancellationsMode {
-    
+
     /**
      * No meeting cancellation is sent.
      */
     SendToNone = 0,
-    
+
     /**
      * Meeting cancellations are sent to all attendees.
      */
     SendOnlyToAll = 1,
-    
+
     /**
      * Meeting cancellations are sent to all attendees and a copy of the cancellation message is saved in the organizer's Sent Items folder.
      */
@@ -8024,17 +8024,17 @@ export enum SendCancellationsMode {
  * Defines if/how meeting invitations are sent.
  */
 export enum SendInvitationsMode {
-    
+
     /**
      * No meeting invitation is sent.
      */
     SendToNone = 0,
-    
+
     /**
      * Meeting invitations are sent to all attendees.
      */
     SendOnlyToAll = 1,
-    
+
     /**
      * Meeting invitations are sent to all attendees and a copy of the invitation message is saved.
      */
@@ -8045,27 +8045,27 @@ export enum SendInvitationsMode {
  * Defines if/how meeting invitations or cancellations should be sent to attendees when an appointment is updated.
  */
 export enum SendInvitationsOrCancellationsMode {
-    
+
     /**
      * No meeting invitation/cancellation is sent.
      */
     SendToNone = 0,
-    
+
     /**
      * Meeting invitations/cancellations are sent to all attendees.
      */
     SendOnlyToAll = 1,
-    
+
     /**
      * Meeting invitations/cancellations are sent only to attendees that have been added or modified.
      */
     SendOnlyToChanged = 2,
-    
+
     /**
      * Meeting invitations/cancellations are sent to all attendees and a copy is saved in the organizer's Sent Items folder.
      */
     SendToAllAndSaveCopy = 3,
-    
+
     /**
      * Meeting invitations/cancellations are sent only to attendees that have been added or modified and a copy is saved in the organizer's Sent Items folder.
      */
@@ -8076,17 +8076,17 @@ export enum SendInvitationsOrCancellationsMode {
  * The values indicate the types of item icons to display.
  */
 export enum SendPrompt {
-    
+
     /**
      * None
      */
     None = 0,
-    
+
     /**
      * Send
      */
     Send = 1,
-    
+
     /**
      * VotingOption
      */
@@ -8097,22 +8097,22 @@ export enum SendPrompt {
  * Defines the sensitivity of an item.
  */
 export enum Sensitivity {
-    
+
     /**
      * The item has a normal sensitivity.
      */
     Normal = 0,
-    
+
     /**
      * The item is personal.
      */
     Personal = 1,
-    
+
     /**
      * The item is private.
      */
     Private = 2,
-    
+
     /**
      * The item is confidential.
      */
@@ -8786,7 +8786,7 @@ export enum ServiceError {
     ErrorInvalidIdMalformed,
     /**
      * The EWS Id is in EwsLegacyId format which is not supported by the Exchange version
-     * specified by your request. Please use the ConvertId method to convert from EwsLegacyId 
+     * specified by your request. Please use the ConvertId method to convert from EwsLegacyId
      * to EwsId format.
      */
     ErrorInvalidIdMalformedEwsLegacyIdFormat,
@@ -10024,9 +10024,9 @@ export enum ServiceError {
      * The given channel subscription id is invalid.
      */
     ErrorInvalidChannelSubscriptionId,
-    
+
     /* #region Error codes to map WASCL errors */
-    
+
     /**
      * Error indicating that message submission blocked by WASCL for a consumer mailboxes
      */
@@ -10063,20 +10063,20 @@ export enum ServiceError {
      * Error indicating that recipients number for a consumer mailbox has exceeded the limit defined by WASCL
      */
     ErrorExceededMaxRecipientLimitShowTierUpgrade,
- 
+
     /* #endregion */
 }
 
 /**
- * @internal Defines the type of error handling used for service method calls. 
+ * @internal Defines the type of error handling used for service method calls.
  */
 export enum ServiceErrorHandling {
-  
+
   /**
    * Service method should return the error(s).
    */
   ReturnErrors = 0,
-  
+
   /**
    * Service method should throw exception when error occurs.
    */
@@ -10110,21 +10110,21 @@ export enum ServiceObjectType {
 }
 
 /**
- * Defines the result of a call to an EWS method. 
+ * Defines the result of a call to an EWS method.
  * Values in this enumeration have to be ordered from lowest to highest severity.
  */
 export enum ServiceResult {
-    
+
     /**
      * The call was successful
      */
     Success = 0,
-    
+
     /**
      * The call triggered at least one warning
      */
     Warning = 1,
-    
+
     /**
      * The call triggered at least one error
      */
@@ -10135,17 +10135,17 @@ export enum ServiceResult {
  * Defines the type of SetClientExtensionActionId.
  */
 export enum SetClientExtensionActionId {
-    
+
     /**
      * Install
      */
     Install = 0,
-    
+
     /**
      * Uninstall
      */
     Uninstall = 1,
-    
+
     /**
      * Configure
      */
@@ -10156,12 +10156,12 @@ export enum SetClientExtensionActionId {
  * Defines a sort direction
  */
 export enum SortDirection {
-    
+
     /**
      * The sort is performed in ascending order.
      */
     Ascending = 0,
-    
+
     /**
      * The sort is performed in descending order.
      */
@@ -10172,12 +10172,12 @@ export enum SortDirection {
  * Defines a standard delegate user.
  */
 export enum StandardUser {
-    
+
     /**
      * The Default delegate user, used to define default delegation permissions.
      */
     Default = 0,
-    
+
     /**
      * The Anonymous delegate user, used to define delegate permissions for unauthenticated users.
      */
@@ -10188,22 +10188,22 @@ export enum StandardUser {
  * Defines the quality of an availability suggestion.
  */
 export enum SuggestionQuality {
-    
+
     /**
      * The suggestion is excellent.
      */
     Excellent = 0,
-    
+
     /**
      * The suggestion is good.
      */
     Good = 1,
-    
+
     /**
      * The suggestion is fair.
      */
     Fair = 2,
-    
+
     /**
      * The suggestion is poor.
      */
@@ -10214,12 +10214,12 @@ export enum SuggestionQuality {
  * Determines items to be included in a SyncFolderItems response.
  */
 export enum SyncFolderItemsScope {
-    
+
     /**
      * Include only normal items in the response.
      */
     NormalItems = 0,
-    
+
     /**
      * Include normal and associated items in the response.
      */
@@ -10260,32 +10260,32 @@ export enum TaskDelegationState {
  * Defines the modes of a Task.
  */
 export enum TaskMode {
-    
+
     /**
      * The task is normal
      */
     Normal = 0,
-    
+
     /**
      * The task is a task assignment request
      */
     Request = 1,
-    
+
     /**
      * The task assignment request was accepted
      */
     RequestAccepted = 2,
-    
+
     /**
      * The task assignment request was declined
      */
     RequestDeclined = 3,
-    
+
     /**
      * The task has been updated
      */
     Update = 4,
-    
+
     /**
      * The task is self delegated
      */
@@ -10296,27 +10296,27 @@ export enum TaskMode {
  * Defines the execution status of a task.
  */
 export enum TaskStatus {
-    
+
     /**
      * The execution of the task is not started.
      */
     NotStarted = 0,
-    
+
     /**
      * The execution of the task is in progress.
      */
     InProgress = 1,
-    
+
     /**
      * The execution of the task is completed.
      */
     Completed = 2,
-    
+
     /**
      * The execution of the task is waiting on others.
      */
     WaitingOnOthers = 3,
-    
+
     /**
      * The execution of the task is deferred.
      */
@@ -10364,66 +10364,66 @@ export module TeamMailboxLifecycleState {
 
 /**
  * Defines flags to control tracing details
- * 
+ *
  * [Flags]
  */
 export enum TraceFlags {
-  
+
   /**
    * No tracing.
    */
   None = 0,
-  
+
   /**
    * Trace EWS request messages.
    */
   EwsRequest = 1,
-  
+
   /**
    * Trace EWS response messages.
    */
   EwsResponse = 2,
-  
+
   /**
    * Trace EWS response HTTP headers.
    */
   EwsResponseHttpHeaders = 4,
-  
+
   /**
    * Trace Autodiscover request messages.
    */
   AutodiscoverRequest = 8,
-  
+
   /**
    * Trace Autodiscover response messages.
    */
   AutodiscoverResponse = 16,
-  
+
   /**
    * Trace Autodiscover response HTTP headers.
    */
   AutodiscoverResponseHttpHeaders = 32,
-  
+
   /**
    * Trace Autodiscover configuration logic.
    */
   AutodiscoverConfiguration = 64,
-  
+
   /**
    * Trace messages used in debugging the Exchange Web Services Managed API
    */
   DebugMessage = 128,
-  
+
   /**
    * Trace EWS request HTTP headers.
    */
   EwsRequestHttpHeaders = 256,
-  
+
   /**
    * Trace Autodiscover request HTTP headers.
    */
   AutodiscoverRequestHttpHeaders = 512,
-  
+
   /**
    * Trace EWS timezone related logic.
    */
@@ -10493,7 +10493,7 @@ export enum UserConfigurationDictionaryObjectType {
 
 /**
  * Identifies the user configuration properties to retrieve.
- * 
+ *
  * [Flags]
  */
 export enum UserConfigurationProperties {
@@ -10502,22 +10502,22 @@ export enum UserConfigurationProperties {
      * Retrieve the Id property.
      */
     Id = 1,
-    
+
     /**
      * Retrieve the Dictionary property.
      */
     Dictionary = 2,
-    
+
     /**
      * Retrieve the XmlData property.
      */
     XmlData = 4,
-    
+
     /**
      * Retrieve the BinaryData property.
      */
     BinaryData = 8,
-    
+
     /**
      * Retrieve all properties.
      */
@@ -10526,7 +10526,7 @@ export enum UserConfigurationProperties {
 
 /**
  * User settings that can be requested using GetUserSettings.
- * 
+ *
  * /remarks/  Add new values to the end and keep in sync with Microsoft.Exchange.Autodiscover.ConfigurationSettings.UserConfigurationSettingName.
  */
 export enum UserSettingName {
@@ -11347,63 +11347,79 @@ export module WellKnownFolderName {
 
         return ExchangeVersion.Exchange_Version_Not_Updated;
     }
+
+    const cachedValues = Object.keys(WellKnownFolderName)
+      .filter(key => typeof WellKnownFolderName[key] == 'number')
+      .map(item => item.toLowerCase())
+      .reduce((prev, item, index) => ({...prev, [item]: index, [index]: item }), {});
+
+    /**EwsEnumAttribute */
+    export function FromEwsEnumString(value: string): any {
+      const result = cachedValues[value];
+      return result;
+    }
+
+    /**EwsEnumAttribute */
+    export function ToEwsEnumString(value: any) {
+      return WellKnownFolderName[value].toLowerCase();
+    }
 }
 
 /**
  * @internal Defines the namespaces as used by the EwsXmlReader, EwsServiceXmlReader, and EwsServiceXmlWriter classes.
  */
 export enum XmlNamespace {
-    
+
     /**
      * The namespace is not specified.
      */
     NotSpecified = 0,
-    
+
     /**
      * The EWS Messages namespace.
      */
     Messages = 1,
-    
+
     /**
      * The EWS Types namespace.
      */
     Types = 2,
-    
+
     /**
      * The EWS Errors namespace.
      */
     Errors = 3,
-    
+
     /**
      * The SOAP 1.1 namespace.
      */
     Soap = 4,
-    
+
     /**
      * The SOAP 1.2 namespace.
      */
     Soap12 = 5,
-    
+
     /**
      * XmlSchema-Instance namespace.
      */
     XmlSchemaInstance = 6,
-    
+
     /**
      * The Passport SOAP services SOAP fault namespace.
      */
     PassportSoapFault = 7,
-    
+
     /**
      * The WS-Trust February 2005 namespace.
      */
     WSTrustFebruary2005 = 8,
-    
+
     /**
      * The WS Addressing 1.0 namespace.
      */
     WSAddressing = 9,
-    
+
     /**
      * The Autodiscover SOAP service namespace.
      */
@@ -11454,7 +11470,7 @@ export interface InitializeLazyMember<T> {
  * Date: Friday, December 4, 2015 3:14:27 AM
  * Labels: upstream/master, origin/master, master
  * Merge pull request #71 from ysanghi/master
- * 
+ *
  * Publishing Latest Updates from Microsoft
  */
 /**
@@ -11563,7 +11579,7 @@ export module XmlAttributeNames {
  * Date: Friday, December 4, 2015 3:14:27 AM
  * Labels: upstream/master, origin/master, master
  * Merge pull request #71 from ysanghi/master
- * 
+ *
  * Publishing Latest Updates from Microsoft
  */
 /**
@@ -12362,7 +12378,7 @@ export module XmlElementNames {
     export var Institute: string = "Institute";
     export var Degree: string = "Degree";
     export var Strength: string = "Strength";
-        
+
     /* #endregion */
 
     /* #region Conversations */
@@ -12660,7 +12676,7 @@ export module XmlElementNames {
     export var IsLessThan: string = "IsLessThan";
     export var IsLessThanOrEqualTo: string = "IsLessThanOrEqualTo";
     /* #endregion */
-        
+
     /* #region Directory only contact properties */
     export var PhoneticFullName: string = "PhoneticFullName";
     export var PhoneticFirstName: string = "PhoneticFirstName";
@@ -13227,7 +13243,7 @@ export module XmlElementNames {
  * Represents a property that can be sent to or retrieved from EWS.
  */
 export class ComplexProperty {
-  
+
   /**@internal */
   Namespace: XmlNamespace = XmlNamespace.Types;
   //private xmlNamespace: XmlNamespace; ^ no need for pivate property
@@ -13306,7 +13322,7 @@ export class ComplexProperty {
     }
 
     if (applyChange) {
-      //debugger;//debug; check; check for ref value setting. 
+      //debugger;//debug; check; check for ref value setting.
       field.setValue(value);
       this.Changed();
     }
@@ -13548,7 +13564,7 @@ export class OofSettings extends ComplexProperty implements ISelfValidate {
 
     /**
      * Gets or sets the user's OOF state.
-     * 
+     *
      * @value The user's OOF state.
      */
     get State(): OofState {
@@ -14250,9 +14266,9 @@ export class Recurrence extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
-    LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {        
+    LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
     }
 
     /**
@@ -14312,7 +14328,7 @@ export abstract class IntervalPattern extends Recurrence {
     private interval: number;
 
     /**
-     * Gets or sets the interval between occurrences. 
+     * Gets or sets the interval between occurrences.
      */
     get Interval(): number {
         return this.interval;
@@ -14368,7 +14384,7 @@ export abstract class IntervalPattern extends Recurrence {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -14543,7 +14559,7 @@ export class MonthlyPattern extends IntervalPattern {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -14604,7 +14620,7 @@ export class MonthlyRegenerationPattern extends IntervalPattern {
 }
 
 /**
- * Represents a recurrence pattern where each occurrence happens on a relative day a specific number of months after the previous one. 
+ * Represents a recurrence pattern where each occurrence happens on a relative day a specific number of months after the previous one.
 */
 export class RelativeMonthlyPattern extends IntervalPattern {
 
@@ -14704,7 +14720,7 @@ export class RelativeMonthlyPattern extends IntervalPattern {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -14833,7 +14849,7 @@ export class WeeklyPattern extends IntervalPattern {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -15062,7 +15078,7 @@ export class RelativeYearlyPattern extends Recurrence {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -15188,7 +15204,7 @@ export class YearlyPattern extends Recurrence {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -15277,7 +15293,7 @@ export abstract class RecurrenceRange extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -15370,7 +15386,7 @@ export class EndDateRecurrenceRange extends RecurrenceRange {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -15506,7 +15522,7 @@ export class NumberedRecurrenceRange extends RecurrenceRange {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -15747,7 +15763,7 @@ export class TimeZoneDefinition extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 
@@ -15859,7 +15875,7 @@ export class TimeZoneDefinition extends ComplexProperty {
                 effectiveEndDate = endDate;
             }
 
-            // OM:1648848 Due to bad timezone data from clients the 
+            // OM:1648848 Due to bad timezone data from clients the
             // startDate may not always come before the effectiveEndDate
             if (startDate < effectiveEndDate) {
                 let adjustmentRule: TimeZoneInfo.AdjustmentRule = this.transitions[i].TargetGroup.CreateAdjustmentRule(startDate, effectiveEndDate);
@@ -16030,7 +16046,7 @@ export class TimeZonePeriod extends ComplexProperty {
         //     StringComparison.OrdinalIgnoreCase) == 0;
     }
 
-    // private bias: TimeSpan; backing property not needed 
+    // private bias: TimeSpan; backing property not needed
     // private name: string;
     // private id: string;
 
@@ -16060,7 +16076,7 @@ export class TimeZonePeriod extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 
@@ -16113,13 +16129,13 @@ export class TimeZoneTransition extends ComplexProperty {
     /**
      * @internal Gets the target period of the transition.
      */
-    get TargetPeriod(): TimeZonePeriod { return this.targetPeriod; 
+    get TargetPeriod(): TimeZonePeriod { return this.targetPeriod;
     }
 
     /**
      * @internal Gets the target transition group of the transition.
      */
-    get TargetGroup(): TimeZoneTransitionGroup { return this.targetGroup; 
+    get TargetGroup(): TimeZoneTransitionGroup { return this.targetGroup;
     }
 
     /**
@@ -16233,7 +16249,7 @@ export class TimeZoneTransition extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 
@@ -16364,7 +16380,7 @@ export class AbsoluteDateTransition extends TimeZoneTransition {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -16442,7 +16458,7 @@ export abstract class AbsoluteMonthTransition extends TimeZoneTransition {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -16550,7 +16566,7 @@ export class AbsoluteDayOfMonthTransition extends AbsoluteMonthTransition {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -16662,7 +16678,7 @@ export class RelativeDayOfMonthTransition extends AbsoluteMonthTransition {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
 	LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		super.LoadFromXmlJsObject(jsObject, service);
@@ -16712,7 +16728,7 @@ export class TimeZoneTransitionGroup extends ComplexProperty {
 
     /**
      * @internal Gets a value indicating whether this group contains a transition to the Daylight period.
-     * 
+     *
      * @value   *true* if this group contains a transition to daylight; otherwise, *false*.
      */
     get SupportsDaylight(): boolean {
@@ -16792,8 +16808,8 @@ export class TimeZoneTransitionGroup extends ComplexProperty {
 
     /**
      * @internal Gets the offset to UTC based on this group's transitions.
-     * 
-     * @returns {TimeZoneTransitionGroup.CustomTimeZoneCreateParams}  
+     *
+     * @returns {TimeZoneTransitionGroup.CustomTimeZoneCreateParams}
      */
     GetCustomTimeZoneCreationParams(): TimeZoneTransitionGroup.CustomTimeZoneCreateParams {
         let result: TimeZoneTransitionGroup.CustomTimeZoneCreateParams = new TimeZoneTransitionGroup.CustomTimeZoneCreateParams();
@@ -16817,8 +16833,8 @@ export class TimeZoneTransitionGroup extends ComplexProperty {
 
     /**
      * @internal Gets the delta offset for the daylight.
-     * 
-     * @returns {TimeSpan}  
+     *
+     * @returns {TimeSpan}
      */
     GetDaylightDelta(): TimeSpan {
         if (this.SupportsDaylight) {
@@ -16899,7 +16915,7 @@ export class TimeZoneTransitionGroup extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         if (jsObject[XmlElementNames.Id]) {
@@ -17027,7 +17043,7 @@ export module TimeZoneTransitionGroup {
 
         /**
          * @internal Gets a value indicating whether the custom time zone should have a daylight period.
-         * 
+         *
          * @value   *true* if the custom time zone should have a daylight period; otherwise, *false*.
          */
         get HasDaylightPeriod(): boolean {
@@ -17100,7 +17116,7 @@ export class ByteArrayArray extends ComplexProperty {
 
 /**
  * Encapsulates information on the changehighlights of a meeting request.
- * 
+ *
  * @sealed
  */
 export class ChangeHighlights extends ComplexProperty {
@@ -17165,7 +17181,7 @@ export class ChangeHighlights extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -17251,21 +17267,21 @@ export class ClientAccessTokenRequest extends ComplexProperty {
 
 /**
  * Represents a app in GetAppManifests response.
- * 
+ *
  * @sealed
  */
 export class ClientApp extends ComplexProperty {
 
     /**
      * The manifest for the app.
-     * 
+     *
      * internal set
      */
     Manifest: string;// System.Xml.XmlDocument; // base64 data from xml document
 
     /**
      * Metadata related to the app.
-     * 
+     *
      * internal set
      */
     Metadata: ClientAppMetadata;
@@ -17299,28 +17315,28 @@ export class ClientApp extends ComplexProperty {
 
 /**
  * Represents a ClientAppMetadata object.
- * 
+ *
  * @sealed
  */
 export class ClientAppMetadata extends ComplexProperty {
 
     /**
      * The End node url for the app.
-     * 
+     *
      * @private set
      */
     EndNodeUrl: string;
 
     /**
      * The action url for the app.
-     * 
+     *
      * @private set
      */
     ActionUrl: string;
 
     /**
      * The app status for the app.
-     * 
+     *
      * @private set
      */
     AppStatus: string;
@@ -17473,7 +17489,7 @@ export class CompleteName extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -17516,7 +17532,7 @@ export class CompleteName extends ComplexProperty {
 
     /**
      * @internal Writes elements to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteElementsToXml(writer: EwsServiceXmlWriter): void {
@@ -17565,7 +17581,7 @@ export class ContactPhoneEntity extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -17588,7 +17604,7 @@ export class ContactPhoneEntity extends ComplexProperty {
 
 /**
  * Represents the response to a GetConversationItems operation.
- * 
+ *
  * @sealed
  */
 export class ConversationNode extends ComplexProperty {
@@ -17668,8 +17684,8 @@ export class ConversationNode extends ComplexProperty {
 }
 
 /**
- * 
- * 
+ *
+ *
  * @sealed
  */
 export class ConversationRequest extends ComplexProperty implements ISelfValidate {
@@ -17728,8 +17744,8 @@ export class ConversationRequest extends ComplexProperty implements ISelfValidat
 }
 
 /**
- * 
- * 
+ *
+ *
  * @sealed
  */
 export class ConversationResponse extends ComplexProperty {
@@ -17741,21 +17757,21 @@ export class ConversationResponse extends ComplexProperty {
 
     /**
      * Gets the conversation id.
-     * 
+     *
      * internal set
      */
     ConversationId: ConversationId = null;
 
     /**
      * Gets the sync state.
-     * 
+     *
      * internal set
      */
     SyncState: string = null;
 
     /**
      * Gets the conversation nodes.
-     * 
+     *
      * internal set
      */
     ConversationNodes: ConversationNodeCollection = null;
@@ -17774,7 +17790,7 @@ export class ConversationResponse extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 
@@ -17797,7 +17813,7 @@ export class ConversationResponse extends ComplexProperty {
 
 /**
  * Represents the permissions of a delegate user.
- * 
+ *
  * @sealed
  */
 export class DelegatePermissions extends ComplexProperty {
@@ -17883,7 +17899,7 @@ export class DelegatePermissions extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -18017,7 +18033,7 @@ class DelegateFolderPermission {
 
 /**
  * Represents a delegate user.
- * 
+ *
  * @sealed
  */
 export class DelegateUser extends ComplexProperty {
@@ -18110,7 +18126,7 @@ export class DelegateUser extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -18200,7 +18216,7 @@ export class DeletedOccurrenceInfo extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         if (jsObject[XmlElementNames.Start]) {
@@ -18236,7 +18252,7 @@ export class EmailUserEntity extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -18349,7 +18365,7 @@ export class EnhancedLocation extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -18576,7 +18592,7 @@ export class ExtendedProperty extends ComplexProperty {
 }
 
 /**
- * Encapsulates information on the occurrence of a recurring appointment. 
+ * Encapsulates information on the occurrence of a recurring appointment.
  */
 export class Flag extends ComplexProperty {
     private flagStatus: ItemFlagStatus = ItemFlagStatus.NotFlagged;
@@ -18635,7 +18651,7 @@ export class Flag extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (var key in jsObject) {
@@ -18685,7 +18701,7 @@ export class Flag extends ComplexProperty {
 
 /**
  * Represents a permission on a folder.
- * 
+ *
  * @sealed
  */
 export class FolderPermission extends ComplexProperty {
@@ -19127,7 +19143,7 @@ export class FolderPermission extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any/*JsonObject*/, service: ExchangeService): void {
         for (var key in jsObject) {
@@ -19290,7 +19306,7 @@ export class FolderPermission extends ComplexProperty {
      *
      * @param   {EwsServiceXmlWriter}   writer             The writer.
      * @param   {string}                xmlElementName     Name of the XML element.
-     * @param   {XmlNamespace}          xmlNamespace       
+     * @param   {XmlNamespace}          xmlNamespace
      * @param   {isCalendarFolder}      isCalendarFolder   If true, this permission is for a calendar folder.
      */
     WriteToXml(writer: EwsServiceXmlWriter, xmlElementName: string, xmlNamespace?: XmlNamespace, isCalendarFolder: boolean = false): void { //ref: XmlNamespace - incorrect inheritance error with typesctipt in folderpermission class if removed xmlnamespace parameter
@@ -19303,7 +19319,7 @@ export class FolderPermission extends ComplexProperty {
 
 
 /**
- * Represents a group member 
+ * Represents a group member
  * [RequiredServerVersion(ExchangeVersion.Exchange2010)] ** needs implementation
  */
 export class GroupMember extends ComplexProperty { // todo: need implementation for [RequiredServerVersion(ExchangeVersion.Exchange2010)]
@@ -19531,7 +19547,7 @@ export class GroupMember extends ComplexProperty { // todo: need implementation 
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -19578,8 +19594,8 @@ export class GroupMember extends ComplexProperty { // todo: need implementation 
 }
 
 /**
- * Represents an AQS highlight term. 
- * 
+ * Represents an AQS highlight term.
+ *
  * @sealed
  */
 export class HighlightTerm extends ComplexProperty {
@@ -19619,7 +19635,7 @@ export class HighlightTerm extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         if (jsObject[XmlElementNames.HighlightTermScope]) {
@@ -19636,7 +19652,7 @@ export class HighlightTerm extends ComplexProperty {
  * Represents an Internet message header.
  */
 export class InternetMessageHeader extends ComplexProperty {
-    
+
     private name: string = null;
     private value: string = null;
 
@@ -19753,7 +19769,7 @@ export class ItemCollection<TItem extends Item> extends ComplexProperty { // IEn
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 
@@ -19786,7 +19802,7 @@ export class Mailbox extends ComplexProperty implements ISearchStringProvider {
 
     /**
      * True if this instance is valid, false otherthise.
-     * 
+     *
      * @value   *true* if this instance is valid; otherwise, *false*.
      */
     get IsValid(): boolean {
@@ -19832,7 +19848,7 @@ export class Mailbox extends ComplexProperty implements ISearchStringProvider {
      *
      * @param   {any}   obj   The  to compare with the current .
      * @return  {boolean}       true if the specified  is equal to the current ; otherwise, false.
-     * 
+     *
      * @exception   {NullReferenceException}    The **obj** parameter is null.
      */
     Equals(obj: any): boolean {
@@ -19872,7 +19888,7 @@ export class Mailbox extends ComplexProperty implements ISearchStringProvider {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         //debug:
@@ -20045,7 +20061,7 @@ export class MeetingTimeZone extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         for (let key in jsonProperty) {
@@ -20177,7 +20193,7 @@ export class NormalizedBody extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -20207,7 +20223,7 @@ export class NormalizedBody extends ComplexProperty {
 
     /**
      * @internal Writes attributes to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
@@ -20216,7 +20232,7 @@ export class NormalizedBody extends ComplexProperty {
 
     /**
      * @internal Writes elements to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteElementsToXml(writer: EwsServiceXmlWriter): void {
@@ -20275,7 +20291,7 @@ export class OccurrenceInfo extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -20382,7 +20398,7 @@ export class OnlineMeetingSettings extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -20632,7 +20648,7 @@ export class PersonaPostalAddress extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -20725,7 +20741,7 @@ export class PersonaPostalAddress extends ComplexProperty {
 /**
  * Represents a rule that automatically handles incoming messages.
  * A rule consists of a set of conditions and exceptions that determine whether or not a set of actions should be executed on incoming messages.
- * 
+ *
  * @sealed
  */
 export class Rule extends ComplexProperty {
@@ -20761,17 +20777,17 @@ export class Rule extends ComplexProperty {
 	private isInError: boolean = false;
 
 	/**
-	 * The rule conditions. 
+	 * The rule conditions.
 	 */
 	private conditions: RulePredicates = null;
 
 	/**
-	 * The rule actions. 
+	 * The rule actions.
 	 */
 	private actions: RuleActions = null;
 
 	/**
-	 * The rule exceptions. 
+	 * The rule exceptions.
 	 */
 	private exceptions: RulePredicates = null;
 
@@ -20882,7 +20898,7 @@ export class Rule extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (let key in jsObject) {
@@ -20957,7 +20973,7 @@ export class Rule extends ComplexProperty {
 
 /**
  * Represents the set of actions available for a rule.
- * 
+ *
  * @sealed
  */
 export class RuleActions extends ComplexProperty {
@@ -21062,7 +21078,7 @@ export class RuleActions extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the e-mail addresses to which incoming messages should be forwarded as attachments. 
+	 * Gets the e-mail addresses to which incoming messages should be forwarded as attachments.
 	 * To disable forwarding incoming messages as attachments, empty the ForwardAsAttachmentToRecipients list.
 	 */
 	get ForwardAsAttachmentToRecipients(): EmailAddressCollection {
@@ -21070,7 +21086,7 @@ export class RuleActions extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the e-mail addresses to which incoming messages should be forwarded. 
+	 * Gets the e-mail addresses to which incoming messages should be forwarded.
 	 * To disable forwarding incoming messages, empty the ForwardToRecipients list.
 	 */
 	get ForwardToRecipients(): EmailAddressCollection {
@@ -21078,7 +21094,7 @@ export class RuleActions extends ComplexProperty {
 	}
 
 	/**
-	 * @Nullable Gets or sets the importance that should be stamped on incoming messages. 
+	 * @Nullable Gets or sets the importance that should be stamped on incoming messages.
 	 * To disable the stamping of incoming messages with an importance, set MarkImportance to null.
 	 */
 	get MarkImportance(): Importance {
@@ -21120,15 +21136,15 @@ export class RuleActions extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the e-mail addresses to which incoming messages should be redirecteded. 
-	 * To disable redirection of incoming messages, empty the RedirectToRecipients list. Unlike forwarded mail, redirected mail maintains the original sender and recipients. 
+	 * Gets the e-mail addresses to which incoming messages should be redirecteded.
+	 * To disable redirection of incoming messages, empty the RedirectToRecipients list. Unlike forwarded mail, redirected mail maintains the original sender and recipients.
 	 */
 	get RedirectToRecipients(): EmailAddressCollection {
 		return this.redirectToRecipients;
 	}
 
 	/**
-	 * Gets the phone numbers to which an SMS alert should be sent. 
+	 * Gets the phone numbers to which an SMS alert should be sent.
 	 * To disable sending SMS alerts for incoming messages, empty the SendSMSAlertToRecipients list.
 	 */
 	get SendSMSAlertToRecipients(): MobilePhone[] {
@@ -21136,8 +21152,8 @@ export class RuleActions extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets the Id of the template message that should be sent as a reply to incoming messages. 
-	 * To disable automatic replies, set ServerReplyWithMessage to null. 
+	 * Gets or sets the Id of the template message that should be sent as a reply to incoming messages.
+	 * To disable automatic replies, set ServerReplyWithMessage to null.
 	 */
 	get ServerReplyWithMessage(): ItemId {
 		return this.serverReplyWithMessage;
@@ -21147,7 +21163,7 @@ export class RuleActions extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether subsequent rules should be evaluated. 
+	 * Gets or sets a value indicating whether subsequent rules should be evaluated.
 	 */
 	get StopProcessingRules(): boolean {
 		return this.stopProcessingRules;
@@ -21219,7 +21235,7 @@ export class RuleActions extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (let key in jsObject) {
@@ -21356,7 +21372,7 @@ export class RuleActions extends ComplexProperty {
 
 /**
  * Represents a collection of rules.
- * 
+ *
  * @sealed
  */
 export class RuleCollection extends ComplexProperty implements IEnumerable<Rule> {
@@ -21420,7 +21436,7 @@ export class RuleCollection extends ComplexProperty implements IEnumerable<Rule>
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
 	LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		let jsRules = EwsServiceJsonReader.ReadAsArray(jsObject, XmlElementNames.Rule);
@@ -21433,8 +21449,8 @@ export class RuleCollection extends ComplexProperty implements IEnumerable<Rule>
 }
 
 /**
- * Represents an error that occurred as a result of executing a rule operation. 
- * 
+ * Represents an error that occurred as a result of executing a rule operation.
+ *
  * @sealed
  */
 export class RuleError extends ComplexProperty {
@@ -21498,7 +21514,7 @@ export class RuleError extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (let key in jsObject) {
@@ -21524,7 +21540,7 @@ export class RuleError extends ComplexProperty {
 
 /**
  * Represents an error that occurred while processing a rule operation.
- * 
+ *
  * @sealed
  */
 export class RuleOperationError extends ComplexProperty implements IEnumerable<RuleError>{
@@ -21600,7 +21616,7 @@ export class RuleOperationError extends ComplexProperty implements IEnumerable<R
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
 	LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (let key in jsObject) {
@@ -21621,7 +21637,7 @@ export class RuleOperationError extends ComplexProperty implements IEnumerable<R
 
 /**
  * Represents the date and time range within which messages have been received.
- * 
+ *
  * @sealed
  */
 export class RulePredicateDateRange extends ComplexProperty {
@@ -21637,7 +21653,7 @@ export class RulePredicateDateRange extends ComplexProperty {
 	private end: DateTime = null; //Nullable
 
 	/**
-	 * @Nullable Gets or sets the range start date and time. 
+	 * @Nullable Gets or sets the range start date and time.
 	 * If Start is set to null, no start date applies.
 	 */
 	get Start(): DateTime {
@@ -21648,7 +21664,7 @@ export class RulePredicateDateRange extends ComplexProperty {
 	}
 
 	/**
-	 * @Nullable Gets or sets the range end date and time. 
+	 * @Nullable Gets or sets the range end date and time.
 	 * If End is set to null, no end date applies.
 	 */
 	get End(): DateTime {
@@ -21681,7 +21697,7 @@ export class RulePredicateDateRange extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (let key in jsObject) {
@@ -21715,7 +21731,7 @@ export class RulePredicateDateRange extends ComplexProperty {
 
 /**
  * Represents the set of conditions and exceptions available for a rule.
- * 
+ *
  * @sealed
  */
 export class RulePredicates extends ComplexProperty {
@@ -21858,7 +21874,7 @@ export class RulePredicates extends ComplexProperty {
 	private withinSizeRange: RulePredicateSizeRange = null;
 
 	/**
-	 * Gets the categories that an incoming message should be stamped with for the condition or exception to apply. 
+	 * Gets the categories that an incoming message should be stamped with for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get Categories(): StringList {
@@ -21866,7 +21882,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the strings that should appear in the body of incoming messages for the condition or exception to apply. 
+	 * Gets the strings that should appear in the body of incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get ContainsBodyStrings(): StringList {
@@ -21874,7 +21890,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the strings that should appear in the headers of incoming messages for the condition or exception to apply. 
+	 * Gets the strings that should appear in the headers of incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get ContainsHeaderStrings(): StringList {
@@ -21882,7 +21898,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the strings that should appear in either the To or Cc fields of incoming messages for the condition or exception to apply. 
+	 * Gets the strings that should appear in either the To or Cc fields of incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get ContainsRecipientStrings(): StringList {
@@ -21890,7 +21906,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the strings that should appear in the From field of incoming messages for the condition or exception to apply. 
+	 * Gets the strings that should appear in the From field of incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get ContainsSenderStrings(): StringList {
@@ -21906,7 +21922,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the strings that should appear in the subject of incoming messages for the condition or exception to apply. 
+	 * Gets the strings that should appear in the subject of incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get ContainsSubjectStrings(): StringList {
@@ -21914,8 +21930,8 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * @Nullable Gets or sets the flag for action value that should appear on incoming messages for the condition or execption to apply. 
-	 * To disable this predicate, set it to null. 
+	 * @Nullable Gets or sets the flag for action value that should appear on incoming messages for the condition or execption to apply.
+	 * To disable this predicate, set it to null.
 	 */
 	get FlaggedForAction(): FlaggedForAction {
 		return this.flaggedForAction;
@@ -21925,7 +21941,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the e-mail addresses of the senders of incoming messages for the condition or exception to apply. 
+	 * Gets the e-mail addresses of the senders of incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get FromAddresses(): EmailAddressCollection {
@@ -21933,7 +21949,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must have attachments for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must have attachments for the condition or exception to apply.
 	 */
 	get HasAttachments(): boolean {
 		return this.hasAttachments;
@@ -21943,7 +21959,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * @Nullable Gets or sets the importance that should be stamped on incoming messages for the condition or exception to apply. 
+	 * @Nullable Gets or sets the importance that should be stamped on incoming messages for the condition or exception to apply.
 	 * To disable this predicate, set it to null.
 	 */
 	get Importance(): Importance {
@@ -21954,7 +21970,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be approval requests for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be approval requests for the condition or exception to apply.
 	 */
 	get IsApprovalRequest(): boolean {
 		return this.isApprovalRequest;
@@ -21974,7 +21990,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be automatic replies for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be automatic replies for the condition or exception to apply.
 	 */
 	get IsAutomaticReply(): boolean {
 		return this.isAutomaticReply;
@@ -21994,7 +22010,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be meeting requests for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be meeting requests for the condition or exception to apply.
 	 */
 	get IsMeetingRequest(): boolean {
 		return this.isMeetingRequest;
@@ -22004,7 +22020,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be meeting responses for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be meeting responses for the condition or exception to apply.
 	 */
 	get IsMeetingResponse(): boolean {
 		return this.isMeetingResponse;
@@ -22024,7 +22040,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be permission controlled (RMS protected) for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be permission controlled (RMS protected) for the condition or exception to apply.
 	 */
 	get IsPermissionControlled(): boolean {
 		return this.isPermissionControlled;
@@ -22034,7 +22050,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be S/MIME signed for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be S/MIME signed for the condition or exception to apply.
 	 */
 	get IsSigned(): boolean {
 		return this.isSigned;
@@ -22044,7 +22060,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be voice mails for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be voice mails for the condition or exception to apply.
 	 */
 	get IsVoicemail(): boolean {
 		return this.isVoicemail;
@@ -22054,7 +22070,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether incoming messages must be read receipts for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether incoming messages must be read receipts for the condition or exception to apply.
 	 */
 	get IsReadReceipt(): boolean {
 		return this.isReadReceipt;
@@ -22064,7 +22080,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the e-mail account names from which incoming messages must have been aggregated for the condition or exception to apply. 
+	 * Gets the e-mail account names from which incoming messages must have been aggregated for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get FromConnectedAccounts(): StringList {
@@ -22072,7 +22088,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the item classes that must be stamped on incoming messages for the condition or exception to apply. 
+	 * Gets the item classes that must be stamped on incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get ItemClasses(): StringList {
@@ -22080,7 +22096,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the message classifications that must be stamped on incoming messages for the condition or exception to apply. 
+	 * Gets the message classifications that must be stamped on incoming messages for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get MessageClassifications(): StringList {
@@ -22118,7 +22134,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the e-mail addresses incoming messages must have been sent to for the condition or exception to apply. 
+	 * Gets the e-mail addresses incoming messages must have been sent to for the condition or exception to apply.
 	 * To disable this predicate, empty the list.
 	 */
 	get SentToAddresses(): EmailAddressCollection {
@@ -22126,7 +22142,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets or sets a value indicating whether the owner of the mailbox must be a To recipient of incoming messages for the condition or exception to apply. 
+	 * Gets or sets a value indicating whether the owner of the mailbox must be a To recipient of incoming messages for the condition or exception to apply.
 	 */
 	get SentToMe(): boolean {
 		return this.sentToMe;
@@ -22146,7 +22162,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * @Nullable Gets or sets the sensitivity that must be stamped on incoming messages for the condition or exception to apply. 
+	 * @Nullable Gets or sets the sensitivity that must be stamped on incoming messages for the condition or exception to apply.
 	 * To disable this predicate, set it to null.
 	 */
 	get Sensitivity(): Sensitivity {
@@ -22157,7 +22173,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the date range within which incoming messages must have been received for the condition or exception to apply. 
+	 * Gets the date range within which incoming messages must have been received for the condition or exception to apply.
 	 * To disable this predicate, set both its Start and End properties to null.
 	 */
 	get WithinDateRange(): RulePredicateDateRange {
@@ -22165,7 +22181,7 @@ export class RulePredicates extends ComplexProperty {
 	}
 
 	/**
-	 * Gets the minimum and maximum sizes incoming messages must have for the condition or exception to apply. 
+	 * Gets the minimum and maximum sizes incoming messages must have for the condition or exception to apply.
 	 * To disable this predicate, set both its MinimumSize and MaximumSize properties to null.
 	 */
 	get WithinSizeRange(): RulePredicateSizeRange {
@@ -22208,7 +22224,7 @@ export class RulePredicates extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (let key in jsObject) {
@@ -22527,7 +22543,7 @@ export class RulePredicates extends ComplexProperty {
 
 /**
  * Represents the minimum and maximum size of a message.
- * 
+ *
  * @sealed
  */
 export class RulePredicateSizeRange extends ComplexProperty {
@@ -22543,7 +22559,7 @@ export class RulePredicateSizeRange extends ComplexProperty {
 	private maximumSize: number = null; //Nullable
 
 	/**
-	 * @Nullable Gets or sets the minimum size, in kilobytes. 
+	 * @Nullable Gets or sets the minimum size, in kilobytes.
 	 * If MinimumSize is set to null, no minimum size applies.
 	 */
 	get MinimumSize(): number {
@@ -22554,7 +22570,7 @@ export class RulePredicateSizeRange extends ComplexProperty {
 	}
 
 	/**
-	 * @Nullable Gets or sets the maximum size, in kilobytes. 
+	 * @Nullable Gets or sets the maximum size, in kilobytes.
 	 * If MaximumSize is set to null, no maximum size applies.
 	 */
 	get MaximumSize(): number {
@@ -22587,7 +22603,7 @@ export class RulePredicateSizeRange extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (let key in jsObject) {
@@ -22662,7 +22678,7 @@ export class SetClientExtensionAction extends ComplexProperty {
 
 /**
  * Represents a list of strings.
- * 
+ *
  * @sealed
  */
 export class StringList extends ComplexProperty implements IEnumerable<string> {
@@ -22784,7 +22800,7 @@ export class StringList extends ComplexProperty implements IEnumerable<string> {
      * @internal Loads from XMLJsObject collection to create a new collection item.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The json collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -22814,7 +22830,7 @@ export class StringList extends ComplexProperty implements IEnumerable<string> {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObjectCollection: any[], service: ExchangeService): void {
         this.CreateFromXmlJsObjectCollection(jsObjectCollection, service);
@@ -22860,7 +22876,7 @@ export class StringList extends ComplexProperty implements IEnumerable<string> {
      * @internal Loads from XMLJsObject collection to update collection Items.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The XMLJsObject collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -22981,7 +22997,7 @@ export class TimeChange extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         for (let key in jsonProperty) {
@@ -23105,7 +23121,7 @@ export class TimeChangeRecurrence extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         for (let key in jsonProperty) {
@@ -23151,7 +23167,7 @@ export class TimeChangeRecurrence extends ComplexProperty {
 }
 
 /**
- * Represents the body part of an item that is unique to the conversation the item is part of. 
+ * Represents the body part of an item that is unique to the conversation the item is part of.
  */
 export class UniqueBody extends ComplexProperty {
 
@@ -23191,7 +23207,7 @@ export class UniqueBody extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -23221,7 +23237,7 @@ export class UniqueBody extends ComplexProperty {
 
     /**
      * @internal Writes attributes to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
@@ -23230,7 +23246,7 @@ export class UniqueBody extends ComplexProperty {
 
     /**
      * @internal Writes elements to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteElementsToXml(writer: EwsServiceXmlWriter): void {
@@ -23242,7 +23258,7 @@ export class UniqueBody extends ComplexProperty {
 
 /**
  * Represents a user configuration's Dictionary property.
- * 
+ *
  * @sealed
  */
 export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable, IJsonCollectionDeserializer
@@ -23361,7 +23377,7 @@ export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable,
                 break;
 
             case UserConfigurationDictionaryObjectType.Byte:
-                dictionaryObject = Convert.toNumber(value[0]); //info: byte is number, no Byte type in js 
+                dictionaryObject = Convert.toNumber(value[0]); //info: byte is number, no Byte type in js
                 break;
 
             case UserConfigurationDictionaryObjectType.ByteArray:
@@ -23432,7 +23448,7 @@ export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable,
      * @internal Loads from XMLJsObject collection to create a new collection item.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The json collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -23549,7 +23565,7 @@ export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable,
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         this.CreateFromXMLJsObjectCollection(jsObject, service);
@@ -23586,7 +23602,7 @@ export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable,
      * @internal Loads from XMLJsObject collection to update collection Items.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The XMLJsObject collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -23863,7 +23879,7 @@ export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable,
         //First check for Array
         if (ArrayHelper.isArray<any>(dictionaryObject)) {
 
-            // First check for a string array         
+            // First check for a string array
 
             let dictionaryObjectAsStringArray: string[] = ArrayHelper.OfType<string, string>(dictionaryObject, (item) => { return typeof item === 'string' });
             if (dictionaryObjectAsStringArray.length > 0) {
@@ -23907,7 +23923,7 @@ export class UserConfigurationDictionary extends ComplexProperty {//IEnumerable,
 
 /**
  * Represents the Id of a user.
- * 
+ *
  * @sealed
  */
 export class UserId extends ComplexProperty {
@@ -23949,7 +23965,7 @@ export class UserId extends ComplexProperty {
 
     /**
      * Gets or sets a value indicating which standard user the user represents.
-     * 
+     *
      * @Nullable
      */
     get StandardUser(): StandardUser {
@@ -24002,7 +24018,7 @@ export class UserId extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (var key in jsObject) {
@@ -24089,7 +24105,7 @@ export class VotingInformation extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         if (jsObject[XmlElementNames.UserOptions]) {
@@ -24143,7 +24159,7 @@ export class VotingOptionData extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -24362,7 +24378,7 @@ export class Attachment extends ComplexProperty {
      * @internal Loads from XMLjsObject.
      *
      * @param   {any}               jsonObject
-     * @param   {ExchangeService}   service        
+     * @param   {ExchangeService}   service
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -24399,9 +24415,9 @@ export class Attachment extends ComplexProperty {
 
     /**
      * @internal Sets value of field.
-     * 
+     *
      * /remarks/    We override the base implementation. Attachments cannot be modified so any attempts the change a property on an existing attachment is an error.
-     * 
+     *
      * @param   {IRefParam<T>}      field   The field.
      * @param   {T}                 value   The value.
      */
@@ -24494,7 +24510,7 @@ export class FileAttachment extends Attachment {
     //     this.fileName = null;
     //     this.contentStream = null;
     // }
-    
+
     /**
      * Gets the base64 content of the attachment into memory. Content is set only when Load() is called.
      */
@@ -24519,7 +24535,7 @@ export class FileAttachment extends Attachment {
         super.ThrowIfThisIsNotNew();
         this.isContactPhoto = value;
     }
-    
+
     /**
      * @internal Initializes a new instance of the **FileAttachment** class.
      *
@@ -24542,24 +24558,24 @@ export class FileAttachment extends Attachment {
      * @return  {string}      XML element name.
      */
     GetXmlElementName(): string { return XmlElementNames.FileAttachment; }
-    
+
     // /**
     //  * Loads the content of the file attachment into the specified stream. Calling this method results in a call to EWS.
     //  *
     //  * @param   {any}   stream   The stream to load the content of the attachment into.
-    //  */    
+    //  */
     // Load(stream: any /* System.IO.Stream */): void;
     // /**
     //  * Loads the content of the file attachment into the specified file. Calling this method results in a call to EWS.
     //  *
     //  * @param   {string}   fileName   The name of the file to load the content of the attachment into. If the file already exists, it is overwritten.
-    //  */        
+    //  */
     // Load(fileName?: string): void;
     // Load(fileName?: string | any): Promise<void> {
     //     return  super.Load();
     // }
     //ref: //info: - skipped, this can be loaded from base class
-    
+
     /**
      * @internal Loads from XMLjsObject.
      *
@@ -24611,7 +24627,7 @@ export class FileAttachment extends Attachment {
     }
     //ReadElementsFromXmlJsObject(reader: any): boolean { throw new Error("FileAttachment.ts - TryReadElementFromXmlJsObject : Not implemented."); }
     ReadElementsFromXmlJsObjectToPatch(reader: any): boolean { throw new Error("FileAttachment.ts - ReadElementsFromXmlJsObjectToPatch : Not implemented."); }
-    
+
     /**
      * @internal Validates this instance.
      *
@@ -24622,7 +24638,7 @@ export class FileAttachment extends Attachment {
             throw new ServiceValidationException(StringHelper.Format(Strings.FileAttachmentContentIsNotSet, attachmentIndex));
         }
     }
-    
+
     /**
      * @internal Writes elements and content to XML.
      *
@@ -24639,7 +24655,7 @@ export class FileAttachment extends Attachment {
 
         if (!StringHelper.IsNullOrEmpty(this.FileName)) {
             throw new Error("FileAttachment.ts - File reading from disk is not implemented. Always use Base64Content property ")
-                
+
             // using (FileStream fileStream = new FileStream(this.FileName, FileMode.Open, FileAccess.Read))
             // {
             //     writer.WriteBase64ElementValue(fileStream);
@@ -24799,7 +24815,7 @@ export class ItemAttachment extends Attachment {
         }
     }
 
-    //ReadElementsFromXmlJsObject(reader: any): void { throw new Error("ItemAttachment.ts - TryReadElementFromXmlJsObject : Not implemented."); }    
+    //ReadElementsFromXmlJsObject(reader: any): void { throw new Error("ItemAttachment.ts - TryReadElementFromXmlJsObject : Not implemented."); }
     ReadElementsFromXmlJsObjectToPatch(reader: any): boolean { throw new Error("ItemAttachment.ts - TryReadElementFromXmlToPatch : Not implemented."); }
 
     /**
@@ -25008,7 +25024,7 @@ export class ImAddressEntry extends DictionaryEntryProperty<ImAddressKey> {
 
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         this.Key = <ImAddressKey><any>ImAddressKey[jsonProperty[XmlAttributeNames.Key]];
-        this.ImAddress = jsonProperty[XmlElementNames.Entry];// ImAddress];//ElementValue becomes Same ElementName when it has attribute. 
+        this.ImAddress = jsonProperty[XmlElementNames.Entry];// ImAddress];//ElementValue becomes Same ElementName when it has attribute.
     }
     /**@internal */
     WriteElementsToXml(writer: EwsServiceXmlWriter): void { writer.WriteValue(this.ImAddress, XmlElementNames.ImAddress); }
@@ -25031,7 +25047,7 @@ export class PhoneNumberEntry extends DictionaryEntryProperty<PhoneNumberKey> {
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         this.Key = <PhoneNumberKey><any>PhoneNumberKey[jsonProperty[XmlAttributeNames.Key]];
         this.phoneNumber = jsonProperty[XmlElementNames.Entry];//PhoneNumber
-    } 
+    }
     /**@internal */
     WriteElementsToXml(writer: EwsServiceXmlWriter): void { writer.WriteValue(this.PhoneNumber, XmlElementNames.PhoneNumber); }
 }
@@ -25194,7 +25210,7 @@ export class PhysicalAddressEntry extends DictionaryEntryProperty<PhysicalAddres
 
 /**
  * Represents a generic dictionary that can be sent to or retrieved from EWS.
- * 
+ *
  * @typeparam   <TKey>      The type of key.
  * @typeparam   <TEntry>    The type of entry.
  */
@@ -25210,7 +25226,7 @@ export abstract class DictionaryProperty<TKey, TEntry extends DictionaryEntryPro
 
     /**
      * Gets the entries.
-     * 
+     *
      * @value   The entries.
      */
     get Entries(): Dictionary<TKey, TEntry> {
@@ -25220,7 +25236,7 @@ export abstract class DictionaryProperty<TKey, TEntry extends DictionaryEntryPro
     /**
      * @internal Initializes a new instance of the **DictionaryProperty** class.
      *
-     * @param   {DictionaryKeyType}	dictionaryKeyType	Dictionary Key type, needed to workaround c# type checking of generics.    
+     * @param   {DictionaryKeyType}	dictionaryKeyType	Dictionary Key type, needed to workaround c# type checking of generics.
      */
     constructor(dictionaryKeyType: DictionaryKeyType) {
         super();
@@ -25375,7 +25391,7 @@ export abstract class DictionaryProperty<TKey, TEntry extends DictionaryEntryPro
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         if (jsonProperty[XmlElementNames.Entry]) {
@@ -25700,7 +25716,7 @@ export class EmailAddress extends ComplexProperty implements ISearchStringProvid
     private routingType: string = null;
 
     /**
-     * Mailbox type. 
+     * Mailbox type.
      */
     private mailboxType: MailboxType = null;
 
@@ -25843,7 +25859,7 @@ export class EmailAddress extends ComplexProperty implements ISearchStringProvid
     }
 
     /**
-     * Get a string representation for using this instance in a search filter. 
+     * Get a string representation for using this instance in a search filter.
      * ISearchStringProvider.GetSearchString
      *
      * @return  {string}      String representation of instance.
@@ -25859,7 +25875,7 @@ export class EmailAddress extends ComplexProperty implements ISearchStringProvid
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -26013,7 +26029,7 @@ export class Attendee extends EmailAddress {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -26072,7 +26088,7 @@ export abstract class ExtractedEntity extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         if (jsObject[XmlElementNames.NlgEmailPosition]) {
@@ -26111,7 +26127,7 @@ export class AddressEntity extends ExtractedEntity {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -26179,7 +26195,7 @@ export class ContactEntity extends ExtractedEntity {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -26222,7 +26238,7 @@ export class ContactEntity extends ExtractedEntity {
  * Represents an EmailAddressEntity object.
  */
 export class EmailAddressEntity extends ExtractedEntity {
-    
+
     /**
      * Gets the meeting suggestion Location.
      */
@@ -26234,12 +26250,12 @@ export class EmailAddressEntity extends ExtractedEntity {
     constructor() {
         super();
     }
-    
+
     /**
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -26302,7 +26318,7 @@ export class MeetingSuggestion extends ExtractedEntity {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -26366,7 +26382,7 @@ export class PhoneEntity extends ExtractedEntity {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -26415,7 +26431,7 @@ export class TaskSuggestion extends ExtractedEntity {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -26454,7 +26470,7 @@ export class UrlEntity extends ExtractedEntity {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -26515,12 +26531,12 @@ export class MessageBody extends ComplexProperty {
                 case XmlAttributeNames.BodyType:
                     this.bodyType = BodyType[<string>jsObject[key]];
                     break;
-                case XmlElementNames.Body: //info - Body Element text - custom parser in ews-javascript-api. 
-                case XmlElementNames.TextBody: //info - TextBody Element text - custom parser in ews-javascript-api. 
+                case XmlElementNames.Body: //info - Body Element text - custom parser in ews-javascript-api.
+                case XmlElementNames.TextBody: //info - TextBody Element text - custom parser in ews-javascript-api.
                     this.text = jsObject[key];
                     break;
                 case XmlAttributeNames.IsTruncated:
-                    //ref: IsTruncated not captured 
+                    //ref: IsTruncated not captured
                     break;
                 default:
                     //debugger;//check exact name of body element
@@ -26570,7 +26586,7 @@ export class TextBody extends MessageBody {
 export abstract class MimeContentBase extends ComplexProperty {
 
     /**
-     * characterSet returned 
+     * characterSet returned
      */
     private characterSet: string;
 
@@ -26608,7 +26624,7 @@ export abstract class MimeContentBase extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any/*JsonObject*/, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -26627,7 +26643,7 @@ export abstract class MimeContentBase extends ComplexProperty {
 
     /**
      * @internal Writes attributes to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
@@ -26636,7 +26652,7 @@ export abstract class MimeContentBase extends ComplexProperty {
 
     /**
      * @internal Writes elements to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteElementsToXml(writer: EwsServiceXmlWriter): void {
@@ -26677,7 +26693,7 @@ export class MimeContent extends MimeContentBase {
      */
     ToString(): string {
         return this.Content || StringHelper.Empty;
-        //ref: //info: 
+        //ref: //info:
         //todo: implement arraybuffer and encoding using TextDecoder or some other tech
 
         // if (this.Content == null) {
@@ -26685,7 +26701,7 @@ export class MimeContent extends MimeContentBase {
         // }
         // else {
         //     try {
-        //         // Try to convert to original MIME content using specified charset. If this fails, 
+        //         // Try to convert to original MIME content using specified charset. If this fails,
         //         // return the Base64 representation of the content.
         //         // Note: Encoding.GetString can throw DecoderFallbackException which is a subclass
         //         // of ArgumentException.
@@ -26733,7 +26749,7 @@ export class MimeContentUTF8 extends MimeContentBase {
      */
     ToString(): string {
         return this.Content || StringHelper.Empty;
-        //ref: //info: 
+        //ref: //info:
         //todo: implement arraybuffer and encoding using TextDecoder or some other tech
 
         //            if (this.Content == null)
@@ -26744,7 +26760,7 @@ export class MimeContentUTF8 extends MimeContentBase {
         //            {
         //                try
         //                {
-        //                    // Try to convert to original MIME content using specified charset. If this fails, 
+        //                    // Try to convert to original MIME content using specified charset. If this fails,
         //                    // return the Base64 representation of the content.
         //                    // Note: Encoding.GetString can throw DecoderFallbackException which is a subclass
         //                    // of ArgumentException.
@@ -26805,7 +26821,7 @@ export class RetentionTagBase extends ComplexProperty {
 
     /**
      * Initializes a new instance of the **RetentionTagBase** class.
-     * 
+     *
      * @param {string}  xmlElementName   Xml element name.
      */
     constructor(xmlElementName: string) {
@@ -26817,7 +26833,7 @@ export class RetentionTagBase extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -26937,7 +26953,7 @@ export abstract class RuleOperation extends ComplexProperty {
 
 /**
  * Represents an operation to create a new rule.
- * 
+ *
  * @sealed
  */
 export class CreateRuleOperation extends RuleOperation {
@@ -26998,7 +27014,7 @@ export class CreateRuleOperation extends RuleOperation {
 
 /**
  * Represents an operation to delete an existing rule.
- * 
+ *
  * @sealed
  */
 export class DeleteRuleOperation extends RuleOperation {
@@ -27059,7 +27075,7 @@ export class DeleteRuleOperation extends RuleOperation {
 
 /**
  * Represents an operation to update an existing rule.
- * 
+ *
  * @sealed
  */
 export class SetRuleOperation extends RuleOperation {
@@ -27112,7 +27128,7 @@ export class SetRuleOperation extends RuleOperation {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -27161,7 +27177,7 @@ export abstract class ServiceId extends ComplexProperty {
 
     /**
      * True if this instance is valid, false otherthise.
-     * 
+     *
      * @value   *true* if this instance is valid; otherwise, *false*.
      */
     public get IsValid(): boolean {
@@ -27240,7 +27256,7 @@ export abstract class ServiceId extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (var key in jsObject) {
@@ -27385,7 +27401,7 @@ export class FolderId extends ServiceId {
 
     /**
      * True if this instance is valid, false otherthise.
-     * 
+     *
      * @value   *true* if this instance is valid; otherwise, *false*.
      */
     public get IsValid(): boolean {
@@ -27616,7 +27632,7 @@ export class RecurringAppointmentMasterId extends ItemId {
 
 /**
  * Represents a collection of properties that can be sent to and retrieved from EWS.
- * 
+ *
  * @type <TComplexProperty>   ComplexProperty type.
  */
 export abstract class ComplexPropertyCollection<TComplexProperty extends ComplexProperty> extends ComplexProperty implements IEnumerable<TComplexProperty>, ICustomUpdateSerializer {
@@ -27630,7 +27646,7 @@ export abstract class ComplexPropertyCollection<TComplexProperty extends Complex
 
     /**
      * @internal Gets the items. (workaround for GetEnumerator)
-     * 
+     *
      * @return The items.
      */
     get Items(): TComplexProperty[] { return this.items; }
@@ -27651,7 +27667,7 @@ export abstract class ComplexPropertyCollection<TComplexProperty extends Complex
 
     /**
      * @internal Gets the removed items.
-     * 
+     *
      * @return The removed items.
      */
     get RemovedItems(): TComplexProperty[] { return this.removedItems; }
@@ -27718,7 +27734,7 @@ export abstract class ComplexPropertyCollection<TComplexProperty extends Complex
      * @internal Loads from XMLJsObject collection to create a new collection item.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The json collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -27905,7 +27921,7 @@ export abstract class ComplexPropertyCollection<TComplexProperty extends Complex
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
 	LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         EwsLogging.Assert(false, "ComplexPropertyCollection.LoadFromXmlJsObject", "LoadFromXmlJsObject was called, should not be calling. Fix it to direct to Create or Update call instad.")
@@ -27937,7 +27953,7 @@ export abstract class ComplexPropertyCollection<TComplexProperty extends Complex
      * @internal Loads from XMLJsObject collection to update collection Items.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The XMLJsObject collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -28156,7 +28172,7 @@ export class AttachmentCollection extends ComplexPropertyCollection<Attachment> 
      */
     private AddFileAttachmentXXXXX(name: string, fileName: string): FileAttachment;
 
-    //AddFileAttachmentXXXXX(name: string, contentStream: TextStreamBase /*System.IO.Stream*/): FileAttachment;	
+    //AddFileAttachmentXXXXX(name: string, contentStream: TextStreamBase /*System.IO.Stream*/): FileAttachment;
     //AddFileAttachmentXXXXX(name: string, content: number[] /* Byte[]  */): FileAttachment;
     /**
      * Adds a file attachment to the collection. - isContent parameter is required to be true to be able to use bas64 content directly
@@ -28214,7 +28230,7 @@ export class AttachmentCollection extends ComplexPropertyCollection<Attachment> 
      * Adds an item attachment to the collection
      *
      * @type <TItem>    The type of the item to attach.
-     * 
+     *
      * @param   {any*}      TItem    Item type, not instance
      * @param   {string}    TItemElementName    XML Element Name of the Item class
      * @return  {ItemAttachmentOf<TItem>}      An ItemAttachment instance.
@@ -28447,12 +28463,12 @@ export class AttachmentCollection extends ComplexPropertyCollection<Attachment> 
                 // At the server side, only the last attachment with IsContactPhoto is kept, all other IsContactPhoto
                 // attachments are removed. CreateAttachment will generate AttachmentId for each of such attachments (although
                 // only the last one is valid).
-                // 
+                //
                 // With E14 SP2 CreateItemWithAttachment, such request will only return 1 AttachmentId; but the client
-                // expects to see all, so let us prevent such "invalid" request in the first place. 
-                // 
+                // expects to see all, so let us prevent such "invalid" request in the first place.
+                //
                 // The IsNew check is to still let CreateAttachmentRequest allow multiple IsContactPhoto attachments.
-                // 
+                //
                 if (this.owner.IsNew && this.owner.Service.RequestedServerVersion >= ExchangeVersion.Exchange2010_SP2) {
                     let fileAttachment: FileAttachment = <FileAttachment>attachment;
 
@@ -28686,7 +28702,7 @@ export class ContactPhoneEntityCollection extends ComplexPropertyCollection<Cont
 
 /**
  * Represents a collection of conversation items.
- * 
+ *
  * @sealed
  */
 export class ConversationNodeCollection extends ComplexPropertyCollection<ConversationNode> {
@@ -28726,7 +28742,7 @@ export class ConversationNodeCollection extends ComplexPropertyCollection<Conver
      * @internal Loads from XMLjsObject.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The json collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -29172,7 +29188,7 @@ export class ExtendedPropertyCollection extends ComplexPropertyCollection<Extend
 
 /**
  * Represents a collection of folder Ids.
- * 
+ *
  * @sealed
  */
 export class FolderIdCollection extends ComplexPropertyCollection<FolderId> {
@@ -29313,7 +29329,7 @@ export class FolderIdCollection extends ComplexPropertyCollection<FolderId> {
 
 /**
  * Represents a collection of folder permissions.
- * 
+ *
  * @sealed
  */
 export class FolderPermissionCollection extends ComplexPropertyCollection<FolderPermission> {
@@ -29418,7 +29434,7 @@ export class FolderPermissionCollection extends ComplexPropertyCollection<Folder
      * @internal Loads from XMLJsObject collection to create a new collection item.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The json collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -29696,7 +29712,7 @@ export class GroupMemberCollection extends ComplexPropertyCollection<GroupMember
     }
 
     /**
-     * Finds the member with the specified key in the collection. 
+     * Finds the member with the specified key in the collection.
      * Members that have not yet been saved do not have a key.
      *
      * @param   {}   key   The key of the member to find.
@@ -29929,7 +29945,7 @@ export class InternetMessageHeaderCollection extends ComplexPropertyCollection<I
 
 /**
  * Represents a collection of item Ids.
- * 
+ *
  * @sealed
  */
 export class ItemIdCollection extends ComplexPropertyCollection<ItemId> {
@@ -29964,7 +29980,7 @@ export class ItemIdCollection extends ComplexPropertyCollection<ItemId> {
      * @internal Loads from XMLJsObject collection to create a new collection item.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The json collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -29999,7 +30015,7 @@ export class ItemIdCollection extends ComplexPropertyCollection<ItemId> {
      * @internal Loads from XMLJsObject collection to update collection Items.
      *
      * @interface   IJsonCollectionDeserializer
-     * 
+     *
      * @param   {any}               jsObjectCollection   The XMLJsObject collection.
      * @param   {ExchangeService}   service          The service.
      */
@@ -30150,7 +30166,7 @@ export class PhoneEntityCollection extends ComplexPropertyCollection<PhoneEntity
 
 /**
  * @internal Represents a collection of rule validation errors.
- * 
+ *
  * @sealed
  */
 export class RuleErrorCollection extends ComplexPropertyCollection<RuleError> {
@@ -30199,7 +30215,7 @@ export class RuleErrorCollection extends ComplexPropertyCollection<RuleError> {
 
 /**
  * Represents a collection of rule operation errors.
- * 
+ *
  * @sealed
  */
 export class RuleOperationErrorCollection extends ComplexPropertyCollection<RuleOperationError> {
@@ -30478,7 +30494,7 @@ export class ExtendedPropertyDefinition extends PropertyDefinitionBase {
     /**
      * Gets the minimum Exchange version that supports this extended property.
      *
-     * @value {ExchangeVersion} The version.     
+     * @value {ExchangeVersion} The version.
      */
     get Version(): ExchangeVersion { return ExchangeVersion.Exchange2007_SP1; }
 
@@ -30579,7 +30595,7 @@ export class ExtendedPropertyDefinition extends PropertyDefinitionBase {
     /**
      * @internal Formats the field.
      *
-     * @type    <T>        Type of field value. 
+     * @type    <T>        Type of field value.
      * @param   {string}   name         The name.
      * @param   {string}   fieldValue   The field value.
      * @return  {string}                Formatted value.
@@ -30792,7 +30808,7 @@ export class GroupMemberPropertyDefinition extends ServiceObjectPropertyDefiniti
     private key: string = null;
 
     /**
-     * Gets or sets the member's key. 
+     * Gets or sets the member's key.
      */
     get Key(): string {
         return this.key;
@@ -30980,7 +30996,7 @@ export abstract class PropertyDefinition extends ServiceObjectPropertyDefinition
 
     /**
      * @internal Gets the name of the XML element.
-     * 
+     *
      * @value {string}  The name of the XML element.
      */
     get XmlElementName(): string { return this.xmlElementName; }
@@ -31249,12 +31265,12 @@ export class MeetingTimeZonePropertyDefinition extends PropertyDefinition {
 export class RecurrencePropertyDefinition extends PropertyDefinition {
 
     /**
-     * not in ews-managed-api - use to find which recurrence is being used. 
+     * not in ews-managed-api - use to find which recurrence is being used.
      */
     private static recurrences: string[] = [XmlElementNames.AbsoluteMonthlyRecurrence, XmlElementNames.AbsoluteYearlyRecurrence, XmlElementNames.DailyRecurrence, XmlElementNames.DailyRegeneration, XmlElementNames.MonthlyRegeneration, XmlElementNames.RelativeMonthlyRecurrence, XmlElementNames.RelativeYearlyRecurrence, XmlElementNames.WeeklyRecurrence, XmlElementNames.WeeklyRegeneration, XmlElementNames.YearlyRegeneration];
 
     /**
-     * not in ews-managed-api - use to find which recurrence range is being used. 
+     * not in ews-managed-api - use to find which recurrence range is being used.
      */
     private static recurrenceRanges: string[] = [XmlElementNames.NoEndRecurrence, XmlElementNames.EndDateRecurrence, XmlElementNames.NumberedRecurrence];
 
@@ -31345,7 +31361,7 @@ export class RecurrencePropertyDefinition extends PropertyDefinition {
                 break;
             default:
                 //info: //ref: cannot throw, need to keep null/undefined to successfully parse XMLJsObject
-                //throw new ServiceXmlDeserializationException(StringHelper.Format(Strings.InvalidRecurrenceRange, recurrenceRangeString)); 
+                //throw new ServiceXmlDeserializationException(StringHelper.Format(Strings.InvalidRecurrenceRange, recurrenceRangeString));
                 break;
         }
         return range;
@@ -31968,9 +31984,9 @@ export class ByteArrayPropertyDefinition extends TypedPropertyDefinition {
  * @internal Represents String property definition.
  */
 export class StringPropertyDefinition extends TypedPropertyDefinition {
-    
+
     /**
-     * @internal Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...). 
+     * @internal Gets a value indicating whether this property definition is for a nullable type (ref, int?, bool?...).
      */
     get IsNullable(): boolean { return true; }
 
@@ -32026,7 +32042,7 @@ export class GenericPropertyDefinition<TPropertyValue> extends TypedPropertyDefi
     constructor(propertyName: string, xmlElementName: string, uri: string, version: ExchangeVersion);
     /**
      * @internal Initializes a new instance of the **GenericPropertyDefinition<TPropertyValue>** class.
-     * Added enumType parameter to 
+     * Added enumType parameter to
      *
      * @param   {string}                    propertyName     Name of the property (added to workaround reflection based initialization of Names).
      * @param   {string}                    xmlElementName   Name of the XML element.
@@ -32282,11 +32298,11 @@ export class ListValuePropertyDefinition<TPropertyValue> extends GenericProperty
     Parse(value: string): any {
 
         throw new Error("ListValuePropertyDefinition - Parse: Not implemented.");
-        
+
         // xs:list values are sent as a space-separated list; convert to comma-separated for EwsUtilities.Parse.
         var commaSeparatedValue: string = value ? value : value.replace(' ', ',');
         //return EwsUtilities.Parse<TPropertyValue>(commaSeparatedValue);
-            
+
     }
 }
 
@@ -32542,7 +32558,7 @@ export abstract class ComplexPropertyDefinitionBase extends PropertyDefinition {
 
 /**
  * @internal Represents base complex property type.
- * 
+ *
  * @type <TComplexProperty> The type of the complex property.
  */
 export class ComplexPropertyDefinition<TComplexProperty extends ComplexProperty> extends ComplexPropertyDefinitionBase {
@@ -32559,7 +32575,7 @@ export class ComplexPropertyDefinition<TComplexProperty extends ComplexProperty>
      * @param   {string}                                            xmlElementName   Name of the XML element.
      * @param   {string}                                            uri              The URI.
      * @param   {ExchangeVersion}                                   version          The version.
-     * @param   {CreateComplexPropertyDelegate<TComplexProperty>}   propertyCreationDelegate   Delegate used to create instances of ComplexProperty. 
+     * @param   {CreateComplexPropertyDelegate<TComplexProperty>}   propertyCreationDelegate   Delegate used to create instances of ComplexProperty.
      */
     constructor(propertyName: string, xmlElementName: string, uri: string, version: ExchangeVersion, propertyCreationDelegate: CreateComplexPropertyDelegate<TComplexProperty>);
     /**
@@ -32569,7 +32585,7 @@ export class ComplexPropertyDefinition<TComplexProperty extends ComplexProperty>
      * @param   {string}                                            xmlElementName   Name of the XML element.
      * @param   {PropertyDefinitionFlags}                           flags            The flags.
      * @param   {ExchangeVersion}                                   version          The version.
-     * @param   {CreateComplexPropertyDelegate<TComplexProperty>}   propertyCreationDelegate   Delegate used to create instances of ComplexProperty. 
+     * @param   {CreateComplexPropertyDelegate<TComplexProperty>}   propertyCreationDelegate   Delegate used to create instances of ComplexProperty.
      */
     constructor(propertyName: string, xmlElementName: string, flags: PropertyDefinitionFlags, version: ExchangeVersion, propertyCreationDelegate: CreateComplexPropertyDelegate<TComplexProperty>);
     /**
@@ -32625,13 +32641,13 @@ export class ComplexPropertyDefinition<TComplexProperty extends ComplexProperty>
  * @internal Represents base Attachments property type.
  */
 export class AttachmentsPropertyDefinition extends ComplexPropertyDefinition<AttachmentCollection> {
-    
+
     private static Exchange2010SP2PropertyDefinitionFlags: PropertyDefinitionFlags = PropertyDefinitionFlags.AutoInstantiateOnRead | PropertyDefinitionFlags.CanSet | PropertyDefinitionFlags.ReuseInstance | PropertyDefinitionFlags.UpdateCollectionItems;
 
     /**
      * Initializes a new instance of the **AttachmentsPropertyDefinition** class.
-     * 
-     * @param   {string}    propertyName     Name of the property (added to workaround reflection based initialization of Names). 
+     *
+     * @param   {string}    propertyName     Name of the property (added to workaround reflection based initialization of Names).
      */
     constructor(propertyName: string) {
         super(
@@ -32660,7 +32676,7 @@ export class AttachmentsPropertyDefinition extends ComplexPropertyDefinition<Att
 
 /**
  * @internal Represents contained property definition.
- * 
+ *
  * @type    <TComplexProperty>  ComplexProperty
  */
 export class ContainedPropertyDefinition<TComplexProperty extends ComplexProperty> extends ComplexPropertyDefinition<TComplexProperty> {
@@ -32669,7 +32685,7 @@ export class ContainedPropertyDefinition<TComplexProperty extends ComplexPropert
 
     /**
      * @internal Initializes a new instance of the **ContainedPropertyDefinition<TComplexProperty>** class.
-     * 
+     *
      * @param   {string}                                            propertyName     Name of the property (added to workaround reflection based initialization of Names).
      * @param   {string}                                            xmlElementName             Name of the XML element.
      * @param   {string}                                            uri                        The URI.
@@ -32729,7 +32745,7 @@ export class ContainedPropertyDefinition<TComplexProperty extends ComplexPropert
 //  * @internal Represents permission set property definition.
 //  */
 // export class PermissionSetPropertyDefinition extends ComplexPropertyDefinitionBase {
-    
+
 //     /**
 //      * Gets the property type.
 //      */
@@ -32850,7 +32866,7 @@ export class TimeZonePropertyDefinition extends PropertyDefinition {
      * @param   {boolean}               isUpdateOperation   Indicates whether the context is an update operation.
      */
     WritePropertyValueToXml(writer: EwsServiceXmlWriter, propertyBag: PropertyBag, isUpdateOperation: boolean): void {
-        EwsLogging.DebugLog("[TimeZonePropertyDefinition.WritePropertyValueToXml]: TimeZone info has been updated, Please report any bugs to github");        
+        EwsLogging.DebugLog("[TimeZonePropertyDefinition.WritePropertyValueToXml]: TimeZone info has been updated, Please report any bugs to github");
         let value = <TimeZoneInfo>propertyBag._getItem(this);
 
         if (value != null) {
@@ -32976,9 +32992,9 @@ export class StartTimeZonePropertyDefinition extends TimeZonePropertyDefinition 
 
 
 
-			
 
-			
+
+
 //  class EwsHttpWebRequestFactory {
 // }
 // export = EwsHttpWebRequestFactory;
@@ -32987,7 +33003,7 @@ export class StartTimeZonePropertyDefinition extends TimeZonePropertyDefinition 
 //------------modulename->Microsoft.Exchange.WebServices.Data------------
 
 
-			
+
 // export class EwsHttpWebResponse implements IEwsHttpWebResponse{
 // 	private ContentEncoding: string;
 // 	private ContentType: string;
@@ -33004,7 +33020,7 @@ export class StartTimeZonePropertyDefinition extends TimeZonePropertyDefinition 
 
 
 
-			
+
 
 declare var window: any;
 var isNode = (typeof window === 'undefined')
@@ -33086,7 +33102,7 @@ export class EwsServiceJsonReader {
                     if (StringHelper.IsNullOrEmpty(typeName)) debugger;//check why typeName is empty - may be invalid xml parsing by xml2js
                     serviceObject = getObjectInstanceDelegate(service, typeName || key);
                     if (serviceObject != null) {
-                        if ((typeName || key) !== serviceObject.GetXmlElementName()) { //string.Compare(jsonServiceObject.ReadTypeString(), serviceObject.GetXmlElementName(), StringComparison.Ordinal) != 0)                        
+                        if ((typeName || key) !== serviceObject.GetXmlElementName()) { //string.Compare(jsonServiceObject.ReadTypeString(), serviceObject.GetXmlElementName(), StringComparison.Ordinal) != 0)
                             throw new ServiceLocalException(
                                 StringHelper.Format(
                                     "The type of the object in the store ({0}) does not match that of the local object ({1}).",
@@ -33117,7 +33133,7 @@ export class EwsServiceJsonReader {
 
 
 
-			
+
 
 //todo: ix this - import Xml = require("System.Xml");
 
@@ -33383,14 +33399,14 @@ export class EwsServiceXmlReader extends EwsXmlReader {
 
 
 
-			
+
 
 
 /**
  * @internal XML writer
  */
 export class EwsServiceXmlWriter {
-    
+
     //get InternalWriter(): System.Xml.XmlWriter;
     get Service(): ExchangeServiceBase { return this.service }
     /**
@@ -33406,15 +33422,15 @@ export class EwsServiceXmlWriter {
     private xmlWriter: any;// System.Xml.XmlWriter;
     private isTimeZoneHeaderEmitted: boolean;
     private requireWSSecurityUtilityNamespace: boolean;
-    
+
     /**
      * UTF-8 encoding that does not create leading Byte order marks
      *
      */
     private static utf8Encoding: any;// System.Text.Encoding;
-    
+
     Dispose(): any { throw new Error("EwsServiceXmlWriter.ts - Dispose : Not implemented."); }
-    
+
     Flush(): void { //throw new Error("Not implemented.");
     }
 
@@ -33431,8 +33447,8 @@ export class EwsServiceXmlWriter {
 
     /**
      * Gets the xml created by EWS XMl Writer.
-     * 
-     * @param   {boolean}   keep   removes internal cache of XML data if false, otherwise keep the data. 
+     *
+     * @param   {boolean}   keep   removes internal cache of XML data if false, otherwise keep the data.
      */
     GetXML(keep: boolean = false): string {
         var returnVal = this.soapData.trim();
@@ -33454,7 +33470,7 @@ export class EwsServiceXmlWriter {
 
     /**
      * Pushes xml uri to internal tracker of used xml uris
-     * 
+     *
      * @param   {string}   prefix     Prefix of uri.
      * @param   {string}   uri        uri itself.
      */
@@ -33468,7 +33484,7 @@ export class EwsServiceXmlWriter {
 
     /**
      * check if an uri exist in internal tracker
-     * 
+     *
      * @param   {string}   prefix     Prefix of uri.
      * @param   {string}   uri        uri itself.
      */
@@ -34698,7 +34714,7 @@ export class ExchangeServiceBase {
     }
     ConvertStartDateToUnspecifiedDateTime(value: string): DateTime {
         //EwsLogging.Log("ExchangeServiceBase.ConvConvertStartDateToUnspecifiedDateTime : DateTimeOffset not implemented, check date values")
-        value = value.substring(0, 10); //info: //ref: for DateTimeOffset substitution, this is being called only from recurring datetime StartDate and 
+        value = value.substring(0, 10); //info: //ref: for DateTimeOffset substitution, this is being called only from recurring datetime StartDate and
         if (StringHelper.IsNullOrEmpty(value)) {
             return null;
         }
@@ -34768,7 +34784,7 @@ export class ExchangeServiceBase {
      * @param   {SoapFaultDetails}  webException               The web exception.
      * @param   {TraceFlags}        responseHeadersTraceFlag   The trace flag for response headers.
      * @param   {TraceFlags}        responseTraceFlag          The trace flag for responses.
-     * 
+     *
      */
     InternalProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest, soapFault: SoapFaultDetails, responseHeadersTraceFlag: TraceFlags, responseTraceFlag: TraceFlags): void {
         EwsLogging.Assert(
@@ -34936,7 +34952,7 @@ export class ExchangeService extends ExchangeServiceBase {
     //private managementRoles: ManagementRoles = null;
     //private fileAttachmentContentHandler: IFileAttachmentContentHandler = null;
     private unifiedMessaging: UnifiedMessaging = null;
-    //private enableScpLookup: boolean = false; //false for javascript, AD Lookup not implemented 
+    //private enableScpLookup: boolean = false; //false for javascript, AD Lookup not implemented
     private renderingMode: RenderingMode = RenderingMode.Xml;
     //private traceEnablePrettyPrinting: boolean = true;
     private targetServerVersion: string = null;
@@ -34980,7 +34996,7 @@ export class ExchangeService extends ExchangeServiceBase {
     /* #region Response object operations */
     /**
      * @internal Create response object.
-     * 
+     *
      * @param   {ServiceObject}          responseObject       The response object.
      * @param   {FolderId}               parentFolderId       The parent folder id.
      * @param   {MessageDisposition}     messageDisposition   The message disposition.
@@ -35655,7 +35671,7 @@ export class ExchangeService extends ExchangeServiceBase {
      */
     FindItems(parentFolderId: FolderId, queryString: string, returnHighlightTerms: boolean, view: ViewBase): Promise<FindItemsResults<Item>>;
     /**
-     * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.     
+     * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
      *
      * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
      * @param   {string}    queryString            the search string to be used for indexed search, if any.
@@ -35677,7 +35693,7 @@ export class ExchangeService extends ExchangeServiceBase {
      * @return  {Promise<ServiceResponseCollection<FindItemResponse<TItem>>>}       Service response collection :Promise.
      */
     FindItems<TItem extends Item>(parentFolderIds: FolderId[], searchFilter: SearchFilter, queryString: string, view: ViewBase, groupBy: Grouping, errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<FindItemResponse<TItem>>>;
-    //skipped: not needed, no calls coming in to this internal function in ews managed api, future use possible until them keep it muted   - 
+    //skipped: not needed, no calls coming in to this internal function in ews managed api, future use possible until them keep it muted   -
     //FindItems<TItem extends Item>(parentFolderId: FolderId, searchFilter: SearchFilter, view: ViewBase, groupBy: Grouping): Promise<ServiceResponseCollection<FindItemResponse<TItem>>>;
 
     FindItems<TItem extends Item>(
@@ -36385,7 +36401,7 @@ export class ExchangeService extends ExchangeServiceBase {
             else if (Array.isArray(parentFolderIdsOrSearchScope)) {
                 parentFolderIds = parentFolderIdsOrSearchScope;
             }
-            //could be null        
+            //could be null
             // else {
             //     throw new Error("ExchangeService.ts - FindItems - incorrect uses of parameters at 2nd position, must be string, ViewBase or SearchFilter");
             // }
@@ -38748,14 +38764,14 @@ export class ExchangeService extends ExchangeServiceBase {
     /**
      * Get App Marketplace Url.
      *
-     * /remarks/                        Exception will be thrown for errors. 
+     * /remarks/                        Exception will be thrown for errors.
      * @return  {Promise<string>}       marketplace url as string :Promise.
      */
     GetAppMarketplaceUrl(): Promise<string>;
     /**
      * Get App Marketplace Url.  Works with Exchange 2013 SP1 or later EWS.
      *
-     * /remarks/                                    Exception will be thrown for errors. 
+     * /remarks/                                    Exception will be thrown for errors.
      * @param   {string}   apiVersionSupported      The api version supported by the client.
      * @param   {string}   schemaVersionSupported   The schema version supported by the client.
      * @return  {Promise<string>}                   marketplace url as string :Promise.
@@ -38776,7 +38792,7 @@ export class ExchangeService extends ExchangeServiceBase {
     /**
      * Disable an App.
      *
-     * /remarks/    Exception will be thrown for errors. 
+     * /remarks/    Exception will be thrown for errors.
      * @param   {string}                id              App ID
      * @param   {DisableReasonType}     disableReason   Disable reason
      * @return  {Promise<void>}         :Promise.
@@ -38793,7 +38809,7 @@ export class ExchangeService extends ExchangeServiceBase {
     /**
      * Install an App.
      *
-     * /remarks/    Exception will be thrown for errors. 
+     * /remarks/    Exception will be thrown for errors.
      * @param   {string}   manifestStream   The manifest's plain text XML as base64 encoded string.
      * @return  {Promise<void>}     :Promise.
      */
@@ -38808,7 +38824,7 @@ export class ExchangeService extends ExchangeServiceBase {
     /**
      * Uninstall an App.
      *
-     * /remarks/    Exception will be thrown for errors. 
+     * /remarks/    Exception will be thrown for errors.
      * @param   {string}   id   App ID
      * @return  {Promise<void>}     :Promise.
      */
@@ -38830,7 +38846,7 @@ export class ExchangeService extends ExchangeServiceBase {
 
     /* #region Diagnostic Method -- Only used by test */
 
-    //ExecuteDiagnosticMethod(verb: string, parameter: System.Xml.XmlNode): System.Xml.XmlDocument { throw new Error("ExchangeService.ts - ExecuteDiagnosticMethod : Not implemented."); }    
+    //ExecuteDiagnosticMethod(verb: string, parameter: System.Xml.XmlNode): System.Xml.XmlDocument { throw new Error("ExchangeService.ts - ExecuteDiagnosticMethod : Not implemented."); }
     /* #endregion Diagnostic Method -- Only used by test */
 
 
@@ -38995,8 +39011,8 @@ export class ExchangeService extends ExchangeServiceBase {
 
     /**
      * Get the TimeZoneInfo objects from server
-     * 
-     * @returns {Promise<TimeZoneInfo[]>} 
+     *
+     * @returns {Promise<TimeZoneInfo[]>}
      */
     GetServerTimeZones(): Promise<TimeZoneInfo[]> {
         let argsLength = arguments.length;
@@ -39006,7 +39022,7 @@ export class ExchangeService extends ExchangeServiceBase {
             return response.Responses[0].TimeZones;
         });
     }
-    
+
     //#endregion
 }
 
@@ -39075,7 +39091,7 @@ export class JsonObject /*extends System.Collections.Generic.Dictionary<string, 
 
 
 
-			
+
 
 export class JsonParser {
 	private tokenizer: JsonTokenizer;
@@ -39094,7 +39110,7 @@ export class JsonParser {
 
 
 
-			
+
 
 export class JsonTokenizer {
 	private static JsonStringRegExCode: string = '"([^\\"]|\\"|\\\\|\\/|\\b|\\f|\\n|\\r|\\t|\\u[\da - fA - F]{4 }) * "';
@@ -39134,9 +39150,9 @@ export class JsonTokenizer {
 
 
 
-			
 
-			
+
+
 // class JsonWriter extends System.IO.TextWriter {
 //private static Indentation: string = "  ";
 //	Encoding: any /*System.Text.Encoding*/;
@@ -39175,7 +39191,7 @@ export class JsonTokenizer {
 
 
 
-			
+
 
 /**
  * @internal Represents a property bag keyed on PropertyDefinition objects.
@@ -39301,7 +39317,7 @@ export class PropertyBag {
                 complexProperty = currentValue;
 
                 if (complexProperty instanceof ComplexProperty) {
-                    ArrayHelper.RemoveEntry(complexProperty.OnChange, this.PropertyChanged);  //cant do += or -= in javascript (hopefully in ECMA6)                    
+                    ArrayHelper.RemoveEntry(complexProperty.OnChange, this.PropertyChanged);  //cant do += or -= in javascript (hopefully in ECMA6)
                 }
             }
 
@@ -39412,7 +39428,7 @@ export class PropertyBag {
             let complexProperty = <ComplexProperty>propertyValue.outValue;
 
             if (complexProperty instanceof ComplexProperty) {
-                ArrayHelper.RemoveEntry(complexProperty.OnChange, this.PropertyChanged); // -= this.PropertyChanged; // counld not do c# like event -= in js                
+                ArrayHelper.RemoveEntry(complexProperty.OnChange, this.PropertyChanged); // -= this.PropertyChanged; // counld not do c# like event -= in js
             }
         }
     }
@@ -39551,7 +39567,7 @@ export class PropertyBag {
      *
      * @param   {PropertyDefinition}    propertyDefinition   The property definition.
      * @return  {boolean}               true if the specified property has been updated; otherwise, false.
-     */    
+     */
     IsPropertyUpdated(propertyDefinition: PropertyDefinition): boolean {
         return this.modifiedProperties.indexOf(propertyDefinition) >= 0 || this.addedProperties.indexOf(propertyDefinition) >= 0;
     }
@@ -39689,7 +39705,7 @@ export class PropertyBag {
      */
     TryGetPropertyAs<T>(propertyDefinition: PropertyDefinition, propertyValue: IOutParam<T>): boolean {
         // Verify that the type parameter and property definition's type are compatible.
-        //debug: 
+        //debug:
         //todo: fix isassignablefrom use Typed parameter and default value of that type when asking.
         //if (!typeof (T).IsAssignableFrom(propertyDefinition.Type)) {
         //    string errorMessage = ExtensionMethods.stringFormatting.Format(
@@ -39866,8 +39882,8 @@ export class PropertyBag {
 export type DefaultPropertySetDictionary = LazyMember<Dictionary<BasePropertySet, string>>;
 
 /**
- * Represents a set of item or folder properties. Property sets are used to indicate what properties of an item or folder should be loaded when binding to an existing item or folder or when loading an item or folder's properties. 
- * 
+ * Represents a set of item or folder properties. Property sets are used to indicate what properties of an item or folder should be loaded when binding to an existing item or folder or when loading an item or folder's properties.
+ *
  * @sealed
  */
 export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitionBase> {
@@ -39972,7 +39988,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets type of body that should be loaded on items. If RequestedBodyType is null, body is returned as HTML if available, plain text otherwise.
-     * 
+     *
      * @Nullable
      */
     get RequestedBodyType(): BodyType {
@@ -39985,7 +40001,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets type of body that should be loaded on items. If null, the should return the same value as body type.
-     * 
+     *
      * @nullable
      */
     get RequestedUniqueBodyType(): BodyType {
@@ -39998,7 +40014,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets type of normalized body that should be loaded on items. If null, the should return the same value as body type.
-     * 
+     *
      * @nullable
      */
     get RequestedNormalizedBodyType(): BodyType {
@@ -40018,7 +40034,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets value indicating whether or not to filter potentially unsafe HTML content from message bodies.
-     * 
+     *
      * @nullable
      */
     get FilterHtmlContent(): boolean {
@@ -40031,7 +40047,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets value indicating whether or not to convert HTML code page to UTF8 encoding.
-     * 
+     *
      * @nullable
      */
     get ConvertHtmlCodePageToUTF8(): boolean {
@@ -40044,7 +40060,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets a value of the URL template to use for the src attribute of inline IMG elements.
-     * 
+     *
      * @nullable
      */
     get InlineImageUrlTemplate(): string {
@@ -40057,7 +40073,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets value indicating whether or not to convert inline images to data URLs.
-     * 
+     *
      * @nullable
      */
     get BlockExternalImages(): boolean {
@@ -40070,7 +40086,7 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets value indicating whether or not to add blank target attribute to anchor links.
-     * 
+     *
      * @nullable
      */
     get AddBlankTargetToLinks(): boolean {
@@ -40083,9 +40099,9 @@ export class PropertySet implements ISelfValidate, IEnumerable<PropertyDefinitio
 
     /**
      * Gets or sets the maximum size of the body to be retrieved.
-     * 
+     *
      * @nullable
-     * 
+     *
      * @value   The maximum size of the body to be retrieved.
      */
     get MaximumBodySize(): number {
@@ -40601,7 +40617,7 @@ export class SimplePropertyBag<TKey> {
 	TryGetValue(key: TKey, value: IOutParam<any>): boolean { return this.items.tryGetValue(key, value); }
 }
 /**
- * ## @internal *Not Implemented* 
+ * ## @internal *Not Implemented*
  */
 export class AsyncRequestResult {
 	ServiceRequest: ServiceRequestBase;
@@ -40624,7 +40640,7 @@ export abstract class ServiceRequestBase {
 
     /**
      * The two contants below are used to set the AnchorMailbox and ExplicitLogonUser values in the request header.
-     * 
+     *
      * /remarks/    Note: Setting this values will route the request directly to the backend hosting the AnchorMailbox. These headers should be used primarily for UnifiedGroup scenario where a request needs to be routed directly to the group mailbox versus the user mailbox.
      */
     protected static AnchorMailboxHeaderName: string = "X-AnchorMailbox";
@@ -40644,7 +40660,7 @@ export abstract class ServiceRequestBase {
 
     /**
      * @internal Gets the service.
-     * 
+     *
      * @value   The service.
      */
     get Service(): ExchangeService {
@@ -40680,7 +40696,7 @@ export abstract class ServiceRequestBase {
 
     /**
      *  @internal Gets a value indicating whether the TimeZoneContext SOAP header should be eimitted.
-     * 
+     *
      * @value   true if the time zone should be emitted; otherwise, false.
      */
     get EmitTimeZoneHeader(): boolean {
@@ -41019,7 +41035,7 @@ export abstract class ServiceRequestBase {
 
     /**
      * @internal Throw exception if request is not supported in requested server version.
-     * 
+     *
      * @exception   {ServiceVersionException}   Raised if request requires a later version of Exchange.
      */
     ThrowIfNotSupportedByRequestedServerVersion(): void {
@@ -41252,14 +41268,14 @@ export class HangingRequestDisconnectEventArgs {  //extends  EventArgs{
 
 	/**
 	 * Gets the reason that the user was disconnected.
-	 * 
+	 *
 	 * internal set
 	 */
 	Reason: HangingRequestDisconnectReason;
 
 	/**
 	 * Gets the exception that caused the disconnection. Can be null.
-	 * 
+	 *
 	 * internal set
 	 */
 	Exception: Exception;
@@ -41296,7 +41312,7 @@ export class HangingServiceRequestBase extends ServiceRequestBase {
     IsConnected: boolean = false;
 
     /**
-     * ews-javascript-api: Response Headers delegate    
+     * ews-javascript-api: Response Headers delegate
      */
     OnResponseHeader: Function;
 
@@ -41381,7 +41397,7 @@ export class HangingServiceRequestBase extends ServiceRequestBase {
                                 EwsLogging.DebugLog(xml, true);
                                 var ewsXmlReader: EwsServiceXmlReader = new EwsServiceXmlReader(xml, this.Service);
                                 EwsLogging.DebugLog(ewsXmlReader.JsObject, true);
-                                //var serviceResponse = 
+                                //var serviceResponse =
                                 this.ParseResponses(ewsXmlReader.JsObject);
 
                                 // if (successDelegate)
@@ -41432,7 +41448,7 @@ export class HangingServiceRequestBase extends ServiceRequestBase {
     }
 
     /**
-     * Perform any bookkeeping needed when we connect 
+     * Perform any bookkeeping needed when we connect
      */
     private InternalOnConnect(): void {
         if (!this.IsConnected) {
@@ -41443,7 +41459,7 @@ export class HangingServiceRequestBase extends ServiceRequestBase {
             //     TraceFlags.EwsResponseHttpHeaders,
             //     this.response);
 
-            //info: //ref: - not needed, no threadpool, handled in 
+            //info: //ref: - not needed, no threadpool, handled in
             // ThreadPool.QueueUserWorkItem(
             //     new WaitCallback(this.ParseResponses));
         }
@@ -41709,7 +41725,7 @@ export class HangingServiceRequestBase extends ServiceRequestBase {
 }
 
 /**
- * @internal interface to declare Delegate method to handle a hanging request disconnection. 
+ * @internal interface to declare Delegate method to handle a hanging request disconnection.
  */
 export interface HangingRequestDisconnectHandler {
     /**
@@ -41959,7 +41975,7 @@ export class SimpleServiceRequestBase extends ServiceRequestBase {
 
 /**
  * @internal Represents a DisableApp request.
- * 
+ *
  * @sealed
  */
 export class DisableAppRequest extends SimpleServiceRequestBase {
@@ -42050,7 +42066,7 @@ export class DisableAppRequest extends SimpleServiceRequestBase {
 	}
 }
 /**
- * ## @internal *Not Implemented* 
+ * ## @internal *Not Implemented*
  */
 export class DisconnectPhoneCallRequest extends SimpleServiceRequestBase {
     Id: PhoneCallId;
@@ -42066,7 +42082,7 @@ export class DisconnectPhoneCallRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a request to a Find Conversation operation
- * 
+ *
  * @sealed
  */
 export class FindConversationRequest extends SimpleServiceRequestBase {//IJsonSerializable
@@ -42272,7 +42288,7 @@ export class FindConversationRequest extends SimpleServiceRequestBase {//IJsonSe
         writer.WriteEndElement();
 
         // Emit the MailboxScope flag
-        // 
+        //
         if (hasValue(this.MailboxScope)) {
             writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxScope, MailboxSearchLocation[this.MailboxScope]);
         }
@@ -42299,24 +42315,24 @@ export class FindConversationRequest extends SimpleServiceRequestBase {//IJsonSe
 }
 
 /**
- *  @internal Represents a GetAppManifests request. 
- * 
+ *  @internal Represents a GetAppManifests request.
+ *
  * @sealed
 */
 export class GetAppManifestsRequest extends SimpleServiceRequestBase {
 
 	/**
-	 * @internal Gets or sets the api version supported by the client. 
+	 * @internal Gets or sets the api version supported by the client.
 	 * This tells Exchange service which app manifests should be returned based on the api version.
-	 * 
+	 *
 	 * @value	The Api version supported.
 	 */
 	ApiVersionSupported: string = null;
 
 	/**
-	 * @internal Gets or sets the Schema version supported by the client. 
+	 * @internal Gets or sets the Schema version supported by the client.
 	 * This tells Exchange service which app manifests should be returned based on the schema version.
-	 * 
+	 *
 	 * @value	The schema version supported.
 	 */
 	SchemaVersionSupported: string = null;
@@ -42409,23 +42425,23 @@ export class GetAppManifestsRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a GetAppMarketplaceUrl request.
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class GetAppMarketplaceUrlRequest extends SimpleServiceRequestBase {
 
 	/**
-	 * @internal Gets or sets the api version supported by the client. 
+	 * @internal Gets or sets the api version supported by the client.
 	 * This is used by EWS to generate a market place url with the correct version filter.
-	 * 
+	 *
 	 * @value	The Api version supported.
 	 */
 	ApiVersionSupported: string = null;
 
 	/**
-	 * @internal Gets or sets the Schema version supported by the client. 
+	 * @internal Gets or sets the Schema version supported by the client.
 	 * This is used by EWS to generate a market place url with the correct version filter.
-	 * 
+	 *
 	 * @value	The schema version supported.
 	 */
 	SchemaVersionSupported: string = null;
@@ -42537,7 +42553,7 @@ export class GetClientExtensionRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a GetDiscoverySearchConfigurationRequest.
- * 
+ *
  * @sealed
  */
 export class GetDiscoverySearchConfigurationRequest extends SimpleServiceRequestBase {
@@ -42642,7 +42658,7 @@ export class GetEncryptionConfigurationRequest extends SimpleServiceRequestBase 
 
 /**
  * @internal Represents a GetHoldOnMailboxesRequest request.
- * 
+ *
  * @sealed
  */
 export class GetHoldOnMailboxesRequest extends SimpleServiceRequestBase {
@@ -42734,7 +42750,7 @@ export class GetHoldOnMailboxesRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a GetInboxRules request.
- * 
+ *
  * @sealed
  */
 export class GetInboxRulesRequest extends SimpleServiceRequestBase {
@@ -42831,8 +42847,8 @@ export class GetInboxRulesRequest extends SimpleServiceRequestBase {
 }
 
 /**
- * @internal Represents a GetNonIndexableItemDetailsRequest request. 
- * 
+ * @internal Represents a GetNonIndexableItemDetailsRequest request.
+ *
  * @sealed
  */
 export class GetNonIndexableItemDetailsRequest extends SimpleServiceRequestBase {
@@ -43094,7 +43110,7 @@ export class GetPasswordExpirationDateRequest extends SimpleServiceRequestBase {
     WriteElementsToXml(writer: EwsServiceXmlWriter): void { writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MailboxSmtpAddress, this.MailboxSmtpAddress); }
 }
 /**
- * ## @internal *Not Implemented* 
+ * ## @internal *Not Implemented*
  */
 export class GetPhoneCallRequest extends SimpleServiceRequestBase {
     Id: PhoneCallId;
@@ -43108,13 +43124,13 @@ export class GetPhoneCallRequest extends SimpleServiceRequestBase {
     WriteElementsToXml(writer: EwsServiceXmlWriter): any { throw new Error("GetPhoneCallRequest.ts - WriteElementsToXml : Not implemented."); }
 }
 
-/** 
- * @internal Represents a GetRoomList request. 
- * 
+/**
+ * @internal Represents a GetRoomList request.
+ *
  * @sealed
  */
 export class GetRoomListsRequest extends SimpleServiceRequestBase {
-    
+
     /**
      * @internal Initializes a new instance of the **GetRoomListsRequest** class.
      *
@@ -43187,7 +43203,7 @@ export class GetRoomListsRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a GetRooms request.
- * 
+ *
  * @sealed
  */
 export class GetRoomsRequest extends SimpleServiceRequestBase {
@@ -43270,7 +43286,7 @@ export class GetRoomsRequest extends SimpleServiceRequestBase {
 	 */
     WriteElementsToXml(writer: EwsServiceXmlWriter): void {
         //this.RoomList.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.RoomList);
-        this.RoomList.WriteToXml(writer, XmlElementNames.RoomList, XmlNamespace.Messages); //info: temp workaround github #52 
+        this.RoomList.WriteToXml(writer, XmlElementNames.RoomList, XmlNamespace.Messages); //info: temp workaround github #52
     }
 }
 
@@ -43440,13 +43456,13 @@ export class GetUserAvailabilityRequest extends SimpleServiceRequestBase {
 
 
 /**
- * @internal Represents a GetUserOofSettings request. 
- * 
+ * @internal Represents a GetUserOofSettings request.
+ *
  * @sealed
  */
 export class GetUserOofSettingsRequest extends SimpleServiceRequestBase {
     private smtpAddress: string = null;
-    
+
     /**
      * @internal Gets or sets the SMTP address.
      */
@@ -43543,7 +43559,7 @@ export class GetUserOofSettingsRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a GetUserRetentionPolicyTagsRequest request.
- * 
+ *
  * @sealed
  */
 export class GetUserRetentionPolicyTagsRequest extends SimpleServiceRequestBase {
@@ -43618,13 +43634,13 @@ export class GetUserRetentionPolicyTagsRequest extends SimpleServiceRequestBase 
 
 /**
  * @internal Represents a InstallApp request.
- * 
+ *
  * @sealed
  */
 export class InstallAppRequest extends SimpleServiceRequestBase {
 
 	/**
-	 * The plain text manifest stream as base64 encoded string. 
+	 * The plain text manifest stream as base64 encoded string.
 	 */
 	private manifestStream: string = null;
 
@@ -43705,7 +43721,7 @@ export class InstallAppRequest extends SimpleServiceRequestBase {
 	}
 }
 /**
- * ## @internal *Not Implemented* 
+ * ## @internal *Not Implemented*
  */
 export class PlayOnPhoneRequest extends SimpleServiceRequestBase {//IJsonSerializable
     ItemId: ItemId;
@@ -43744,8 +43760,8 @@ export class SetEncryptionConfigurationRequest extends SimpleServiceRequestBase 
 
 /**
  * @internal Represents a SetHoldOnMailboxesRequest request.
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class SetHoldOnMailboxesRequest extends SimpleServiceRequestBase { //IJsonSerializable
 
@@ -43914,7 +43930,7 @@ export class SetHoldOnMailboxesRequest extends SimpleServiceRequestBase { //IJso
 
 /**
  * @internal Represents a SetTeamMailbox request.
- * 
+ *
  * @sealed
  */
 export class SetTeamMailboxRequest extends SimpleServiceRequestBase {
@@ -44022,7 +44038,7 @@ export class SetTeamMailboxRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a SetUserOofSettings request.
- * 
+ *
  * @sealed
  */
 export class SetUserOofSettingsRequest extends SimpleServiceRequestBase {
@@ -44130,7 +44146,7 @@ export class SetUserOofSettingsRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal  Represents a UninstallApp request.
- * 
+ *
  * @sealed
  */
 export class UninstallAppRequest extends SimpleServiceRequestBase {
@@ -44145,7 +44161,7 @@ export class UninstallAppRequest extends SimpleServiceRequestBase {
 	 *
 	 * @param   {ExchangeService}   service   The service.
 	 * @param   {string}   			id        Extension ID
-	 */	
+	 */
 	constructor(service: ExchangeService, id: string) {
 		super(service);
 		this.ID = id;
@@ -44156,65 +44172,65 @@ export class UninstallAppRequest extends SimpleServiceRequestBase {
      *
      * @return  {Promise<UninstallAppResponse>}      Service response  :Promise.
      */
-    Execute(): Promise<UninstallAppResponse> { 
+    Execute(): Promise<UninstallAppResponse> {
 		return this.InternalExecute().then((serviceResponse: UninstallAppResponse) => {
             serviceResponse.ThrowIfNecessary();
             return serviceResponse;
         });
 	}
-	
+
 	/**
 	 * @internal Gets the request version.
 	 *
 	 * @return  {ExchangeVersion}      Earliest Exchange version in which this request is supported.
 	 */
-    GetMinimumRequiredServerVersion(): ExchangeVersion { 
+    GetMinimumRequiredServerVersion(): ExchangeVersion {
 		return ExchangeVersion.Exchange2013;
 	}
-	
+
 	/**
 	 * @internal Gets the name of the response XML element.
 	 *
 	 * @return  {string}      XML element name.
 	 */
-    GetResponseXmlElementName(): string { 
+    GetResponseXmlElementName(): string {
 		return XmlElementNames.UninstallAppResponse;
 	}
-	
+
 	/**
 	 * @internal Gets the name of the XML element.
 	 *
 	 * @return  {string}      XML element name.
 	 */
-    GetXmlElementName(): string { 
+    GetXmlElementName(): string {
 		return XmlElementNames.UninstallAppRequest;
 	}
-	
+
 	/**
      * @internal Parses the response.
      *
      * @param   {any}   jsonBody   The js object response body.
      * @return  {any}              Response object.
      */
-    ParseResponse(jsonBody: any): any { 
+    ParseResponse(jsonBody: any): any {
 		let response: UninstallAppResponse = new UninstallAppResponse();
 		response.LoadFromXmlJsObject(jsonBody, this.Service);
 		return response;
 	}
-	
+
 	/**
 	 * @internal Writes the elements to XML writer.
 	 *
 	 * @param   {EwsServiceXmlWriter}   writer   The writer.
 	 */
-    WriteElementsToXml(writer: EwsServiceXmlWriter): void { 
+    WriteElementsToXml(writer: EwsServiceXmlWriter): void {
 		writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.ID, this.ID);
 	}
 }
 
 /**
  * @internal Represents a UnpinTeamMailbox request.
- * 
+ *
  * @sealed
  */
 export class UnpinTeamMailboxRequest extends SimpleServiceRequestBase {
@@ -44302,8 +44318,8 @@ export class UnpinTeamMailboxRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents a UpdateInboxRulesRequest request.
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class UpdateInboxRulesRequest extends SimpleServiceRequestBase {
 
@@ -44457,7 +44473,7 @@ export class UpdateInboxRulesRequest extends SimpleServiceRequestBase {
 
 /**
  * @internal Represents an abstract delegate management request.
- * 
+ *
  * @typeparam   {TResponse}     The type of the response.
  */
 export abstract class DelegateManagementRequestBase<TResponse extends DelegateManagementResponse> extends SimpleServiceRequestBase {
@@ -44466,7 +44482,7 @@ export abstract class DelegateManagementRequestBase<TResponse extends DelegateMa
 
     /**
      *  Gets or sets the mailbox.
-     * 
+     *
      * @value    The mailbox.
      */
     get Mailbox(): Mailbox {
@@ -44542,7 +44558,7 @@ export abstract class DelegateManagementRequestBase<TResponse extends DelegateMa
 }
 
 /**
- * @internal Represents an AddDelegate request. 
+ * @internal Represents an AddDelegate request.
  */
 export class AddDelegateRequest extends DelegateManagementRequestBase<DelegateManagementResponse> {
 
@@ -44551,7 +44567,7 @@ export class AddDelegateRequest extends DelegateManagementRequestBase<DelegateMa
 
     /**
      * Gets or sets the meeting requests delivery scope.
-     * 
+     *
      * @value   The meeting requests delivery scope.
      */
     get MeetingRequestsDeliveryScope(): MeetingRequestsDeliveryScope {
@@ -44563,7 +44579,7 @@ export class AddDelegateRequest extends DelegateManagementRequestBase<DelegateMa
 
     /**
      * Gets the delegate users.
-     * 
+     *
      * @value   The delegate users.
      */
     get DelegateUsers(): DelegateUser[] {
@@ -44657,7 +44673,7 @@ export class AddDelegateRequest extends DelegateManagementRequestBase<DelegateMa
 }
 
 /**
- * @internal Represents a GetDelegate request. 
+ * @internal Represents a GetDelegate request.
  */
 export class GetDelegateRequest extends DelegateManagementRequestBase<GetDelegateResponse> {
 
@@ -44666,7 +44682,7 @@ export class GetDelegateRequest extends DelegateManagementRequestBase<GetDelegat
 
     /**
      * Gets the user ids.
-     * 
+     *
      * @value   The user ids.
      */
     get UserIds(): UserId[] {
@@ -44761,7 +44777,7 @@ export class GetDelegateRequest extends DelegateManagementRequestBase<GetDelegat
 }
 
 /**
- * @internal Represents a RemoveDelete request. 
+ * @internal Represents a RemoveDelete request.
  */
 export class RemoveDelegateRequest extends DelegateManagementRequestBase<DelegateManagementResponse> {
 
@@ -44769,7 +44785,7 @@ export class RemoveDelegateRequest extends DelegateManagementRequestBase<Delegat
 
     /**
      * Gets the user ids.
-     * 
+     *
      * @value   The user ids.
      */
     get UserIds(): UserId[] {
@@ -44848,7 +44864,7 @@ export class RemoveDelegateRequest extends DelegateManagementRequestBase<Delegat
 }
 
 /**
- * @internal Represents an UpdateDelegate request. 
+ * @internal Represents an UpdateDelegate request.
  */
 export class UpdateDelegateRequest extends DelegateManagementRequestBase<DelegateManagementResponse> {
 
@@ -44857,7 +44873,7 @@ export class UpdateDelegateRequest extends DelegateManagementRequestBase<Delegat
 
     /**
      * Gets or sets the meeting requests delivery scope.
-     * 
+     *
      * @value   The meeting requests delivery scope.
      */
     get MeetingRequestsDeliveryScope(): MeetingRequestsDeliveryScope {
@@ -44869,7 +44885,7 @@ export class UpdateDelegateRequest extends DelegateManagementRequestBase<Delegat
 
     /**
      * Gets the delegate users.
-     * 
+     *
      * @value   The delegate users.
      */
     get DelegateUsers(): DelegateUser[] {
@@ -45091,8 +45107,8 @@ export class MultiResponseServiceRequest<TResponse extends ServiceResponse> exte
 
 /**
  * @internal Represents a request to a Apply Conversation Action operation
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class ApplyConversationActionRequest extends MultiResponseServiceRequest<ServiceResponse> {//IJsonSerializable
 
@@ -45234,7 +45250,7 @@ export class ArchiveItemRequest extends MultiResponseServiceRequest<ArchiveItemR
 
 /**
  * @internal Represents a ConvertId request.
- * 
+ *
  * @sealed
  */
 export class ConvertIdRequest extends MultiResponseServiceRequest<ConvertIdResponse> {//IJsonSerializable
@@ -45244,7 +45260,7 @@ export class ConvertIdRequest extends MultiResponseServiceRequest<ConvertIdRespo
 
     /**
      * Gets or sets the destination format.
-     * 
+     *
      * @value   The destination format.
      */
     get DestinationFormat(): IdFormat {
@@ -45256,7 +45272,7 @@ export class ConvertIdRequest extends MultiResponseServiceRequest<ConvertIdRespo
 
     /**
      * Gets the ids.
-     * 
+     *
      * @value   The ids.
      */
     get Ids(): AlternateIdBase[] {
@@ -45488,7 +45504,7 @@ export class CreateAttachmentRequest extends MultiResponseServiceRequest<CreateA
 
 /**
  * @internal Represents a CreateUserConfiguration request.
- * 
+ *
  * @sealed
  */
 export class CreateUserConfigurationRequest extends MultiResponseServiceRequest<ServiceResponse> { //: IJsonSerializable
@@ -45497,7 +45513,7 @@ export class CreateUserConfigurationRequest extends MultiResponseServiceRequest<
 
     /**
      * Gets or sets the user configuration.
-     * 
+     *
      * @value   The userConfiguration.
      */
     get UserConfiguration(): UserConfiguration {
@@ -45724,7 +45740,7 @@ export class DeleteUserConfigurationRequest extends MultiResponseServiceRequest<
 
     /**
      * @internal Gets or sets the parent folder Id.
-     * 
+     *
      * @value   The parent folder Id.
      */
     get ParentFolderId(): FolderId {
@@ -45824,7 +45840,7 @@ export class DeleteUserConfigurationRequest extends MultiResponseServiceRequest<
     }
 }
 /**
- * ## @internal *Not Implemented* 
+ * ## @internal *Not Implemented*
  */
 export class ExecuteDiagnosticMethodRequest extends MultiResponseServiceRequest<ExecuteDiagnosticMethodResponse> {
     Verb: string;
@@ -45874,7 +45890,7 @@ export class ExpandGroupRequest extends MultiResponseServiceRequest<ExpandGroupR
 }
 
 /**
- * @internal Represents a GetAttachment request. 
+ * @internal Represents a GetAttachment request.
  */
 export class GetAttachmentRequest extends MultiResponseServiceRequest<GetAttachmentResponse> { //IJsonSerializable
     private attachments: Attachment[] = [];
@@ -45884,7 +45900,7 @@ export class GetAttachmentRequest extends MultiResponseServiceRequest<GetAttachm
 
     /**
      * Gets the attachments.
-     * 
+     *
      * @value The attachments.
      */
     get Attachments(): Attachment[] {
@@ -45893,7 +45909,7 @@ export class GetAttachmentRequest extends MultiResponseServiceRequest<GetAttachm
 
     /**
      * Gets the attachment ids.
-     * 
+     *
      * @value The attachment ids.
      */
     get AttachmentIds(): string[] {
@@ -45902,7 +45918,7 @@ export class GetAttachmentRequest extends MultiResponseServiceRequest<GetAttachm
 
     /**
      * Gets the additional properties.
-     * 
+     *
      * @value The additional properties.
      */
     get AdditionalProperties(): PropertyDefinitionBase[] {
@@ -45911,7 +45927,7 @@ export class GetAttachmentRequest extends MultiResponseServiceRequest<GetAttachm
 
     /**
      * Gets or sets the type of the body.
-     * 
+     *
      * @value The type of the body.
      */
     get BodyType(): BodyType {
@@ -45923,7 +45939,7 @@ export class GetAttachmentRequest extends MultiResponseServiceRequest<GetAttachm
 
     /**
      * @internal Gets a value indicating whether the TimeZoneContext SOAP header should be emitted.
-     * 
+     *
      * @value *true* if the time zone should be emitted; otherwise, *false*.
      */
     get EmitTimeZoneHeader(): boolean {
@@ -46058,7 +46074,7 @@ export class GetAttachmentRequest extends MultiResponseServiceRequest<GetAttachm
 
 /**
  * @internal Represents a GetClientAccessToken request.
- * 
+ *
  * @sealed
  */
 export class GetClientAccessTokenRequest extends MultiResponseServiceRequest<GetClientAccessTokenResponse> {
@@ -46169,7 +46185,7 @@ export class GetClientAccessTokenRequest extends MultiResponseServiceRequest<Get
 
 /**
  * @internal Represents a request to a GetConversationItems operation
- * 
+ *
  * @sealed
  */
 export class GetConversationItemsRequest extends MultiResponseServiceRequest<GetConversationItemsResponse> {//IJsonSerializable
@@ -46191,21 +46207,21 @@ export class GetConversationItemsRequest extends MultiResponseServiceRequest<Get
 
     /**
      * @internal Gets or sets the maximum number of items to return.
-     * 
+     *
      * @Nullable
      */
     MaxItemsToReturn: number = null;
 
     /**
      * @internal Gets or sets the conversation sort order.
-     * 
+     *
      * @Nullable
      */
     SortOrder: ConversationSortOrder = null;
 
     /**
      * @internal Gets or sets the mailbox search location to include in the search.
-     * 
+     *
      * @Nullable
      */
     MailboxScope: MailboxSearchLocation = null;
@@ -46312,7 +46328,7 @@ export class GetConversationItemsRequest extends MultiResponseServiceRequest<Get
         this.ItemProperties.WriteToXml(writer, ServiceObjectType.Item);
 
         //this.FoldersToIgnore.WriteToXml(writer, XmlNamespace.Messages, XmlElementNames.FoldersToIgnore);
-        this.FoldersToIgnore.WriteToXml(writer, XmlElementNames.FoldersToIgnore, XmlNamespace.Messages); //info: temp workaround github #52 
+        this.FoldersToIgnore.WriteToXml(writer, XmlElementNames.FoldersToIgnore, XmlNamespace.Messages); //info: temp workaround github #52
 
         if (this.MaxItemsToReturn) {
             writer.WriteElementValue(XmlNamespace.Messages, XmlElementNames.MaxItemsToReturn, this.MaxItemsToReturn);
@@ -46343,7 +46359,7 @@ export class GetEventsRequest extends MultiResponseServiceRequest<GetEventsRespo
 
 	/**
 	 * Gets or sets the subscription id.
-	 * 
+	 *
 	 * @value	The subscription id.
 	 */
 	get SubscriptionId(): string {
@@ -46355,7 +46371,7 @@ export class GetEventsRequest extends MultiResponseServiceRequest<GetEventsRespo
 
 	/**
 	 * Gets or sets the watermark.
-	 * 
+	 *
 	 * @value	The watermark.
 	 */
 	get Watermark(): string {
@@ -46584,7 +46600,7 @@ export class GetUserConfigurationRequest extends MultiResponseServiceRequest<Get
 
     /**
      * @internal Gets or sets the name.
-     * 
+     *
      * @value   The name.
      */
     get Name(): string {
@@ -46596,7 +46612,7 @@ export class GetUserConfigurationRequest extends MultiResponseServiceRequest<Get
 
     /**
      * @internal Gets or sets the parent folder Id.
-     * 
+     *
      * @value   The parent folder Id.
      */
     get ParentFolderId(): FolderId {
@@ -46608,7 +46624,7 @@ export class GetUserConfigurationRequest extends MultiResponseServiceRequest<Get
 
     /**
      * @internal Gets or sets the user configuration.
-     * 
+     *
      * @value   The userConfiguration.
      */
     get UserConfiguration(): UserConfiguration {
@@ -46622,7 +46638,7 @@ export class GetUserConfigurationRequest extends MultiResponseServiceRequest<Get
 
     /**
      * @internal Gets or sets the properties.
-     * 
+     *
      * @value   The properties.
      */
     get Properties(): UserConfigurationProperties {
@@ -46732,7 +46748,7 @@ export class GetUserConfigurationRequest extends MultiResponseServiceRequest<Get
         writer.WriteElementValue(
             XmlNamespace.Messages,
             XmlElementNames.UserConfigurationProperties,
-            this.properties === UserConfigurationProperties.All ? UserConfigurationProperties[this.properties] : EnumHelper.ToString(UserConfigurationProperties, this.properties).split(GetUserConfigurationRequest.EnumDelimiter).join("")); 
+            this.properties === UserConfigurationProperties.All ? UserConfigurationProperties[this.properties] : EnumHelper.ToString(UserConfigurationProperties, this.properties).split(GetUserConfigurationRequest.EnumDelimiter).join(""));
             //.replace(GetUserConfigurationRequest.EnumDelimiter, " ")); //info: replace only replaces first occurance
     }
 }
@@ -46804,7 +46820,7 @@ export class MarkAsJunkRequest extends MultiResponseServiceRequest<MarkAsJunkRes
 /** @internal */
 export class ResolveNamesRequest extends MultiResponseServiceRequest<ResolveNamesResponse> {//IJsonSerializable
 
-    
+
     private static searchScopeMap: LazyMember<Dictionary<ResolveNameSearchLocation, string>> = new LazyMember<Dictionary<ResolveNameSearchLocation, string>>(() => {
         var map: Dictionary<ResolveNameSearchLocation, string> = new Dictionary<ResolveNameSearchLocation, string>((rnsl) => ResolveNameSearchLocation[rnsl]);
         map.Add(ResolveNameSearchLocation.DirectoryOnly, "ActiveDirectory");
@@ -46863,7 +46879,7 @@ export class ResolveNamesRequest extends MultiResponseServiceRequest<ResolveName
     }
     /**@internal */
     WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
-        writer.WriteAttributeValue(            
+        writer.WriteAttributeValue(
                 XmlAttributeNames.ReturnFullContactData,
                 this.ReturnFullContactData);
 
@@ -46906,8 +46922,8 @@ export class ResolveNamesRequest extends MultiResponseServiceRequest<ResolveName
 }
 
 /**
- * @internal Represents a SearchMailboxesRequest request. 
- * 
+ * @internal Represents a SearchMailboxesRequest request.
+ *
  * @sealed
  */
 export class SearchMailboxesRequest extends MultiResponseServiceRequest<SearchMailboxesResponse> implements IDiscoveryVersionable {
@@ -47091,7 +47107,7 @@ export class SearchMailboxesRequest extends MultiResponseServiceRequest<SearchMa
 
     /**
      * @internal Parses the response.
-     * See O15:324151 (OfficeDev bug/issue not visible to external world) on why we need to override ParseResponse here instead of calling the one in MultiResponseServiceRequest.cs 
+     * See O15:324151 (OfficeDev bug/issue not visible to external world) on why we need to override ParseResponse here instead of calling the one in MultiResponseServiceRequest.cs
      *
      * @param   {any}   jsonBody   The js object response body.
      * @return  {any}              Response object.
@@ -47255,7 +47271,7 @@ export class SearchMailboxesRequest extends MultiResponseServiceRequest<SearchMa
 }
 /** @internal */
 export class SendItemRequest extends MultiResponseServiceRequest<ServiceResponse> {//IJsonSerializable
-    
+
     private items: Item[] = [];
     private savedCopyDestinationFolderId: FolderId = null;
     get Items(): Item[] {
@@ -47293,7 +47309,7 @@ export class SendItemRequest extends MultiResponseServiceRequest<ServiceResponse
     WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
         super.WriteAttributesToXml(writer);
 
-        writer.WriteAttributeValue(            
+        writer.WriteAttributeValue(
             XmlAttributeNames.SaveItemToFolder,
             this.SavedCopyDestinationFolderId != null);
     }
@@ -47341,7 +47357,7 @@ export class SyncFolderHierarchyRequest extends MultiResponseServiceRequest<Sync
 
 	/**
 	 * Gets or sets the property set.
-	 * 
+	 *
 	 * @value	The property set
 	 */
 	get PropertySet(): PropertySet {
@@ -47353,7 +47369,7 @@ export class SyncFolderHierarchyRequest extends MultiResponseServiceRequest<Sync
 
 	/**
 	 * Gets or sets the sync folder id.
-	 * 
+	 *
 	 * @value	The sync folder id.
 	 */
 	get SyncFolderId(): FolderId {
@@ -47365,7 +47381,7 @@ export class SyncFolderHierarchyRequest extends MultiResponseServiceRequest<Sync
 
 	/**
 	 * Gets or sets the state of the sync.
-	 * 
+	 *
 	 * @value	The state of the sync.
 	 */
 	get SyncState(): string {
@@ -47489,7 +47505,7 @@ export class SyncFolderItemsRequest extends MultiResponseServiceRequest<SyncFold
 
 	/**
 	 * Gets or sets the property set.
-	 * 
+	 *
 	 * @value	The property set
 	 */
 	get PropertySet(): PropertySet {
@@ -47501,7 +47517,7 @@ export class SyncFolderItemsRequest extends MultiResponseServiceRequest<SyncFold
 
 	/**
 	 * Gets or sets the sync folder id.
-	 * 
+	 *
 	 * @value	The sync folder id.
 	 */
 	get SyncFolderId(): FolderId {
@@ -47513,7 +47529,7 @@ export class SyncFolderItemsRequest extends MultiResponseServiceRequest<SyncFold
 
 	/**
 	 * Gets or sets the scope of the sync.
-	 * 
+	 *
 	 * @value	The scope of the sync.
 	 */
 	get SyncScope(): SyncFolderItemsScope {
@@ -47525,7 +47541,7 @@ export class SyncFolderItemsRequest extends MultiResponseServiceRequest<SyncFold
 
 	/**
 	 * Gets or sets the state of the sync.
-	 * 
+	 *
 	 * @value	The state of the sync.
 	 */
 	get SyncState(): string {
@@ -47537,7 +47553,7 @@ export class SyncFolderItemsRequest extends MultiResponseServiceRequest<SyncFold
 
 	/**
 	 * Gets the list of ignored item ids.
-	 * 
+	 *
 	 * @value	The ignored item ids.
 	 */
 	get IgnoredItemIds(): ItemIdWrapperList {
@@ -47807,7 +47823,7 @@ export class UnsubscribeRequest extends MultiResponseServiceRequest<ServiceRespo
 
 /**
  * @internal Represents an UpdateFolder request.
- * 
+ *
  * @sealed
 */
 export class UpdateFolderRequest extends MultiResponseServiceRequest<ServiceResponse> {
@@ -47816,7 +47832,7 @@ export class UpdateFolderRequest extends MultiResponseServiceRequest<ServiceResp
 
     /**
      * Gets the list of folders.
-     * 
+     *
      * @value   The folders.
      */
     get Folders(): Folder[] {
@@ -48047,7 +48063,7 @@ export class UpdateUserConfigurationRequest extends MultiResponseServiceRequest<
 
     /**
      * Gets or sets the user configuration.
-     * 
+     *
      * @value   The userConfiguration.
      */
     get UserConfiguration(): UserConfiguration {
@@ -48196,7 +48212,7 @@ export class CreateFolderRequest extends CreateRequest<Folder, ServiceResponse> 
     constructor(service: ExchangeService, errorHandlingMode: ServiceErrorHandling) {
         super(service, errorHandlingMode);
     }
-    CreateServiceResponse(service: ExchangeService, responseIndex: number): ServiceResponse { 
+    CreateServiceResponse(service: ExchangeService, responseIndex: number): ServiceResponse {
         //return new CreateFolderResponse(<Folder>EwsUtilities.GetEnumeratedObjectAt(this.Folders, responseIndex));
         if (this.Folders.length <= responseIndex) { throw new Error(Strings.IEnumerableDoesNotContainThatManyObject); }
         return new CreateFolderResponse(this.Folders[responseIndex]);
@@ -48209,7 +48225,7 @@ export class CreateFolderRequest extends CreateRequest<Folder, ServiceResponse> 
     GetXmlElementName(): string { return XmlElementNames.CreateFolder; }
     Validate(): void {
         super.Validate();
-        
+
         //EwsUtilities.ValidateParam(this.Folders, "Folders");
 
         // Validate each folder.
@@ -48465,7 +48481,7 @@ export class FindRequest<TResponse extends ServiceResponse> extends MultiRespons
     constructor(service: ExchangeService, errorHandlingMode: ServiceErrorHandling) {
         super(service, errorHandlingMode);
     }
-    
+
     GetExpectedResponseMessageCount(): number { return this.ParentFolderIds.Count; }
     GetGroupBy(): Grouping { return null; }
     Validate(): void {
@@ -48629,7 +48645,7 @@ export class FindItemRequest<TItem extends Item> extends FindRequest<FindItemRes
 
     /**
      * @internal Gets the name of the XML element.
-     * 
+     *
      * @return  {string} XML element name.
      */
     GetXmlElementName(): string { return XmlElementNames.FindItem; }
@@ -48793,7 +48809,7 @@ export class MoveCopyRequest<TServiceObject extends ServiceObject, TResponse ext
 export class MoveCopyFolderRequest<TResponse extends ServiceResponse> extends MoveCopyRequest<Folder, TResponse> {
     get FolderIds(): FolderIdWrapperList { return this.folderIds; }
     private folderIds: FolderIdWrapperList = new FolderIdWrapperList();
-    
+
     constructor(service: ExchangeService, errorHandlingMode: ServiceErrorHandling) {
         super(service, errorHandlingMode);
     }
@@ -48885,7 +48901,7 @@ export class CopyItemRequest extends MoveCopyItemRequest<MoveCopyItemResponse> {
 }
 /** @internal */
 export class MoveItemRequest extends MoveCopyItemRequest<MoveCopyItemResponse> {
-    
+
     constructor(service: ExchangeService, errorHandlingModeServiceErrorHandling: ServiceErrorHandling) {
         super(service, errorHandlingModeServiceErrorHandling);
     }
@@ -48899,21 +48915,21 @@ export class MoveItemRequest extends MoveCopyItemRequest<MoveCopyItemResponse> {
 
 /**
  * @internal Represents an abstract Subscribe request.
- * 
+ *
  * @typeparam	{TSubscription}		The type of the subscription.
  */
 export abstract class SubscribeRequest<TSubscription extends SubscriptionBase> extends MultiResponseServiceRequest<SubscribeResponse<TSubscription>> {
 
 	/**
 	 * Gets the folder ids.
-	 * 
+	 *
 	 * @private set
 	 */
 	FolderIds: FolderIdWrapperList;
 
 	/**
 	 * Gets the event types.
-	 * 
+	 *
 	 * @private set
 	 */
 	EventTypes: EventType[];
@@ -49051,7 +49067,7 @@ export class SubscribeToPullNotificationsRequest extends SubscribeRequest<PullSu
 
 	/**
 	 * Gets or sets the timeout.
-	 * 
+	 *
 	 * @value	The timeout.
 	 */
 	get Timeout(): number {
@@ -49133,7 +49149,7 @@ export class SubscribeToPushNotificationsRequest extends SubscribeRequest<PushSu
 
 	/**
 	 * Gets or sets the frequency.
-	 * 
+	 *
 	 * @value	The frequency.
 	 */
 	get Frequency(): number {
@@ -49145,7 +49161,7 @@ export class SubscribeToPushNotificationsRequest extends SubscribeRequest<PushSu
 
 	/**
 	 * Gets or sets the URL.
-	 * 
+	 *
 	 * @value	The URL.
 	 */
 	get Url(): Uri {
@@ -49157,7 +49173,7 @@ export class SubscribeToPushNotificationsRequest extends SubscribeRequest<PushSu
 
 	/**
 	 * Gets or sets the CallerData.
-	 * 
+	 *
 	 * @value	The CallerData.
 	 */
 	get CallerData(): string {
@@ -49334,7 +49350,7 @@ export class ServiceResponse {
     }
 
     /**
-     * Gets a detailed error message associated with the response. If Result is set to Success, ErrorMessage returns null. 
+     * Gets a detailed error message associated with the response. If Result is set to Success, ErrorMessage returns null.
      * ErrorMessage is localized according to the PreferredCulture property of the ExchangeService object that was used to call the method that generated the response.
      */
     get ErrorMessage(): string {
@@ -49342,9 +49358,9 @@ export class ServiceResponse {
     }
 
     /**
-     * Gets error details associated with the response. If Result is set to Success, ErrorDetailsDictionary returns null. 
+     * Gets error details associated with the response. If Result is set to Success, ErrorDetailsDictionary returns null.
      * Error details will only available for some error codes. For example, when error code is ErrorRecurrenceHasNoOccurrence, the ErrorDetailsDictionary will contain keys for EffectiveStartDate and EffectiveEndDate.
-     * 
+     *
      * @value   The error details dictionary.
      */
     get ErrorDetails(): Dictionary<string, string> {
@@ -49352,9 +49368,9 @@ export class ServiceResponse {
     }
 
     /**
-     * Gets information about property errors associated with the response. If Result is set to Success, ErrorProperties returns null. 
+     * Gets information about property errors associated with the response. If Result is set to Success, ErrorProperties returns null.
      * ErrorProperties is only available for some error codes. For example, when the error code is ErrorInvalidPropertyForOperation, ErrorProperties will contain the definition of the property that was invalid for the request.
-     * 
+     *
      * @value   The error properties list.
      */
     get ErrorProperties(): PropertyDefinitionBase[] {
@@ -49362,17 +49378,17 @@ export class ServiceResponse {
     }
 
     /**
-     * @internal Initializes a new instance of the **ServiceResponse** class. 
+     * @internal Initializes a new instance of the **ServiceResponse** class.
      */
     constructor();
     /**
-     * @internal Initializes a new instance of the **ServiceResponse** class. 
+     * @internal Initializes a new instance of the **ServiceResponse** class.
      *
      * @param   {SoapFaultDetails}  soapFaultDetails   The SOAP fault details.
      */
     constructor(soapFaultDetails: SoapFaultDetails);
     /**
-     * @internal Initializes a new instance of the **ServiceResponse** class. 
+     * @internal Initializes a new instance of the **ServiceResponse** class.
      * This is intended to be used by unit tests to create a fake service error response
      *
      * @param   {ServiceError}  responseCode   Response code
@@ -49415,7 +49431,7 @@ export class ServiceResponse {
      * @internal Loads extra error details from XML
      *
      * @param   {any}               responseObject      Json Object converted from XML.
-     * @param   {ExchangeService}   service             The service.    
+     * @param   {ExchangeService}   service             The service.
      */
     LoadExtraErrorDetailsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
         if (responseObject[XmlElementNames.MessageXml]) {
@@ -49427,7 +49443,7 @@ export class ServiceResponse {
      * @internal Loads service object from XML.
      *
      * @param   {any}                 responseObject        Json Object converted from XML.
-     * @param   {ExchangeService}     service               The service.    
+     * @param   {ExchangeService}     service               The service.
      */
     LoadFromXmlJsObject(responseObject: any, service: ExchangeService): any {
 
@@ -49605,13 +49621,13 @@ export class AttendeeAvailability extends ServiceResponse {
      * @param   {any}               jsObject   The response object.
      * @param   {ExchangeService}   service    The service.
      */
-    ReadElementsFromXmlJsObject(jsObject: any, service: ExchangeService): void {        
+    ReadElementsFromXmlJsObject(jsObject: any, service: ExchangeService): void {
     }
 }
 
 /**
  * Represents the response to an individual Id conversion operation.
- * 
+ *
  * @sealed
  */
 export class ConvertIdResponse extends ServiceResponse {
@@ -49742,7 +49758,7 @@ export class CreateFolderResponse extends ServiceResponse {
     }
     ReadElementsFromJson(responseObject: JsonObject, service: ExchangeService): any { throw new Error("CreateFolderResponse.ts - ReadElementsFromJson : Not implemented."); }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         if (responseObject[XmlElementNames.Folders]) {
             var folders: Folder[] = EwsServiceJsonReader.ReadServiceObjectsCollectionFromJson<Folder>(
                 responseObject,
@@ -49814,12 +49830,12 @@ export class DelegateManagementResponse extends ServiceResponse {
             delegateUserIndex++;
         }
     }
-} 
+}
 
 /**
  * Represents the response to an individual delegate user manipulation (add, remove, update) operation.
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class DelegateUserResponse extends ServiceResponse {
 
@@ -49916,8 +49932,8 @@ export class DeleteAttachmentResponse extends ServiceResponse {
 /**
  * @internal  Represents the response to a DisableApp operation.
  * Today this class doesn't add extra functionality. Keep this class here so future we can return extension info up-on installation complete.
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class DisableAppResponse extends ServiceResponse {
 
@@ -49939,7 +49955,7 @@ export class DisableAppResponse extends ServiceResponse {
     }
 }
 /**
- * ## *Not Implemented* 
+ * ## *Not Implemented*
  */
 export class ExecuteDiagnosticMethodResponse extends ServiceResponse {
     ReturnValue: any;// System.Xml.XmlDocument;
@@ -49952,24 +49968,24 @@ export class ExpandGroupResponse extends ServiceResponse {
         return this.members;
     }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         this.Members.LoadFromXmlJsObject(responseObject, service);
     }
 }
 
 /**
  * @internal Represents the response to a Conversation search operation.
- * 
+ *
  * @sealed
  */
 export class FindConversationResponse extends ServiceResponse {
 
     /**
      * @internal Gets FindConversation results.
-     * 
-     * @private set()     * 
+     *
+     * @private set()     *
      * @returns FindConversation results.
-     * 
+     *
      */
     Results: FindConversationResults;
 
@@ -50067,7 +50083,7 @@ export class FindFolderResponse extends ServiceResponse {
     }
     ReadElementsFromJson(responseObject: any, service: ExchangeService): any { throw new Error("FindFolderResponse.ts - ReadElementsFromJson : Not implemented."); }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         var rootFolder = responseObject[XmlElementNames.RootFolder];
         this.results.TotalCount = Number(rootFolder[XmlAttributeNames.TotalItemsInView]);
         this.results.MoreAvailable = !Convert.toBool(rootFolder[XmlAttributeNames.IncludesLastItemInRange]);
@@ -50140,7 +50156,7 @@ export class FindItemResponse<TItem extends Item> extends ServiceResponse {
     }
     ReadElementsFromJson(responseObject: any /*JsonObject*/, service: ExchangeService): void { throw new Error("FindItemResponse.ts - ReadElementsFromJson : Not implemented."); }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         var rootFolder = responseObject[XmlElementNames.RootFolder];
         var totalItemsInView: number = Number(rootFolder[XmlAttributeNames.TotalItemsInView]);
         var moreItemsAvailable: boolean = !Convert.toBool(rootFolder[XmlAttributeNames.IncludesLastItemInRange]);
@@ -50212,13 +50228,13 @@ export class FindItemResponse<TItem extends Item> extends ServiceResponse {
 
 /**
  * @internal Represents the response to a GetAppManifests operation.
- * 
+ *
  * @sealed
  */
 export class GetAppManifestsResponse extends ServiceResponse {
 
 	/**
-	 * List of manifests returned in the response. 
+	 * List of manifests returned in the response.
 	 */
 	private manifests: string[] = [];//XmlDocument[]
 
@@ -50229,7 +50245,7 @@ export class GetAppManifestsResponse extends ServiceResponse {
 
 	/**
 	 * Gets all manifests returned
-	 * 
+	 *
 	 * /remarks/	Provided for backwards compatibility with Exchange 2013.
 	 * base64 encoded xml file in string
 	 */
@@ -50239,7 +50255,7 @@ export class GetAppManifestsResponse extends ServiceResponse {
 
 	/**
 	 * Gets all apps returned.
-	 * 
+	 *
 	 * /remarks/	Introduced for Exchange 2013 Sp1 to return additional metadata.
 	 */
 	get Apps(): ClientApp[] {
@@ -50263,7 +50279,7 @@ export class GetAppManifestsResponse extends ServiceResponse {
 		this.Manifests.splice(0);
 
 		// We can have a response from Exchange 2013 (first time this API was introduced)
-		// or the newer response, starting in Exchange 2013 SP1, (X-EWS-TargetVersion: 2.5 or above) 
+		// or the newer response, starting in Exchange 2013 SP1, (X-EWS-TargetVersion: 2.5 or above)
 		let exchange2013Response: boolean = false;
 		if (jsObject[XmlElementNames.Manifests]) {
 			exchange2013Response = true;
@@ -50300,7 +50316,7 @@ export class GetAppManifestsResponse extends ServiceResponse {
 
 		////<GetAppManifestsResponse ResponseClass="Success" xmlns="http://schemas.microsoft.com/exchange/services/2006/messages">
 		////<ResponseCode>NoError</ResponseCode>
-		////<m:Manifests xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">   
+		////<m:Manifests xmlns:m="http://schemas.microsoft.com/exchange/services/2006/messages">
 		////<m:Manifest>[base 64 encoded manifest]</m:Manifest>                              <--- reader should be at this node at the beginning of loop
 		////<m:Manifest>[base 64 encoded manifest]</m:Manifest>
 		//// ....
@@ -50356,7 +50372,7 @@ export class GetAppManifestsResponse extends ServiceResponse {
 
 /**
  * @internal  Represents the response to a GetAppMarketplaceUrl operation
- * 
+ *
  * @sealed
  */
 export class GetAppMarketplaceUrlResponse extends ServiceResponse {
@@ -50437,7 +50453,7 @@ export class GetAttachmentResponse extends ServiceResponse {
 
 /**
  * Represents the response to a GetClientAccessToken operation.
- * 
+ *
  * @sealed
  */
 export class GetClientAccessTokenResponse extends ServiceResponse {
@@ -50479,7 +50495,7 @@ export class GetClientAccessTokenResponse extends ServiceResponse {
 	}
 }
 /**
- * ## *Not Implemented* 
+ * ## *Not Implemented*
  */
 export class GetClientExtensionResponse extends ServiceResponse {
     ClientExtensions: ClientExtension[];//System.Collections.ObjectModel.Collection<ClientExtension>;
@@ -50492,7 +50508,7 @@ export class GetClientExtensionResponse extends ServiceResponse {
 
 /**
  * Represents the response to a GetConversationItems operation.
- * 
+ *
  * @sealed
  */
 export class GetConversationItemsResponse extends ServiceResponse {
@@ -50501,7 +50517,7 @@ export class GetConversationItemsResponse extends ServiceResponse {
 
     /**
      * Gets or sets the conversation.
-     * 
+     *
      * @value   The conversation.
      */
     Conversation: ConversationResponse;
@@ -50530,7 +50546,7 @@ export class GetConversationItemsResponse extends ServiceResponse {
 
 /**
  * Represents the GetDiscoverySearchConfiguration response.
- * 
+ *
  * @sealed
  */
 export class GetDiscoverySearchConfigurationResponse extends ServiceResponse {
@@ -50570,7 +50586,7 @@ export class GetDiscoverySearchConfigurationResponse extends ServiceResponse {
     }
 }
 /**
- * ## *Not Implemented* 
+ * ## *Not Implemented*
  */
 export class GetEncryptionConfigurationResponse extends ServiceResponse {
     ImageBase64: string;
@@ -50587,7 +50603,7 @@ export class GetEncryptionConfigurationResponse extends ServiceResponse {
 
 /**
  * @internal Represents the response to a subscription event retrieval operation.
- * 
+ *
  * @sealed
  */
 export class GetEventsResponse extends ServiceResponse {
@@ -50615,7 +50631,7 @@ export class GetEventsResponse extends ServiceResponse {
      * @param   {ExchangeService}   service    The service.
      */
     ReadElementsFromXmlJsObject(jsObject: any, service: ExchangeService): void {
-		
+
 		this.results.LoadFromXmlJsObject(jsObject, service);
 	}
 }
@@ -50646,7 +50662,7 @@ export class GetFolderResponse extends ServiceResponse {
         }
     }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         if (responseObject[XmlElementNames.Folders]) {
             var folders: Folder[] = EwsServiceJsonReader.ReadServiceObjectsCollectionFromJson<Folder>(
                 responseObject,
@@ -50665,7 +50681,7 @@ export class GetFolderResponse extends ServiceResponse {
 
 /**
  * Represents the GetHoldOnMailboxes response.
- * 
+ *
  * @sealed
  */
 export class GetHoldOnMailboxesResponse extends ServiceResponse {
@@ -50703,7 +50719,7 @@ export class GetHoldOnMailboxesResponse extends ServiceResponse {
 
 /**
  * @internal Represents the response to a GetInboxRules operation.
- * 
+ *
  * @sealed
  */
 export class GetInboxRulesResponse extends ServiceResponse {
@@ -50765,7 +50781,7 @@ export class GetItemResponse extends ServiceResponse {
     }
     //ReadElementsFromJson(responseObject: any, service: ExchangeService): any { throw new Error("GetItemResponse.ts - ReadElementsFromJson : Not implemented."); }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         var items: Item[] = EwsServiceJsonReader.ReadServiceObjectsCollectionFromJson<Item>(
             responseObject,
             service,
@@ -50781,14 +50797,14 @@ export class GetItemResponse extends ServiceResponse {
 
 /**
  * Represents the GetNonIndexableItemDetails response.
- * 
+ *
  * @sealed
  */
 export class GetNonIndexableItemDetailsResponse extends ServiceResponse {
 
     /**
      * Non indexable item result
-     * 
+     *
      * internal set
      */
     NonIndexableItemsResult: NonIndexableItemDetailsResult = null;
@@ -50816,7 +50832,7 @@ export class GetNonIndexableItemDetailsResponse extends ServiceResponse {
 
 /**
  * Represents the GetNonIndexableItemStatistics response.
- * 
+ *
  * @sealed
  */
 export class GetNonIndexableItemStatisticsResponse extends ServiceResponse {
@@ -50856,12 +50872,12 @@ export class GetPasswordExpirationDateResponse extends ServiceResponse {
     }
     ReadElementsFromJson(responseObject: any, service: ExchangeService): any { throw new Error("GetPasswordExpirationDateResponse.ts - ReadElementsFromJson : Not implemented."); }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         this.passwordExpirationDate = service.ConvertUniversalDateTimeStringToLocalDateTime(responseObject[XmlElementNames.PasswordExpirationDate]);
     }
 }
 /**
- * ## *Not Implemented* 
+ * ## *Not Implemented*
  */
 export class GetPhoneCallResponse extends ServiceResponse {
     PhoneCall: PhoneCall;
@@ -50910,7 +50926,7 @@ export class GetRoomListsResponse extends ServiceResponse {
 
 /**
  * @internal Represents the response to a GetRooms operation.
- * 
+ *
  * @sealed
  */
 export class GetRoomsResponse extends ServiceResponse {
@@ -50950,7 +50966,7 @@ export class GetRoomsResponse extends ServiceResponse {
 
 /**
  * Represents the GetSearchableMailboxes response.
- * 
+ *
  * @sealed
  */
 export class GetSearchableMailboxesResponse extends ServiceResponse {
@@ -51049,7 +51065,7 @@ enum ConnectionStatus {
 
 /**
  * @internal Represents the response to a subscription event retrieval operation.
- * 
+ *
  * @sealed
  */
 export class GetStreamingEventsResponse extends ServiceResponse {
@@ -51066,7 +51082,7 @@ export class GetStreamingEventsResponse extends ServiceResponse {
 
 	/**
 	 * Gets the error subscription ids.
-	 * 
+	 *
 	 * @private set
 	 * @value	The error subscription ids.
 	 */
@@ -51087,7 +51103,7 @@ export class GetStreamingEventsResponse extends ServiceResponse {
      * @internal Loads extra error details from XML
      *
      * @param   {any}   			responseObject      Json Object converted from XML.
-     * @param   {ExchangeService}   service             The service.    
+     * @param   {ExchangeService}   service             The service.
      */
     LoadExtraErrorDetailsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
 		super.LoadExtraErrorDetailsFromXmlJsObject(responseObject, service);
@@ -51125,7 +51141,7 @@ export class GetStreamingEventsResponse extends ServiceResponse {
 
 /**
  * @internal Represents a response to a GetUserConfiguration request.
- * 
+ *
  * @sealed
  */
 export class GetUserConfigurationResponse extends ServiceResponse {
@@ -51189,7 +51205,7 @@ export class GetUserOofSettingsResponse extends ServiceResponse {
 
 /**
  * Represents the GetUserRetentionPolicyTagsResponse response.
- * 
+ *
  * @sealed
  */
 export class GetUserRetentionPolicyTagsResponse extends ServiceResponse {
@@ -51230,8 +51246,8 @@ export class GetUserRetentionPolicyTagsResponse extends ServiceResponse {
 /**
  * @internal  Represents the response to a InstallApp operation.
  * Today this class doesn't add extra functionality. Keep this class here so future we can return extension info up-on installation complete.
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class InstallAppResponse extends ServiceResponse {
 
@@ -51259,7 +51275,7 @@ export class MarkAsJunkResponse extends ServiceResponse {
     }
     //ReadElementsFromJson(responseObject: any, service: ExchangeService): any { throw new Error("MarkAsJunkResponse.ts - ReadElementsFromJson : Not implemented."); }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         if (responseObject[XmlElementNames.Token]) {
             this.MovedItemId = new ItemId();
             this.MovedItemId.LoadFromXmlJsObject(responseObject[XmlElementNames.MovedItemId], service);
@@ -51298,7 +51314,7 @@ export class MoveCopyFolderResponse extends ServiceResponse {
 
 /**
  * Represents a response to a Move or Copy operation.
- * 
+ *
  */
 export class MoveCopyItemResponse extends ServiceResponse {
 
@@ -51314,7 +51330,7 @@ export class MoveCopyItemResponse extends ServiceResponse {
 
     /**
      * @internal Initializes a new instance of the *MoveCopyItemResponse* class.
-     * 
+     *
      */
     constructor() {
         super();
@@ -51357,7 +51373,7 @@ export class MoveCopyItemResponse extends ServiceResponse {
     }
 }
 /**
- * ## *Not Implemented* 
+ * ## *Not Implemented*
  */
 export class PlayOnPhoneResponse extends ServiceResponse {
     PhoneCallId: PhoneCallId;
@@ -51383,14 +51399,14 @@ export class ResolveNamesResponse extends ServiceResponse {
         }
     }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         this.Resolutions.LoadFromXmlJsObject(responseObject[XmlElementNames.ResolutionSet], service);
     }
 }
 
 /**
  * Represents the SearchMailboxes response.
- * 
+ *
  * @sealed
  */
 export class SearchMailboxesResponse extends ServiceResponse {
@@ -51430,14 +51446,14 @@ export class SearchMailboxesResponse extends ServiceResponse {
     }
 }
 /**
- * ## *Not Implemented* 
+ * ## *Not Implemented*
  */
 export class SetEncryptionConfigurationResponse extends ServiceResponse {
 }
 
 /**
  * Represents the SetHoldOnMailboxes response.
- * 
+ *
  * @sealed
  */
 export class SetHoldOnMailboxesResponse extends ServiceResponse {
@@ -51475,7 +51491,7 @@ export class SetHoldOnMailboxesResponse extends ServiceResponse {
 
 /**
  * @internal Represents the base response class to subscription creation operations.
- * 
+ *
  * @sealed
  * @typeparam	{TSubscription}		The type of the subscription.
  */
@@ -51521,7 +51537,7 @@ export class SuggestionsResponse extends ServiceResponse {
     LoadSuggestedDaysFromXml(jsonProperty: any, service: ExchangeService): void {
         var SuggestionArrayObj = jsonProperty[XmlElementNames.SuggestionDayResultArray];
         if(typeof SuggestionArrayObj === 'undefined') throw new Error("SuggestionsResponse.ts - LoadSuggestedDaysFromXml - invalid object returned ");
-        
+
         var suggestions:any = EwsServiceJsonReader.ReadAsArray(SuggestionArrayObj,XmlElementNames.SuggestionDayResult);
         for(var suggestion of suggestions){
             var daySuggestion:Suggestion = new Suggestion();
@@ -51534,8 +51550,8 @@ export class SuggestionsResponse extends ServiceResponse {
 /**
  * @internal Represents the response to a UninstallApp operation.
  * Today this class doesn't add extra functionality. Keep this class here so future we can return extension info up-on installation complete.
- * 
- * @sealed 
+ *
+ * @sealed
  */
 export class UninstallAppResponse extends ServiceResponse {
 
@@ -51573,15 +51589,15 @@ export class UpdateFolderResponse extends ServiceResponse {
         }
     }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        //debugger;//todo: check if this is needed. 
-        //throw new Error("UpdateFolderResponse.ts - ReadElementsFromXmlJsObject : Not implemented."); 
+        //debugger;//todo: check if this is needed.
+        //throw new Error("UpdateFolderResponse.ts - ReadElementsFromXmlJsObject : Not implemented.");
     }
 }
 
 
 /**
  * @internal Represents the response to a UpdateInboxRulesResponse operation.
- * 
+ *
  * @sealed
  */
 export class UpdateInboxRulesResponse extends ServiceResponse {
@@ -51599,7 +51615,7 @@ export class UpdateInboxRulesResponse extends ServiceResponse {
 	}
 
 	/**
-     * @internal Initializes a new instance of the **UpdateInboxRulesResponse** class. 
+     * @internal Initializes a new instance of the **UpdateInboxRulesResponse** class.
      */
     constructor() {
 		super();
@@ -51610,7 +51626,7 @@ export class UpdateInboxRulesResponse extends ServiceResponse {
      * @internal Loads extra error details from XML
      *
      * @param   {any}   			responseObject      Json Object converted from XML.
-     * @param   {ExchangeService}   service             The service.    
+     * @param   {ExchangeService}   service             The service.
      */
     LoadExtraErrorDetailsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
 		super.LoadExtraErrorDetailsFromXmlJsObject(responseObject, service);
@@ -51691,7 +51707,7 @@ export class CreateItemResponseBase extends ServiceResponse {
     GetObjectInstance(service: ExchangeService, xmlElementName: string): Item { throw new Error("CreateItemResponseBase.ts - GetObjectInstance : abstract must implement."); }
     ReadElementsFromJson(responseObject: any, service: ExchangeService): any { throw new Error("CreateItemResponseBase.ts - ReadElementsFromJson : Not implemented."); }
     ReadElementsFromXmlJsObject(responseObject: any, service: ExchangeService): void {
-        
+
         if (responseObject[XmlElementNames.Items]) {
             this.items = EwsServiceJsonReader.ReadServiceObjectsCollectionFromJson<Item>(
                 responseObject,
@@ -51731,7 +51747,7 @@ export class CreateResponseObjectResponse extends CreateItemResponseBase {
 
 /**
  * @internal Represents the response to a delegate user retrieval operation.
- * 
+ *
  * @sealed
  */
 export class GetDelegateResponse extends DelegateManagementResponse {
@@ -51794,7 +51810,7 @@ export class ServiceResponseCollection<TResponse extends ServiceResponse> implem
     /**
      * Gets a value indicating the overall result of the request that generated this response collection.
      * If all of the responses have their Result property set to Success, OverallResult returns Success.
-     * If at least one response has its Result property set to Warning and all other responses have their Result property set to Success, OverallResult returns Warning. 
+     * If at least one response has its Result property set to Warning and all other responses have their Result property set to Success, OverallResult returns Warning.
      * If at least one response has a its Result set to Error, OverallResult returns Error.
      */
     get OverallResult(): ServiceResult { return this.overallResult; }
@@ -51809,7 +51825,7 @@ export class ServiceResponseCollection<TResponse extends ServiceResponse> implem
      * @internal Adds specified response.
      *
      * @param   {TResponse}   response   The response.
-     */    
+     */
     Add(response: TResponse): void {
         EwsLogging.Assert(
             response != null,
@@ -51827,7 +51843,7 @@ export class ServiceResponseCollection<TResponse extends ServiceResponse> implem
      * Gets an enumerator that iterates through the elements of the collection.
      *
      * @return  {TResponse[]}      An IEnumerator for the collection.
-     */    
+     */
     GetEnumerator(): TResponse[] {
         return this.responses;
     }
@@ -51850,7 +51866,7 @@ export class ServiceResponseCollection<TResponse extends ServiceResponse> implem
 
 /**
  * Represents the base response class for synchronuization operations.
- * 
+ *
  * @sealed
  * @typeparam	{TServiceObject}	ServiceObject type.
  * @typeparam	{TChange}	Change type.
@@ -52008,14 +52024,14 @@ export abstract class SyncResponse<TServiceObject extends ServiceObject, TChange
 
 /**
  * Represents the response to a folder synchronization operation.
- * 
+ *
  * @sealed
  */
 export class SyncFolderHierarchyResponse extends SyncResponse<Folder, FolderChange> {
 
 	/**
 	 * @internal Gets a value indicating whether this request returns full or summary properties.
-	 * 
+	 *
 	 * @value	*true* if summary properties only; otherwise, *false*.
 	 */
 	get SummaryPropertiesOnly(): boolean {
@@ -52070,14 +52086,14 @@ export class SyncFolderHierarchyResponse extends SyncResponse<Folder, FolderChan
 
 /**
  * Represents the response to a folder items synchronization operation.
- * 
+ *
  * @sealed
  */
 export class SyncFolderItemsResponse extends SyncResponse<Item, ItemChange> {
-	
+
 	/**
 	 * @internal Gets a value indicating whether this request returns full or summary properties.
-	 * 
+	 *
 	 * @value	*true* if summary properties only; otherwise, *false*.
 	 */
 	get SummaryPropertiesOnly(): boolean{
@@ -52198,8 +52214,8 @@ export abstract class ServiceObject {
 
     /**
      * Gets the value of specified property in this instance.
-     * This Indexer of c# 
-     * 
+     * This Indexer of c#
+     *
      * @param   {PropertyDefinitionBase}   propertyDefinition   Definition of the property to get.
      */
     _getItem(propertyDefinition: PropertyDefinitionBase): any {
@@ -52461,7 +52477,7 @@ export abstract class ServiceObject {
         }
     }
 
-    //todo:fix - implement type casting on specific type request version. 
+    //todo:fix - implement type casting on specific type request version.
     //TryGetProperty<T>(propertyDefinition: PropertyDefinitionBase, propertyValue: any): boolean { throw new Error("Need implementation."); }
     //TryGetProperty(propertyDefinition: PropertyDefinitionBase, propertyValue: any): boolean { throw new Error("ServiceObject.ts - TryGetProperty : Not implemented."); }
 
@@ -52552,14 +52568,14 @@ export class ServiceObjectInfo {
 
         /**
          * Folder Types ->  folderinfo
-              
+
         // CalendarFolder
         this.AddServiceObjectType(
             XmlElementNames.CalendarFolder,
             "CalendarFolder",
             (srv) => { return new CalendarFolder(srv); },
             null);
-                 
+
         // ContactsFolder
         this.AddServiceObjectType(
             XmlElementNames.ContactsFolder,
@@ -52587,12 +52603,12 @@ export class ServiceObjectInfo {
             "TasksFolder",
             (srv) => { return new TasksFolder(srv); },
             null);
-            
+
         */
 
         /**
          * Item Types -> iteminfo
-        
+
         // Appointment
         this.AddServiceObjectType(
             XmlElementNames.CalendarItem,
@@ -52740,7 +52756,7 @@ export class ServiceObjectInfo {
 
 
 /**
- * this is partial section of CreateEwsObjectFromXmlElementName from serviceobjectinfo, other parts are moved to different object type like itemInfo etc. 
+ * this is partial section of CreateEwsObjectFromXmlElementName from serviceobjectinfo, other parts are moved to different object type like itemInfo etc.
  * this to is to avoid circular referencing with requirejs/commonjs/nodejs
  */
 export class FolderInfo extends ServiceObjectInfo {
@@ -52782,9 +52798,9 @@ InitializeServiceObjectClassMap(): any {
             (srv) => { return new TasksFolder(srv); },
             null);
     }
-    
+
     CreateEwsObjectFromXmlElementName<TServiceObject extends ServiceObject>(service: ExchangeService, xmlElementName: string): TServiceObject {
-                
+
         //var itemClass = this.XmlElementNameToServiceObjectClassMap[xmlElementName];
         //if (itemClass) {
         //    return new itemClass(service);
@@ -52804,7 +52820,7 @@ InitializeServiceObjectClassMap(): any {
 
 
 /**
- ** this is partial section of CreateEwsObjectFromXmlElementName from serviceobjectinfo, other parts are moved to different object type like folderinfo etc. 
+ ** this is partial section of CreateEwsObjectFromXmlElementName from serviceobjectinfo, other parts are moved to different object type like folderinfo etc.
  * this to is to avoid circular referencing with requirejs/commonjs/nodejs
  */
 export class ItemInfo extends ServiceObjectInfo {
@@ -52902,82 +52918,82 @@ export class Folder extends ServiceObject {
 
     /**
      * Gets the Id of the folder.
-     * 
+     *
      */
     get Id(): FolderId { return <FolderId>this.PropertyBag._getItem(this.GetIdPropertyDefinition()); }
 
     /**
      * Gets the Id of this folder's parent folder.
-     * 
+     *
      */
     get ParentFolderId(): FolderId { return <FolderId>this.PropertyBag._getItem(Schemas.FolderSchema.ParentFolderId); }
 
     /**
      * Gets the number of child folders this folder has.
-     * 
+     *
      */
     get ChildFolderCount(): number { return <number>this.PropertyBag._getItem(Schemas.FolderSchema.ChildFolderCount); }
 
     /**
      * Gets or sets the display name of the folder.
-     * 
+     *
      */
     get DisplayName(): string { return <string>this.PropertyBag._getItem(Schemas.FolderSchema.DisplayName); }
     set DisplayName(value: string) { this.PropertyBag._setItem(Schemas.FolderSchema.DisplayName, value); }
 
     /**
      * Gets or sets the custom class name of this folder.
-     * 
+     *
      */
     get FolderClass(): string { return <string>this.PropertyBag._getItem(Schemas.FolderSchema.FolderClass); }
     set FolderClass(value: string) { this.PropertyBag._setItem(Schemas.FolderSchema.FolderClass, value); }
 
     /**
      * Gets the total number of items contained in the folder.
-     * 
+     *
      */
     get TotalCount(): number { return <number>this.PropertyBag._getItem(Schemas.FolderSchema.TotalCount); }
 
     /**
      * Gets a list of extended properties associated with the folder. **Unstable Need testing**
-     * 
+     *
      */
     get ExtendedProperties(): ExtendedPropertyCollection { return <ExtendedPropertyCollection>this.PropertyBag._getItem(ServiceObjectSchema.ExtendedProperties); }
 
     /**
      * Gets the Email Lifecycle Management (ELC) information associated with the folder.
-     * 
+     *
      */
     get ManagedFolderInformation(): ManagedFolderInformation { return <ManagedFolderInformation>this.PropertyBag._getItem(Schemas.FolderSchema.ManagedFolderInformation); }
 
     /**
      * Gets a value indicating the effective rights the current authenticated user has on the folder.
-     * 
+     *
      */
     get EffectiveRights(): EffectiveRights { return <EffectiveRights>this.PropertyBag._getItem(Schemas.FolderSchema.EffectiveRights); }
 
     /**
      * Gets a list of permissions for the folder.
-     * 
+     *
      */
     get Permissions(): FolderPermissionCollection { return <FolderPermissionCollection>this.PropertyBag._getItem(Schemas.FolderSchema.Permissions); }
 
     /**
      * Gets the number of unread items in the folder.
-     * 
+     *
      */
     get UnreadCount(): number { return <number>this.PropertyBag._getItem(Schemas.FolderSchema.UnreadCount); }
 
     /**
      * Gets or sets the policy tag.
-     * 
+     *
      */
     get PolicyTag(): PolicyTag { return <PolicyTag>this.PropertyBag._getItem(Schemas.FolderSchema.PolicyTag); }
     set PolicyTag(value: PolicyTag) { this.PropertyBag._setItem(Schemas.FolderSchema.PolicyTag, value); }
 
     /**
      * Gets or sets the archive tag.
-     * 
+     *
      */
     get ArchiveTag(): ArchiveTag { return <ArchiveTag>this.PropertyBag._getItem(Schemas.FolderSchema.ArchiveTag); }
     set ArchiveTag(value) { this.PropertyBag._setItem(Schemas.FolderSchema.ArchiveTag, value); }
@@ -52985,14 +53001,14 @@ export class Folder extends ServiceObject {
     /**
      * Gets the well known name of this folder, if any, as a string.
      * **value** - The well known name of this folder as a string, or null if this folder isn't a well known folder.
-     * 
+     *
      */
     get WellKnownFolderNameAsString(): string { return WellKnownFolderName[<WellKnownFolderName>this.PropertyBag._getItem(Schemas.FolderSchema.WellKnownFolderName)]; }
 
     /**
      * Gets the well known name of this folder, if any.
      * **value** - The well known name of this folder, or null if this folder isn't a well known folder.
-     * 
+     *
      */
     get WellKnownFolderName(): WellKnownFolderName { return WellKnownFolderName[this.WellKnownFolderNameAsString] || null; }
 
@@ -53012,7 +53028,7 @@ export class Folder extends ServiceObject {
     }
 
     /**
-     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties. 
+     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties.
      * Calling this method results in a call to EWS.
      *
      * @param   {ExchangeService}   service       The service to use to bind to the folder.
@@ -53021,7 +53037,7 @@ export class Folder extends ServiceObject {
      */
     static Bind(service: ExchangeService, id: FolderId): Promise<Folder>;
     /**
-     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties. 
+     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties.
      * Calling this method results in a call to EWS.
      *
      * @param   {ExchangeService}       service       The service to use to bind to the folder.
@@ -53030,7 +53046,7 @@ export class Folder extends ServiceObject {
      */
     static Bind(service: ExchangeService, name: WellKnownFolderName): Promise<Folder>;
     /**
-     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties. 
+     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties.
      * Calling this method results in a call to EWS.
      *
      * @param   {ExchangeService}   service       The service to use to bind to the folder.
@@ -53040,7 +53056,7 @@ export class Folder extends ServiceObject {
      */
     static Bind(service: ExchangeService, id: FolderId, propertySet: PropertySet): Promise<Folder>;
     /**
-     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties. 
+     * Binds to an existing folder, whatever its actual type is, and loads the specified set of properties.
      * Calling this method results in a call to EWS.
      *
      * @param   {ExchangeService}       service       The service to use to bind to the folder.
@@ -53274,7 +53290,7 @@ export class Folder extends ServiceObject {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.Folder; }
@@ -53510,7 +53526,7 @@ export class Folder extends ServiceObject {
 
     /**
      * @internal Validates this instance.
-     * 
+     *
      */
     Validate(): void {
         super.Validate();
@@ -53522,7 +53538,7 @@ export class Folder extends ServiceObject {
     }
 }
 /**
- * Represents a folder containing appointments. 
+ * Represents a folder containing appointments.
  */
 export class CalendarFolder extends Folder {
 
@@ -53536,7 +53552,7 @@ export class CalendarFolder extends Folder {
     }
 
     /**
-     * Binds to an existing calendar folder and loads its first class properties. 
+     * Binds to an existing calendar folder and loads its first class properties.
      * Calling this method results in a call to EWS.
      *
      * @param   {ExchangeService}   service       The service to use to bind to the calendar folder.
@@ -53554,7 +53570,7 @@ export class CalendarFolder extends Folder {
      */
     static Bind(service: ExchangeService, name: WellKnownFolderName): Promise<CalendarFolder>;
     /**
-     * Binds to an existing calendar folder and loads the specified set of properties. 
+     * Binds to an existing calendar folder and loads the specified set of properties.
      * Calling this method results in a call to EWS.
      *
      * @param   {ExchangeService}   service       The service to use to bind to the calendar folder.
@@ -53564,7 +53580,7 @@ export class CalendarFolder extends Folder {
      */
     static Bind(service: ExchangeService, id: FolderId, propertySet: PropertySet): Promise<CalendarFolder>;
     /**
-     * Binds to an existing calendar folder and loads the specified set of properties. 
+     * Binds to an existing calendar folder and loads the specified set of properties.
      * Calling this method results in a call to EWS.
      *
      * @param   {ExchangeService}       service       The service to use to bind to the folder.
@@ -53610,14 +53626,14 @@ export class CalendarFolder extends Folder {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.CalendarFolder; }
 }
 
 /**
- * Represents a folder containing contacts. 
+ * Represents a folder containing contacts.
  */
 export class ContactsFolder extends Folder {
 
@@ -53684,14 +53700,14 @@ export class ContactsFolder extends Folder {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.ContactsFolder; }
 }
 
 /**
- * Represents a search folder. 
+ * Represents a search folder.
  */
 export class SearchFolder extends Folder {
 
@@ -53757,7 +53773,7 @@ export class SearchFolder extends Folder {
         EwsLogging.Assert(false, "SearchFolder.Bind", "unknown paramete type");
         throw new Error("unknow parameter type. this should not be  reached");
     }
-    
+
     /**
      * @internal Gets the minimum required server version.
      *
@@ -53774,7 +53790,7 @@ export class SearchFolder extends Folder {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.SearchFolder; }
@@ -53792,7 +53808,7 @@ export class SearchFolder extends Folder {
 }
 
 /**
- * Represents a folder containing task items. 
+ * Represents a folder containing task items.
  */
 export class TasksFolder extends Folder {
 
@@ -53863,7 +53879,7 @@ export class TasksFolder extends Folder {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.TasksFolder; }
@@ -54410,7 +54426,7 @@ export class Item extends ServiceObject {
      */
     constructor(obj: ExchangeService | ItemAttachment)
     constructor(obj: ExchangeService | ItemAttachment) {
-        super(obj instanceof TypeContainer.ExchangeService ? <ExchangeService>obj : obj instanceof TypeContainer.ItemAttachment ? (<ItemAttachment>obj).Service : null);//info: cannot check instanceof to avoid circular dependency in js. TypeContainer is workaround 
+        super(obj instanceof TypeContainer.ExchangeService ? <ExchangeService>obj : obj instanceof TypeContainer.ItemAttachment ? (<ItemAttachment>obj).Service : null);//info: cannot check instanceof to avoid circular dependency in js. TypeContainer is workaround
 
         if (obj instanceof TypeContainer.ItemAttachment) {
             var parentAttachment = obj;
@@ -54446,7 +54462,7 @@ export class Item extends ServiceObject {
 
     /**
      * Creates a copy of this item in the specified folder. Calling this method results in a call to EWS.
-     * 
+     *
      * Copy returns null if the copy operation is across two mailboxes or between a mailbox and a public folder.
      *
      * @param   {WellKnownFolderName}   destinationFolderName   The name of the folder in which to create a copy of this item.
@@ -54514,7 +54530,7 @@ export class Item extends ServiceObject {
      * @return  {boolean}                       true if a time zone SOAP header should be emitted; otherwise, false.
      */
     GetIsTimeZoneHeaderRequired(isUpdateOperation: boolean): boolean {
-        // Starting E14SP2, attachment will be sent along with CreateItem requests. 
+        // Starting E14SP2, attachment will be sent along with CreateItem requests.
         // if the attachment used to require the Timezone header, CreateItem request should do so too.
         //
         //debugger;//todo: filtering of specific type needed.
@@ -54547,7 +54563,7 @@ export class Item extends ServiceObject {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.Item; }
@@ -54556,7 +54572,7 @@ export class Item extends ServiceObject {
      * @internal Gets a value indicating whether this instance has unprocessed attachment collection changes.
      *
      * @return  {boolean}      true or false.
-     * 
+     *
      */
     HasUnprocessedAttachmentChanges(): boolean { return this.Attachments.HasUnprocessedChanges(); }
 
@@ -54695,7 +54711,7 @@ export class Item extends ServiceObject {
 
     /**
      * Moves this item to a the specified folder. Calling this method results in a call to EWS.
-     * 
+     *
      * Move returns null if the move operation is across two mailboxes or between a mailbox and a public folder.
      *
      * @param   {FolderId}   destinationFolderId    The Id of the folder to which to move this item.
@@ -54704,7 +54720,7 @@ export class Item extends ServiceObject {
     Move(destinationFolderId: FolderId): Promise<Item>;
     /**
      * Moves this item to a the specified folder. Calling this method results in a call to EWS.
-     * 
+     *
      * Move returns null if the move operation is across two mailboxes or between a mailbox and a public folder.
      *
      * @param   {WellKnownFolderName}   destinationFolderName   The name of the folder to which to move this item.
@@ -54779,7 +54795,7 @@ export class Item extends ServiceObject {
 
     /**
      * @internal Sets the subject.
-     * 
+     *
      */
     SetSubject(subject: string): void { this.PropertyBag._setItem(Schemas.ItemSchema.Subject, subject); }
 
@@ -54819,7 +54835,7 @@ export class Item extends ServiceObject {
 
     /**
      * @internal Validates this instance.
-     * 
+     *
      */
     Validate(): void {
         super.Validate();
@@ -54913,7 +54929,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
     }
 
     /**
-     * Gets or sets a value indicating the free/busy status of the owner of this appointment. 
+     * Gets or sets a value indicating the free/busy status of the owner of this appointment.
      */
     get LegacyFreeBusyStatus(): LegacyFreeBusyStatus {
         return <LegacyFreeBusyStatus>this.PropertyBag._getItem(Schemas.AppointmentSchema.LegacyFreeBusyStatus);
@@ -54933,7 +54949,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
     }
 
     /**
-     * Gets a text indicating when this appointment occurs. 
+     * Gets a text indicating when this appointment occurs.
      * The text returned by When is localized using the Exchange Server culture or using the culture specified in the PreferredCulture property of the ExchangeService object this appointment is bound to.
      */
     get When(): string {
@@ -55306,7 +55322,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
      *
      * @param   {ExchangeService}     service       The service to use to bind to the appointment.
      * @param   {ItemId}              id            The Id of the appointment to bind to.
-     * @param   {PropertySet}         propertySet   The set of properties to load.     
+     * @param   {PropertySet}         propertySet   The set of properties to load.
      * @return  {Promise<Appointment>}   An Appointment instance representing the appointment corresponding to the specified Id :Promise.
      */
     static Bind(service: ExchangeService, id: ItemId, propertySet: PropertySet): Promise<Appointment>;
@@ -55464,7 +55480,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
      * @param   {DeleteMode}   deleteMode              The deletion mode.
      * @param   {SendCancellationsMode}   sendCancellationsMode   Specifies if and how cancellations should be sent if this appointment is a meeting.
      */
-    Delete(deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode): Promise<void>; //info: signature added to implement workaround @github #52 
+    Delete(deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode): Promise<void>; //info: signature added to implement workaround @github #52
     Delete(deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode | any): Promise<void> {
         return this.InternalDelete(
             deleteMode,
@@ -55564,7 +55580,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -55609,7 +55625,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
      *
      * @param   {SendInvitationsMode}   sendInvitationsMode   *not Optional* Specifies if and how invitations should be sent if this appointment is a meeting.
      */
-    Save(sendInvitationsMode?: SendInvitationsMode): Promise<void>; //info: optional sendInvitationsMode to implement workaround @github #52 
+    Save(sendInvitationsMode?: SendInvitationsMode): Promise<void>; //info: optional sendInvitationsMode to implement workaround @github #52
     /**
      * Saves this appointment in the specified folder. Calling this method results in at least one call to EWS. Mutliple calls to EWS might be made if attachments have been added.
      * ### sendInvitationsMode not optional, see github issue #52
@@ -55617,7 +55633,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
      * @param   {WellKnownFolderName}   destinationFolderName   The name of the folder in which to save this appointment.
      * @param   {SendInvitationsMode}   sendInvitationsMode     *not Optional* Specifies if and how invitations should be sent if this appointment is a meeting.
      */
-    Save(destinationFolderName: WellKnownFolderName, sendInvitationsMode?: SendInvitationsMode): Promise<void>; //info: optional sendInvitationsMode to implement workaround @github #52 
+    Save(destinationFolderName: WellKnownFolderName, sendInvitationsMode?: SendInvitationsMode): Promise<void>; //info: optional sendInvitationsMode to implement workaround @github #52
     /**
      * Saves this appointment in the specified folder. Calling this method results in at least one call to EWS. Mutliple calls to EWS might be made if attachments have been added.
      * ### sendInvitationsMode not optional, see github issue #52
@@ -55625,7 +55641,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
      * @param   {FolderId}                destinationFolderId   The Id of the folder in which to save this appointment.
      * @param   {SendInvitationsMode}     sendInvitationsMode   *not Optional* Specifies if and how invitations should be sent if this appointment is a meeting.
      */
-    Save(destinationFolderId: FolderId, sendInvitationsMode?: SendInvitationsMode): Promise<void>; //info: optional sendInvitationsMode to implement workaround @github #52 
+    Save(destinationFolderId: FolderId, sendInvitationsMode?: SendInvitationsMode): Promise<void>; //info: optional sendInvitationsMode to implement workaround @github #52
     Save(destinationFolderNameOrIdOrSendInvitationMode: FolderId | WellKnownFolderName | SendInvitationsMode,
         sendInvitationsMode?: SendInvitationsMode): Promise<void> {
 
@@ -55654,7 +55670,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
     }
 
     /** ## internal - do not use on Appointment class */
-    Update(conflictResolutionMode: ConflictResolutionMode): Promise<void>; //info: added signature to implement workaround @github #52 
+    Update(conflictResolutionMode: ConflictResolutionMode): Promise<void>; //info: added signature to implement workaround @github #52
     /**
      * Applies the local changes that have been made to this appointment. Calling this method results in at least one call to EWS. Mutliple calls to EWS might be made if attachments have been added or removed.
      * ### sendInvitationsOrCancellationsMode not optional, see github issue #52
@@ -55709,7 +55725,7 @@ export class Appointment extends Item implements ICalendarActionProvider {
 
 /**
  * Represents a **contact**. Properties available on contacts are defined in the *ContactSchema* class.
- * 
+ *
  */
 export class Contact extends Item {
 
@@ -55731,7 +55747,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets a value indicating how the FileAs property should be automatically calculated.
-     * 
+     *
      */
     get FileAsMapping(): FileAsMapping {
         return <FileAsMapping>this.PropertyBag._getItem(Schemas.ContactSchema.FileAsMapping);
@@ -55742,7 +55758,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the display name of the contact.
-     * 
+     *
      */
     get DisplayName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.DisplayName);
@@ -55753,7 +55769,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the given name of the contact.
-     * 
+     *
      */
     get GivenName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.GivenName);
@@ -55764,7 +55780,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the initials of the contact.
-     * 
+     *
      */
     get Initials(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Initials);
@@ -55775,7 +55791,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the middle mame of the contact.
-     * 
+     *
      */
     get MiddleName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.MiddleName);
@@ -55786,7 +55802,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the nick name of the contact.
-     * 
+     *
      */
     get NickName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.NickName);
@@ -55797,7 +55813,7 @@ export class Contact extends Item {
 
     /**
      * Gets the complete name of the contact.
-     * 
+     *
      */
     get CompleteName(): CompleteName {
         return <CompleteName>this.PropertyBag._getItem(Schemas.ContactSchema.CompleteName);
@@ -55805,7 +55821,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the compnay name of the contact.
-     * 
+     *
      */
     get CompanyName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.CompanyName);
@@ -55815,9 +55831,9 @@ export class Contact extends Item {
     }
 
     /**
-     * Gets an indexed list of e-mail addresses for the contact. For example, to set the first e-mail address, 
+     * Gets an indexed list of e-mail addresses for the contact. For example, to set the first e-mail address,
      * use the following syntax: EmailAddresses[EmailAddressKey.EmailAddress1] = "john.doe@contoso.com"
-     * 
+     *
      */
     get EmailAddresses(): EmailAddressDictionary {
         return <EmailAddressDictionary>this.PropertyBag._getItem(Schemas.ContactSchema.EmailAddresses);
@@ -55826,7 +55842,7 @@ export class Contact extends Item {
     /**
      * Gets an indexed list of physical addresses for the contact. For example, to set the business address,
      * use the following syntax: PhysicalAddresses[PhysicalAddressKey.Business] = new PhysicalAddressEntry()
-     * 
+     *
      */
     get PhysicalAddresses(): PhysicalAddressDictionary {
         return <PhysicalAddressDictionary>this.PropertyBag._getItem(Schemas.ContactSchema.PhysicalAddresses);
@@ -55835,7 +55851,7 @@ export class Contact extends Item {
     /**
      * Gets an indexed list of phone numbers for the contact. For example, to set the home phone number,
      * use the following syntax: PhoneNumbers[PhoneNumberKey.HomePhone] = "phone number"
-     * 
+     *
      */
     get PhoneNumbers(): PhoneNumberDictionary {
         return <PhoneNumberDictionary>this.PropertyBag._getItem(Schemas.ContactSchema.PhoneNumbers);
@@ -55843,7 +55859,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the contact's assistant name.
-     * 
+     *
      */
     get AssistantName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.AssistantName);
@@ -55854,7 +55870,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the birthday of the contact.
-     * 
+     *
      */
     get Birthday(): DateTime {
         return <DateTime>this.PropertyBag._getItem(Schemas.ContactSchema.Birthday);
@@ -55865,7 +55881,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the business home page of the contact.
-     * 
+     *
      */
     get BusinessHomePage(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.BusinessHomePage);
@@ -55876,7 +55892,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets a list of children for the contact.
-     * 
+     *
      */
     get Children(): StringList {
         return <StringList>this.PropertyBag._getItem(Schemas.ContactSchema.Children);
@@ -55887,7 +55903,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets a list of companies for the contact.
-     * 
+     *
      */
     get Companies(): StringList {
         return <StringList>this.PropertyBag._getItem(Schemas.ContactSchema.Companies);
@@ -55898,7 +55914,7 @@ export class Contact extends Item {
 
     /**
      * Gets the source of the contact.
-     * 
+     *
      */
     get ContactSource(): ContactSource {
         return <ContactSource>this.PropertyBag._getItem(Schemas.ContactSchema.ContactSource);
@@ -55906,7 +55922,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the department of the contact.
-     * 
+     *
      */
     get Department(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Department);
@@ -55917,7 +55933,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the generation of the contact.
-     * 
+     *
      */
     get Generation(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Generation);
@@ -55927,9 +55943,9 @@ export class Contact extends Item {
     }
 
     /**
-     * Gets an indexed list of Instant Messaging addresses for the contact. 
+     * Gets an indexed list of Instant Messaging addresses for the contact.
      * For example, to set the first IM address, use the following syntax: ImAddresses[ImAddressKey.ImAddress1] = "john.doe@contoso.com"
-     * 
+     *
      */
     get ImAddresses(): ImAddressDictionary {
         return <ImAddressDictionary>this.PropertyBag._getItem(Schemas.ContactSchema.ImAddresses);
@@ -55937,7 +55953,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the contact's job title.
-     * 
+     *
      */
     get JobTitle(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.JobTitle);
@@ -55948,7 +55964,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the name of the contact's manager.
-     * 
+     *
      */
     get Manager(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Manager);
@@ -55959,7 +55975,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the mileage for the contact.
-     * 
+     *
      */
     get Mileage(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Mileage);
@@ -55970,7 +55986,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the location of the contact's office.
-     * 
+     *
      */
     get OfficeLocation(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.OfficeLocation);
@@ -55981,7 +55997,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the index of the contact's postal address. When set, PostalAddressIndex refers to an entry in the PhysicalAddresses indexed list.
-     * 
+     *
      */
     get PostalAddressIndex(): PhysicalAddressIndex {
         return <PhysicalAddressIndex>this.PropertyBag._getItem(Schemas.ContactSchema.PostalAddressIndex);
@@ -55992,7 +56008,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the contact's profession.
-     * 
+     *
      */
     get Profession(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Profession);
@@ -56003,7 +56019,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the name of the contact's spouse.
-     * 
+     *
      */
     get SpouseName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.SpouseName);
@@ -56014,7 +56030,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the surname of the contact.
-     * 
+     *
      */
     get Surname(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Surname);
@@ -56025,7 +56041,7 @@ export class Contact extends Item {
 
     /**
      * Gets or sets the date of the contact's wedding anniversary.
-     * 
+     *
      */
     get WeddingAnniversary(): DateTime {
         return <DateTime>this.PropertyBag._getItem(Schemas.ContactSchema.WeddingAnniversary);
@@ -56036,7 +56052,7 @@ export class Contact extends Item {
 
     /**
      * Gets a value indicating whether this contact has a picture associated with it.
-     * 
+     *
      */
     get HasPicture(): boolean {
         return <boolean>this.PropertyBag._getItem(Schemas.ContactSchema.HasPicture);
@@ -56044,7 +56060,7 @@ export class Contact extends Item {
 
     /**
      * Gets the full phonetic name from the directory
-     * 
+     *
      */
     get PhoneticFullName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.PhoneticFullName);
@@ -56052,7 +56068,7 @@ export class Contact extends Item {
 
     /**
      * Gets the phonetic first name from the directory
-     * 
+     *
      */
     get PhoneticFirstName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.PhoneticFirstName);
@@ -56060,7 +56076,7 @@ export class Contact extends Item {
 
     /**
      * Gets the phonetic last name from the directory
-     * 
+     *
      */
     get PhoneticLastName(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.PhoneticLastName);
@@ -56068,7 +56084,7 @@ export class Contact extends Item {
 
     /**
      * Gets the Alias from the directory
-     * 
+     *
      */
     get Alias(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Alias);
@@ -56076,7 +56092,7 @@ export class Contact extends Item {
 
     /**
      * Get the Notes from the directory
-     * 
+     *
      */
     get Notes(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.Notes);
@@ -56084,7 +56100,7 @@ export class Contact extends Item {
 
     /**
      * Gets the Photo from the directory **Unstable: needs testing**
-     * 
+     *
      */
     get DirectoryPhoto(): number[] {
         return <number[]>this.PropertyBag._getItem(Schemas.ContactSchema.Photo);
@@ -56093,7 +56109,7 @@ export class Contact extends Item {
     /**
      * Gets the User SMIME certificate from the directory **Unstable: needs testing**
      * //ref: cant use bytearray, using base64 decoded string instead -  number[][]
-     * 
+     *
      */
     get UserSMIMECertificate(): string[] {
         var byteArrayArray: ByteArrayArray = <ByteArrayArray>this.PropertyBag._getItem(Schemas.ContactSchema.UserSMIMECertificate);
@@ -56103,7 +56119,7 @@ export class Contact extends Item {
     /**
      * Gets the MSExchange certificate from the directory **Unstable: needs testing**
      * //ref: cant use bytearray, using base64 decoded string instead -  number[][]
-     * 
+     *
      */
     get MSExchangeCertificate(): string[] {
         var byteArrayArray: ByteArrayArray = <ByteArrayArray>this.PropertyBag._getItem(Schemas.ContactSchema.MSExchangeCertificate);
@@ -56112,7 +56128,7 @@ export class Contact extends Item {
 
     /**
      * Gets the DirectoryID as Guid or DN string
-     * 
+     *
      */
     get DirectoryId(): string {
         return <string>this.PropertyBag._getItem(Schemas.ContactSchema.DirectoryId);
@@ -56120,7 +56136,7 @@ export class Contact extends Item {
 
     /**
      * Gets the manager mailbox information
-     * 
+     *
      */
     get ManagerMailbox(): EmailAddress {
         return <EmailAddress>this.PropertyBag._getItem(Schemas.ContactSchema.ManagerMailbox);
@@ -56128,7 +56144,7 @@ export class Contact extends Item {
 
     /**
      * Get the direct reports mailbox information
-     * 
+     *
      */
     get DirectReports(): EmailAddressCollection {
         return <EmailAddressCollection>this.PropertyBag._getItem(Schemas.ContactSchema.DirectReports);
@@ -56147,7 +56163,7 @@ export class Contact extends Item {
      */
     constructor(parentAttachment: ItemAttachment);
     constructor(serviceOrParentAttachment: ExchangeService | ItemAttachment) {
-        super(serviceOrParentAttachment instanceof ItemAttachment ? serviceOrParentAttachment.Service : <ExchangeService>serviceOrParentAttachment);//todo:fix -can not user instanceof with exchangeservice, creates circular loop with ewsutility 
+        super(serviceOrParentAttachment instanceof ItemAttachment ? serviceOrParentAttachment.Service : <ExchangeService>serviceOrParentAttachment);//todo:fix -can not user instanceof with exchangeservice, creates circular loop with ewsutility
     }
 
     /**
@@ -56214,7 +56230,7 @@ export class Contact extends Item {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.Contact; }
@@ -56253,10 +56269,10 @@ export class Contact extends Item {
     //SetContactPicture(fileName: string): any { throw new Error("Contact.ts - SetContactPicture : Not implemented."); }
     /**
      * Sets the contact's picture using the base64 content of file.
-     * 
+     *
      * @param   {string}    base64Content       base64 content of picture attachment.
      * @param   {string}    attachmentName      name of the picture attachment.
-     * 
+     *
      */
     SetContactPicture(base64Content: string, attachmentName: string): void {
         EwsUtilities.ValidateMethodVersion(this.Service, ExchangeVersion.Exchange2010, "SetContactPicture");
@@ -56267,7 +56283,7 @@ export class Contact extends Item {
     }
 
     /**
-     * @internal Validates this instance.     * 
+     * @internal Validates this instance.     *
      */
     Validate(): void {
         super.Validate();
@@ -56287,7 +56303,7 @@ export class ContactGroup extends Item {
 
     /**
      * Gets the name under which this contact group is filed as.
-     * 
+     *
      * [RequiredServerVersion(ExchangeVersion.Exchange2010)]
      */
     get FileAs(): string {
@@ -56306,7 +56322,7 @@ export class ContactGroup extends Item {
 
     /**
      * Gets the members of the contact group.
-     * 
+     *
      * [RequiredServerVersion(ExchangeVersion.Exchange2010)]
      */
     get Members(): GroupMemberCollection {
@@ -56373,7 +56389,7 @@ export class ContactGroup extends Item {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -56603,7 +56619,7 @@ export class EmailMessage extends Item {
      *
      * @param   {ExchangeService}         service     The service to use to bind to the e-mail message.
      * @param   {ItemId}                  id          The Id of the e-mail message to bind to.
-     * @return  {Promise<EmailMessage>}              An EmailMessage instance representing the e-mail message corresponding to the specified Id :Promise. 
+     * @return  {Promise<EmailMessage>}              An EmailMessage instance representing the e-mail message corresponding to the specified Id :Promise.
      */
     static Bind(service: ExchangeService, id: ItemId): Promise<EmailMessage>;
     /**
@@ -56675,7 +56691,7 @@ export class EmailMessage extends Item {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.Message; }
@@ -56710,13 +56726,13 @@ export class EmailMessage extends Item {
             // Regardless of whether item is dirty or not, if it has unprocessed
             // attachment changes, process them now.
 
-            //debugger; //todo: check - check for attachment save() promise. 
+            //debugger; //todo: check - check for attachment save() promise.
             return Promise.resolve(
                 // Validate and save attachments before sending.
                 this.HasUnprocessedAttachmentChanges() ? this.Attachments.ValidateAndSave() : void 0)
                 .then(() => {
                     if (this.PropertyBag.GetIsUpdateCallNecessary()) {
-                        return <any>this.InternalUpdate( //ref: //info: <any> to supress cast error, returning promise is required, this time it is not void but no action is taken on this promise. 
+                        return <any>this.InternalUpdate( //ref: //info: <any> to supress cast error, returning promise is required, this time it is not void but no action is taken on this promise.
                             parentFolderId,
                             ConflictResolutionMode.AutoResolve,
                             messageDisposition,
@@ -56825,7 +56841,7 @@ export class MeetingMessage extends EmailMessage {
 
     /**
      * Gets the isorganizer property for this meeting
-     * 
+     *
      * @Nullable
      */
     get IsOrganizer(): boolean {
@@ -56848,7 +56864,7 @@ export class MeetingMessage extends EmailMessage {
 
     /**
      * Gets the ICalendar RecurrenceId.
-     * 
+     *
      * @Nullable
      */
     get ICalRecurrenceId(): DateTime {
@@ -56926,7 +56942,7 @@ export class MeetingMessage extends EmailMessage {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -57034,7 +57050,7 @@ export class MeetingCancellation extends MeetingMessage {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -57117,7 +57133,7 @@ export class MeetingRequest extends MeetingMessage implements ICalendarActionPro
     }
 
     /**
-     * Gets a value indicating the free/busy status of the owner of this appointment. 
+     * Gets a value indicating the free/busy status of the owner of this appointment.
      */
     get LegacyFreeBusyStatus(): LegacyFreeBusyStatus {
         return <LegacyFreeBusyStatus>this.PropertyBag._getItem(Schemas.AppointmentSchema.LegacyFreeBusyStatus);
@@ -57131,7 +57147,7 @@ export class MeetingRequest extends MeetingMessage implements ICalendarActionPro
     }
 
     /**
-     * Gets a text indicating when this appointment occurs. 
+     * Gets a text indicating when this appointment occurs.
      * The text returned by When is localized using the Exchange Server culture or using the culture specified in the PreferredCulture property of the ExchangeService object this appointment is bound to.
      */
     get When(): string {
@@ -57468,7 +57484,7 @@ export class MeetingRequest extends MeetingMessage implements ICalendarActionPro
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -57605,7 +57621,7 @@ export class MeetingResponse extends MeetingMessage {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.MeetingResponse; }
@@ -57613,7 +57629,7 @@ export class MeetingResponse extends MeetingMessage {
 
 /**
  * Represents a post item. Properties available on post items are defined in the PostItemSchema class.
- * 
+ *
  * @sealed
  */
 export class PostItem extends Item {
@@ -57824,7 +57840,7 @@ export class PostItem extends Item {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -58013,7 +58029,7 @@ export class Task extends Item {
     }
 
     /**
-     * Gets or sets the recurrence pattern for this task. Available recurrence pattern classes include Recurrence. 
+     * Gets or sets the recurrence pattern for this task. Available recurrence pattern classes include Recurrence.
      * DailyPattern, Recurrence.MonthlyPattern and Recurrence.YearlyPattern.
      */
     get Recurrence(): Recurrence {
@@ -58107,8 +58123,8 @@ export class Task extends Item {
     }
 
     /**
-     * Deletes the current occurrence of a recurring task. After the current occurrence isdeleted, the task represents the next occurrence. 
-     * Developers should call Load to retrieve the new property values of the task. 
+     * Deletes the current occurrence of a recurring task. After the current occurrence isdeleted, the task represents the next occurrence.
+     * Developers should call Load to retrieve the new property values of the task.
      * Calling this method results in a call to EWS.
      *
      * @param   {DeleteMode}   deleteMode   The deletion mode.
@@ -58151,7 +58167,7 @@ export class Task extends Item {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -58159,7 +58175,7 @@ export class Task extends Item {
     }
 
     /**
-     * Applies the local changes that have been made to this task. Calling this method results in at least one call to EWS. 
+     * Applies the local changes that have been made to this task. Calling this method results in at least one call to EWS.
      * Mutliple calls to EWS might be made if attachments have been added or removed.
      *
      * @param   {ConflictResolutionMode}    conflictResolutionMode   Specifies how conflicts should be resolved.
@@ -58593,7 +58609,7 @@ export class Conversation extends ServiceObject {
     }
 
     /**
-     * Sets up a conversation so that any item received within that conversation is no longer moved to a specific folder. 
+     * Sets up a conversation so that any item received within that conversation is no longer moved to a specific folder.
      * Calling this method results in a call to EWS.
      *
      * @param   {boolean}   processSynchronously   Indicates whether the method should return only once disabling this rule is completely done. If processSynchronously is false, the method returns immediately.
@@ -58612,7 +58628,7 @@ export class Conversation extends ServiceObject {
      * Calling this method results in a call to EWS.
      *
      * @param   {string[]}  categories             The categories that should be stamped on items in the conversation.
-     * @param   {boolean}   processSynchronously   Indicates whether the method should return only once enabling this rule and stamping existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.          
+     * @param   {boolean}   processSynchronously   Indicates whether the method should return only once enabling this rule and stamping existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
      * @return  {Promise<void>}    Promise
      */
     EnableAlwaysCategorizeItems(categories: string[], processSynchronously: boolean): Promise<void> {
@@ -58777,7 +58793,7 @@ export class Conversation extends ServiceObject {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -58797,7 +58813,7 @@ export class Conversation extends ServiceObject {
     }
 
     /**
-     * @internal This method is not supported in this object. 
+     * @internal This method is not supported in this object.
      * Loads the specified set of properties on the object.
      *
      * @param   {PropertySet}   propertySet   The properties to load.
@@ -58871,7 +58887,7 @@ export class Conversation extends ServiceObject {
 
 /**
  * Represents the base class for all responses that can be sent.
- * 
+ *
  * @typeparam   {TMessage}     Type of message.
  */
 export abstract class ResponseObject<TMessage extends EmailMessage> extends ServiceObject {
@@ -59027,7 +59043,7 @@ export abstract class ResponseObject<TMessage extends EmailMessage> extends Serv
 
 /**
  * Represents the base class for all calendar-related response messages.
- * 
+ *
  * @typeparam   {TMessage}     The type of message that is created when this response message is saved.
  */
 export abstract class CalendarResponseMessageBase<TMessage extends EmailMessage> extends ResponseObject<TMessage> {
@@ -59045,7 +59061,7 @@ export abstract class CalendarResponseMessageBase<TMessage extends EmailMessage>
      *
      * @return  {CalendarActionResults}      A CalendarActionResults object containing the various items that were created or modified as a results of this operation.
      */
-    Save(): Promise<CalendarActionResults | any>;  //info: added extra "any" for workaround @github #52 
+    Save(): Promise<CalendarActionResults | any>;  //info: added extra "any" for workaround @github #52
     /**
      * Saves the response in the specified folder. Calling this method results in a call to EWS.
      *
@@ -59125,7 +59141,7 @@ export abstract class CalendarResponseMessageBase<TMessage extends EmailMessage>
 
 /**
  * Represents the base class for accept, tentatively accept and decline response messages.
- * 
+ *
  * @typeparam   {TMessage}     The type of message that is created when this response message is saved.
  */
 export abstract class CalendarResponseMessage<TMessage extends EmailMessage> extends CalendarResponseMessageBase<TMessage> {
@@ -59293,7 +59309,7 @@ export class CancelMeetingMessage extends CalendarResponseMessageBase<MeetingCan
     GetSchema(): ServiceObjectSchema { return Schemas.CancelMeetingMessageSchema.Instance; }
     /**
      * Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.CancelCalendarItem; }
@@ -59322,7 +59338,7 @@ export class DeclineMeetingInvitationMessage extends CalendarResponseMessage<Mee
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string { return XmlElementNames.DeclineItem; }
@@ -59393,7 +59409,7 @@ export class ResponseMessage extends ResponseObject<EmailMessage> {
     set BodyPrefix(value: MessageBody) {
         this.PropertyBag._setItem(Schemas.ResponseObjectSchema.BodyPrefix, value);
     }
-        
+
     /**
      * Initializes a new instance of the **ResponseMessage** class.
      *
@@ -59445,7 +59461,7 @@ export class ResponseMessage extends ResponseObject<EmailMessage> {
 
 /**
  * Represents a reply to a post item.
- * 
+ *
  * @sealed
  */
 export class PostReply extends ServiceObject {
@@ -59519,7 +59535,7 @@ export class PostReply extends ServiceObject {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -59610,7 +59626,7 @@ export class PostReply extends ServiceObject {
 
 /**
  * @internal Represents a response object created to remove a calendar item from a meeting cancellation.
- * 
+ *
  * @sealed
  */
 export class RemoveFromCalendar extends ServiceObject {
@@ -59654,7 +59670,7 @@ export class RemoveFromCalendar extends ServiceObject {
 
     /**
      * @internal Gets the element name of item in XML
-     * 
+     *
      * @return  {string} name of elelment
      */
     GetXmlElementName(): string {
@@ -59858,13 +59874,13 @@ export class SuppressReadReceipt extends ServiceObject {
 //     public ThirdPartyPhotoUrls: PropertyDefinition;
 
 //     /**
-//      * @internal Instance of **PostItemSchema** 
+//      * @internal Instance of **PostItemSchema**
 //      */
 //     static Instance: PersonaSchema = new PersonaSchema();
 
 //     /**
 //      * Registers properties.
-//      * 
+//      *
 //      * /remarks/ IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
 //      */
 //     RegisterProperties(): void {
@@ -60255,7 +60271,7 @@ export abstract class ServiceObjectSchema implements IEnumerable<PropertyDefinit
     //
     //        return typeList;
     //    });
-    //    
+    //
     ////    private static allSchemaTypes: LazyMember<any[]> = new LazyMember<any[]>(() => { //SchemaTypeList - LazyMember<T>; - using typenames[] temporarily
     ////        var typeList: any[] = [];
     ////        return typeList;
@@ -60288,7 +60304,7 @@ export abstract class ServiceObjectSchema implements IEnumerable<PropertyDefinit
     //            //var type: string = item;
     //            ServiceObjectSchema.AddSchemaPropertiesToDictionary(type, propDefDictionary);
     //        }
-    //        
+    //
     //        return propDefDictionary;
     //    });
     //    static AddSchemaPropertiesToDictionary(type: string /*System.Type*/, propDefDictionary: StringPropertyDefinitionBaseDictionary<string, PropertyDefinitionBase> /*System.Collections.Generic.Dictionary<TKey, TValue>*/): void {
@@ -60339,7 +60355,7 @@ export abstract class ServiceObjectSchema implements IEnumerable<PropertyDefinit
     }
 
     //    static ForeachPublicStaticPropertyFieldInType(type: string /*System.Type*/, propFieldDelegate: (propertyDefinition: PropertyDefinition, fieldInfo: any /*FieldInfo*/) => void /*ServiceObjectSchema.PropertyFieldInfoDelegate*/): void {
-    //        
+    //
     //        var keys = Object.keys(type);
     //        keys.forEach((s) => {
     //            if (typeof (type[s]) != "function" && type[s] instanceof (PropertyDefinition)) {
@@ -60357,7 +60373,7 @@ export abstract class ServiceObjectSchema implements IEnumerable<PropertyDefinit
     //        //}
     //    }
     //    static InitializeSchemaPropertyNames(): void {
-    //        
+    //
     //        //lock(lockObject)
     //        //{
     //        for (var type of ServiceObjectSchema.allSchemaTypes.Member) {
@@ -60402,7 +60418,7 @@ export abstract class ServiceObjectSchema implements IEnumerable<PropertyDefinit
 
     /**
      * @internal Registers properties.
-     * 
+     *
      * /remarks/ IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {/** Virtual */ }
@@ -60954,13 +60970,13 @@ export class ConversationSchema extends ServiceObjectSchema {
     );
 
     /**
-     * @internal Instance of **ConversationSchema** 
+     * @internal Instance of **ConversationSchema**
      */
     static Instance: ConversationSchema = new ConversationSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -61340,13 +61356,13 @@ export class FolderSchema extends ServiceObjectSchema {
     );
 
     /**
-     * @internal Instance of **FolderSchema** 
+     * @internal Instance of **FolderSchema**
      */
     static Instance: FolderSchema = new FolderSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -61463,13 +61479,13 @@ export class SearchFolderSchema extends FolderSchema {
     );
 
     /**
-     * @internal Instance of **SearchFolderSchema** 
+     * @internal Instance of **SearchFolderSchema**
      */
     static Instance: SearchFolderSchema = new SearchFolderSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -62101,13 +62117,13 @@ export class ItemSchema extends ServiceObjectSchema {
     );
 
     /**
-     * @internal Instance of **ItemSchema** 
+     * @internal Instance of **ItemSchema**
      */
     static Instance: ItemSchema = new ItemSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -62962,13 +62978,13 @@ export class AppointmentSchema extends ItemSchema {
 
 
     /**
-     * @internal Instance of **AppointmentSchema** 
+     * @internal Instance of **AppointmentSchema**
      */
     static Instance: AppointmentSchema = new AppointmentSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -64084,13 +64100,13 @@ export class ContactSchema extends ItemSchema {
     );
 
     /**
-     * @internal Instance of **ContactSchema** 
+     * @internal Instance of **ContactSchema**
      */
     static Instance: ContactSchema = new ContactSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -64564,13 +64580,13 @@ export class ContactGroupSchema extends ItemSchema {
     );
 
     /**
-     * @internal Instance of **ContactGroupSchema** 
+     * @internal Instance of **ContactGroupSchema**
      */
     static Instance: ContactGroupSchema = new ContactGroupSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -64854,13 +64870,13 @@ export class EmailMessageSchema extends ItemSchema {
     );
 
     /**
-     * @internal Instance of **EmailMessageSchema** 
+     * @internal Instance of **EmailMessageSchema**
      */
     static Instance: EmailMessageSchema = new EmailMessageSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -65077,13 +65093,13 @@ export class MeetingMessageSchema extends EmailMessageSchema {
     );
 
     /**
-     * @internal Instance of **MeetingMessageSchema** 
+     * @internal Instance of **MeetingMessageSchema**
      */
     static Instance: MeetingMessageSchema = new MeetingMessageSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -65189,13 +65205,13 @@ export class MeetingCancellationSchema extends MeetingMessageSchema {
     public static EnhancedLocation: PropertyDefinition = Schemas.AppointmentSchema.EnhancedLocation;
 
     /**
-     * @internal Instance of **MeetingCancellationSchema** 
+     * @internal Instance of **MeetingCancellationSchema**
      */
     static Instance: MeetingCancellationSchema = new MeetingCancellationSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -65319,13 +65335,13 @@ export class MeetingResponseSchema extends MeetingMessageSchema {
     public static EnhancedLocation: PropertyDefinition = Schemas.AppointmentSchema.EnhancedLocation;
 
     /**
-     * @internal Instance of **MeetingResponseSchema** 
+     * @internal Instance of **MeetingResponseSchema**
      */
     static Instance: MeetingResponseSchema = new MeetingResponseSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -65642,13 +65658,13 @@ export class MeetingRequestSchema extends MeetingMessageSchema {
     public static NetShowUrl: PropertyDefinition = Schemas.AppointmentSchema.NetShowUrl;
 
     /**
-     * @internal Instance of **MeetingRequestSchema** 
+     * @internal Instance of **MeetingRequestSchema**
      */
     static Instance: MeetingRequestSchema = new MeetingRequestSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -65948,13 +65964,13 @@ export class PostItemSchema extends ItemSchema {
     public static Sender: PropertyDefinition = Schemas.EmailMessageSchema.Sender;
 
     /**
-     * @internal Instance of **PostItemSchema** 
+     * @internal Instance of **PostItemSchema**
      */
     static Instance: PostItemSchema = new PostItemSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -66306,13 +66322,13 @@ export class TaskSchema extends ItemSchema {
     );
 
     /**
-     * @internal Instance of **TaskSchema** 
+     * @internal Instance of **TaskSchema**
      */
     static Instance: TaskSchema = new TaskSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -66475,13 +66491,13 @@ export class ResponseObjectSchema extends ServiceObjectSchema {
     );
 
     /**
-     * @internal Instance of **ResponseObjectSchema** 
+     * @internal Instance of **ResponseObjectSchema**
      */
     static Instance: ResponseObjectSchema = new ResponseObjectSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -66521,13 +66537,13 @@ Schemas.ResponseObjectSchema = <any>ResponseObjectSchema;
 export class PostReplySchema extends ServiceObjectSchema {
 
     /**
-     * @internal Instance of **PostReplySchema** 
+     * @internal Instance of **PostReplySchema**
      */
     static Instance: PostReplySchema = new PostReplySchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -66562,13 +66578,13 @@ Schemas.PostReplySchema = <any>PostReplySchema;
 export class ResponseMessageSchema extends ServiceObjectSchema {
 
     /**
-     * @internal Instance of **ResponseMessageSchema** 
+     * @internal Instance of **ResponseMessageSchema**
      */
     static Instance: ResponseMessageSchema = new ResponseMessageSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -66619,13 +66635,13 @@ export class CancelMeetingMessageSchema extends ServiceObjectSchema {
     );
 
     /**
-     * @internal Instance of **CancelMeetingMessageSchema** 
+     * @internal Instance of **CancelMeetingMessageSchema**
      */
     static Instance: CancelMeetingMessageSchema = new CancelMeetingMessageSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -66664,13 +66680,13 @@ Schemas.CancelMeetingMessageSchema = <any>CancelMeetingMessageSchema;
 export class CalendarResponseObjectSchema extends ServiceObjectSchema {
 
     /**
-     * @internal Instance of **CalendarResponseObjectSchema** 
+     * @internal Instance of **CalendarResponseObjectSchema**
      */
     public static Instance: CalendarResponseObjectSchema = new CalendarResponseObjectSchema();
 
     /**
      * Registers properties.
-     * 
+     *
      * /remarks/    IMPORTANT NOTE: PROPERTIES MUST BE REGISTERED IN SCHEMA ORDER (i.e. the same order as they are defined in types.xsd)
      */
     RegisterProperties(): void {
@@ -67628,7 +67644,7 @@ export class GetDomainSettingsResponse extends AutodiscoverResponse {
             }
             while (true);// (reader.HasRecursiveParent(XmlElementNames.UserSettings));
             //while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettings));
-           
+
         }
     }
     /**@internal */
@@ -68226,7 +68242,7 @@ export class AutodiscoverService extends ExchangeServiceBase {
         if (argsLength > 3) {
             throw new Error("AutodiscoverService.ts - ctor with " + argsLength + " parameters, invalid number of arguments, check documentation and try again.");
         }
-        //EwsUtilities.ValidateDomainNameAllowNull(domainOrVersion, "domain"); 
+        //EwsUtilities.ValidateDomainNameAllowNull(domainOrVersion, "domain");
 
         var domain: string = null;
         var url: Uri = null;
@@ -68737,7 +68753,7 @@ export class AutodiscoverService extends ExchangeServiceBase {
     }
     InternalGetDomainSettings(domains: string[], settings: DomainSettingName[], requestedVersion: ExchangeVersion, autodiscoverUrlRef: IRefParam<Uri>, thisref: AutodiscoverService, currentHop: number = 0): Promise<GetDomainSettingsResponseCollection> {
 
-        // The response to GetDomainSettings can be a redirection. Execute GetDomainSettings until we get back 
+        // The response to GetDomainSettings can be a redirection. Execute GetDomainSettings until we get back
         // a valid response or we've followed too many redirections.
         currentHop++;
         if (currentHop > AutodiscoverService.AutodiscoverMaxRedirections) {
@@ -69597,7 +69613,7 @@ export class DnsClient {
 //------------modulename->Microsoft.Exchange.WebServices.Dns------------
 
 
-			
+
 // export class DnsNativeMethods {
 // 	 private static DNSAPI: string = "dnsapi.dll";
 // 	AllocDnsServerList(dnsServerAddress: any /*System.Net.IPAddress*/): number{ throw new Error("DnsNativeMethods.ts - AllocDnsServerList : Not implemented.");}
@@ -69612,7 +69628,7 @@ export class DnsClient {
 // //------------modulename->Microsoft.Exchange.WebServices.Dns------------
 
 
-			
+
 
 /** @internal */
 export class DnsRecordHeader {
@@ -69630,7 +69646,7 @@ export class DnsRecordHeader {
 //------------modulename->Microsoft.Exchange.WebServices.Dns------------
 
 
-			
+
 
 /**@internal */
 export class DnsRecord {
@@ -69647,7 +69663,7 @@ export class DnsRecord {
 //------------modulename->Microsoft.Exchange.WebServices.Dns------------
 
 
-			
+
 
 /** @internal */
 export class DnsSrvRecord extends DnsRecord {
@@ -69668,12 +69684,12 @@ export class DnsSrvRecord extends DnsRecord {
 //------------modulename->Microsoft.Exchange.WebServices.Dns------------
 
 
-			
+
 
 
 /**
  * Represents retention policy tag object.
- * 
+ *
  * @sealed
  */
 export class RetentionPolicyTag {
@@ -69937,7 +69953,7 @@ export class InvalidOperationException extends Exception {
     constructor(message: string);
     constructor(message: string, innerException: Exception);
     constructor(message: string = null, innerException: Exception = null) {
-        super(message, innerException);        
+        super(message, innerException);
     }
 }
 export class JsonSerializationNotImplementedException extends Exception { //System.Exception {
@@ -69948,7 +69964,7 @@ export class NotSupportedException extends Exception {
     constructor(message: string);
     constructor(message: string, innerException: Exception);
     constructor(message: string = null, innerException: Exception = null) {
-        super(message, innerException);        
+        super(message, innerException);
     }
 }
 //class DnsException extends System.ComponentModel.Win32Exception {
@@ -70009,7 +70025,7 @@ export class ServiceJsonDeserializationException extends ServiceLocalException {
 
 /**
  * Represents an error that occurs when a validation check fails.
- * 
+ *
  * @sealed
  */
 export class ServiceValidationException extends ServiceLocalException {
@@ -70038,7 +70054,7 @@ export class ServiceValidationException extends ServiceLocalException {
 
 /**
  * Represents an error that occurs when a request cannot be handled due to a service version mismatch.
- * 
+ *
  * @sealed
  */
 export class ServiceVersionException extends ServiceLocalException {
@@ -70141,7 +70157,7 @@ export class AccountIsLockedException extends ServiceRemoteException {
 
     /**
      * Gets the URL of a web page where the user can navigate to unlock his or her account.
-     * 
+     *
      * internal set
      */
     AccountUnlockUrl: Uri = null;
@@ -70169,7 +70185,7 @@ export class AutodiscoverResponseException extends ServiceRemoteException {
 
 /**
  * Represents an exception thrown when an error occurs as a result of calling the UpdateInboxRules operation.
- * 
+ *
  * @sealed
  */
 export class UpdateInboxRulesException extends ServiceRemoteException {
@@ -70230,7 +70246,7 @@ export class UpdateInboxRulesException extends ServiceRemoteException {
 
 /**
  * Represents a remote service exception that can have multiple service responses.
- * 
+ *
  * @type {TResponse}       The type of the response.
  */
 export class BatchServiceResponseException<TResponse extends ServiceResponse> extends ServiceRemoteException {
@@ -70242,7 +70258,7 @@ export class BatchServiceResponseException<TResponse extends ServiceResponse> ex
      * Gets a list of responses returned by the web method.
      */
     get ServiceResponses(): ServiceResponseCollection<TResponse> { return this.ServiceResponses; }
-    
+
     /**
      * Initializes a new instance of **BatchServiceResponseException**.
      *
@@ -70302,9 +70318,9 @@ export class DeleteAttachmentException extends BatchServiceResponseException<Del
             super(serviceResponses, message, innerException);
     }
 }
-export class ServiceRequestException extends ServiceRemoteException {	
+export class ServiceRequestException extends ServiceRemoteException {
 }
-export class ServiceRequestUnauthorizedException extends ServiceRequestException {	
+export class ServiceRequestUnauthorizedException extends ServiceRequestException {
 }
 
 /**
@@ -70340,7 +70356,7 @@ export class ServiceResponseException extends ServiceRemoteException {
 
     /**
      * Gets a message that describes the current exception.
-     * 
+     *
      * @returns The error message that explains the reason for the exception.
      */
     get Message(): string {
@@ -70383,7 +70399,7 @@ export class ServerBusyException extends ServiceResponseException {
 
 /**
  * Represents mailbox query object.
- * 
+ *
  * @sealed
  */
 export class DiscoverySearchConfiguration {
@@ -70422,7 +70438,7 @@ export class DiscoverySearchConfiguration {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {DiscoverySearchConfiguration}              Discovery search configuration object.
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): DiscoverySearchConfiguration {
@@ -70463,21 +70479,21 @@ export class DiscoverySearchConfiguration {
 
 /**
  * Class ExtendedAttribute
- * 
+ *
  * @sealed
  */
 export class ExtendedAttribute {
 
     /**
      * Gets or sets the name.
-     * 
+     *
      * @value The name.
      */
     Name: string = null;
 
     /**
      * Gets or sets the value.
-     * 
+     *
      * @value The value.
      */
     Value: string = null;
@@ -70504,7 +70520,7 @@ export class ExtendedAttribute {
 
 /**
  * Represents failed mailbox to be searched
- * 
+ *
  * @sealed
  */
 export class FailedSearchMailbox {
@@ -70544,7 +70560,7 @@ export class FailedSearchMailbox {
      * @internal Load failed mailboxes xml
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {FailedSearchMailbox[]}       Failed search mailboxes.
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): FailedSearchMailbox[] {
@@ -70577,7 +70593,7 @@ export class FailedSearchMailbox {
 }
 /**
  * Represents the keyword statistics result.
- * 
+ *
  * @sealed
  */
 export class KeywordStatisticsSearchResult {
@@ -70601,7 +70617,7 @@ export class KeywordStatisticsSearchResult {
 
 /**
  * Represents mailbox hold result
- * 
+ *
  * @sealed
  */
 export class MailboxHoldResult {
@@ -70625,7 +70641,7 @@ export class MailboxHoldResult {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {MailboxHoldResult}              Mailbox hold object
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): MailboxHoldResult {
@@ -70668,7 +70684,7 @@ export class MailboxHoldResult {
 
 /**
  * Represents mailbox hold status
- * 
+ *
  * @sealed
  */
 export class MailboxHoldStatus {
@@ -70709,7 +70725,7 @@ export class MailboxHoldStatus {
 
 /**
  * Represents mailbox query object.
- * 
+ *
  * @sealed
  */
 export class MailboxQuery {
@@ -70771,7 +70787,7 @@ export class MailboxSearchScope {
 
     /**
      * Gets the extended data.
-     * 
+     *
      * @value The extended data.
      */
     ExtendedAttributes: ExtendedAttribute[] = null;
@@ -70791,7 +70807,7 @@ export class MailboxSearchScope {
 
 /**
  * Mailbox statistics item
- * 
+ *
  * @sealed
  */
 export class MailboxStatisticsItem {
@@ -70821,7 +70837,7 @@ export class MailboxStatisticsItem {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {SearchRefinerItem}
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): MailboxStatisticsItem {
@@ -70836,7 +70852,7 @@ export class MailboxStatisticsItem {
 
 /**
  * Represents non indexable item.
- * 
+ *
  * @sealed
  */
 export class NonIndexableItem {
@@ -70890,7 +70906,7 @@ export class NonIndexableItem {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {NonIndexableItemDetailsResult}       Non indexable item details result object
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): NonIndexableItem {
@@ -70935,7 +70951,7 @@ export class NonIndexableItem {
 
 /**
  * Represents non indexable item details result.
- * 
+ *
  * @sealed
  */
 export class NonIndexableItemDetailsResult {
@@ -70954,7 +70970,7 @@ export class NonIndexableItemDetailsResult {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {NonIndexableItemDetailsResult}       Non indexable item details result object
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): NonIndexableItemDetailsResult {
@@ -70993,7 +71009,7 @@ export abstract class NonIndexableItemParameters {
 
 /**
  * Represents get non indexable item statistics parameters.
- * 
+ *
  * @sealed
  */
 export class GetNonIndexableItemStatisticsParameters extends NonIndexableItemParameters {
@@ -71001,7 +71017,7 @@ export class GetNonIndexableItemStatisticsParameters extends NonIndexableItemPar
 
 /**
  * Represents get non indexable item details parameters.
- * 
+ *
  * @sealed
  */
 export class GetNonIndexableItemDetailsParameters extends NonIndexableItemParameters {
@@ -71017,14 +71033,14 @@ export class GetNonIndexableItemDetailsParameters extends NonIndexableItemParame
     PageItemReference: string = null;
 
     /**
-     * @Nullable Search page direction 
+     * @Nullable Search page direction
      */
     PageDirection: SearchPageDirection = null; //Nullable
 }
 
 /**
  * Represents non indexable item statistic.
- * 
+ *
  * @sealed
  */
 export class NonIndexableItemStatistic {
@@ -71048,7 +71064,7 @@ export class NonIndexableItemStatistic {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {NonIndexableItemStatistic}       non indexable item statistic object
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): NonIndexableItemStatistic {
@@ -71072,7 +71088,7 @@ export class NonIndexableItemStatistic {
 
 /**
  * Represents mailbox object for preview item.
- * 
+ *
  * @sealed
  */
 export class PreviewItemMailbox {
@@ -71106,7 +71122,7 @@ export class PreviewItemMailbox {
 
 /**
  * Represents preview item response shape
- * 
+ *
  * @sealed
  */
 export class PreviewItemResponseShape {
@@ -71140,7 +71156,7 @@ export class PreviewItemResponseShape {
 
 /**
  * Represents searchable mailbox object
- * 
+ *
  * @sealed
  */
 export class SearchableMailbox {
@@ -71210,7 +71226,7 @@ export class SearchableMailbox {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {SearchableMailbox}              Searchable mailbox object
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): SearchableMailbox {
@@ -71250,7 +71266,7 @@ export class SearchableMailbox {
 
 /**
  * Represents search mailbox parameters.
- * 
+ *
  * @sealed
  */
 export class SearchMailboxesParameters {
@@ -71308,7 +71324,7 @@ export class SearchMailboxesParameters {
 
 /**
  * Represents search mailbox result.
- * 
+ *
  * @sealed
  */
 export class SearchMailboxesResult {
@@ -71385,7 +71401,7 @@ export class SearchMailboxesResult {
      * Load extended properties from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {ExtendedPropertyCollection}     Extended properties collection
      */
     private static LoadExtendedPropertiesXmlJsObject(jsObject: any, service: ExchangeService): ExtendedPropertyCollection {
@@ -71400,7 +71416,7 @@ export class SearchMailboxesResult {
      * Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {SearchMailboxesResult}     Search result object
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): SearchMailboxesResult {
@@ -71499,7 +71515,7 @@ export class SearchMailboxesResult {
      * Load preview items from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {SearchPreviewItem[]}     Array of preview items
      */
     private static LoadPreviewItemsXmlJsObject(jsObject: any, service: ExchangeService): SearchPreviewItem[] {
@@ -71604,7 +71620,7 @@ export class SearchMailboxesResult {
 
 /**
  * Represents search preview item.
- * 
+ *
  * @sealed
  */
 export class SearchPreviewItem {
@@ -71670,7 +71686,7 @@ export class SearchPreviewItem {
     CreatedTime: DateTime = null;
 
     /**
-     * Received Time 
+     * Received Time
      */
     ReceivedTime: DateTime = null;
 
@@ -71744,7 +71760,7 @@ export class SearchRefinerItem {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      * @return  {SearchRefinerItem}
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService): SearchRefinerItem {
@@ -71759,7 +71775,7 @@ export class SearchRefinerItem {
 
 /**
  * Represents set hold on mailboxes parameters.
- * 
+ *
  * @sealed
  */
 export class SetHoldOnMailboxesParameters {
@@ -71797,22 +71813,22 @@ export class SetHoldOnMailboxesParameters {
 	/**
      * Item hold period
      * *The text value can be "Unlimited" or the string value of any Timespan value.*
-	 * 
-	 * per github issue #120 
+	 *
+	 * per github issue #120
      */
     ItemHoldPeriod: string = null;
-	
+
 	/**
 	 * Include Non Indexable Items
-	 * 
-	 * per github issue #120 
+	 *
+	 * per github issue #120
 	 */
 	IncludeNonIndexableItems: boolean = null;
 
 	/**
 	 * Perform deduplication
-	 * 
-	 * per github issue #120 
+	 *
+	 * per github issue #120
 	 */
 	PerformDeduplication: boolean = null;
 }
@@ -71825,7 +71841,7 @@ export interface IDiscoveryVersionable {
 
     /**
      * Gets or sets the server version.
-     * 
+     *
      * @value The server version.
      */
     ServerVersion: number;//long
@@ -71838,8 +71854,8 @@ export class SchemaChange {
 
     /**
      * Gets the minimum server version.
-     * 
-     * @value The minimum server version. 
+     *
+     * @value The minimum server version.
      */
     MinimumServerVersion: number = 0;//private set;l long
 
@@ -71907,14 +71923,14 @@ export class SchemaChange {
 export class DiscoverySchemaChanges {
     /**
      * Gets the search mailboxes extended data.
-     * 
+     *
      * @value The search mailboxes extended data.
      */
     static SearchMailboxesExtendedData: SchemaChange = new SchemaChange("15.0.730.0");;
 
     /**
      * Gets the search mailboxes additional search scopes.
-     * 
+     *
      * The search mailboxes additional search scopes.
      */
     static SearchMailboxesAdditionalSearchScopes: SchemaChange = new SchemaChange("15.0.730.0");;
@@ -71922,7 +71938,7 @@ export class DiscoverySchemaChanges {
 
 /**
  * Represents information about an attendee for which to request availability information.
- * 
+ *
  * @sealed
  */
 export class AttendeeInfo implements ISelfValidate {
@@ -71932,7 +71948,7 @@ export class AttendeeInfo implements ISelfValidate {
      */
     SmtpAddress: string = null;
 
-    /** 
+    /**
      * Gets or sets the type of this attendee.
      */
     AttendeeType: MeetingAttendeeType = MeetingAttendeeType.Required;
@@ -71968,7 +71984,7 @@ export class AttendeeInfo implements ISelfValidate {
 
     /**
      * Validates this instance.
-     * 
+     *
      * ISelfValidate.Validate
      */
     Validate(): void {
@@ -72199,8 +72215,8 @@ export class LegacyAvailabilityTimeZone extends ComplexProperty {
     constructor(timeZoneInfo: TimeZoneInfo);
     constructor(timeZoneInfo: TimeZoneInfo = null) {
         super();
-        //ref: skipping due to only called when server is 2007 sp1, 10 years later, may be not many cases to handle. 
-        
+        //ref: skipping due to only called when server is 2007 sp1, 10 years later, may be not many cases to handle.
+
         // if (timeZoneInfo && arguments.length === 1) {
 
         //     // Availability uses the opposite sign for the bias, e.g. if TimeZoneInfo.BaseUtcOffset = 480 than
@@ -72324,7 +72340,7 @@ export class LegacyAvailabilityTimeZoneTime extends ComplexProperty {
         super()
     }
 
-    ToTransitionTime(): TimeZoneInfo.TransitionTime { 
+    ToTransitionTime(): TimeZoneInfo.TransitionTime {
         if (this.Year == 0)
             {
                 return TimeZoneInfo.TransitionTime.CreateFloatingDateRule(
@@ -72422,7 +72438,7 @@ export class OofReply {
 
     private culture: string = ''; //todo: implement CultureInfo //  CultureInfo.CurrentCulture.Name;
     private message: string = null;
-    
+
     /**
      * Gets or sets the culture of the reply.
      */
@@ -72432,7 +72448,7 @@ export class OofReply {
     set Culture(value: string) {
         this.culture = value;
     }
-    
+
     /**
      * Gets or sets the culture of the reply.
      */
@@ -72516,7 +72532,7 @@ export class OofReply {
 
 /**
  * Represents a time period.
- * 
+ *
  * @sealed
  */
 export class TimeWindow implements ISelfValidate {
@@ -72558,7 +72574,7 @@ export class TimeWindow implements ISelfValidate {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsonObject: any, service: ExchangeService): void {
         this.StartTime = service.ConvertUniversalDateTimeStringToLocalDateTime(jsonObject[XmlElementNames.StartTime]);
@@ -72567,7 +72583,7 @@ export class TimeWindow implements ISelfValidate {
 
     /**
      * Validates this instance.
-     * 
+     *
      * ISelfValidate.Validate
      */
     Validate(): void {
@@ -72682,7 +72698,7 @@ export abstract class AlternateIdBase implements ISelfValidate {//IJsonSerializa
     /**
      * Validate this instance.
      * ISelfValidate.Validate
-     * 
+     *
      */
     Validate(): void {
         this.InternalValidate();
@@ -72955,11 +72971,11 @@ export class AlternatePublicFolderItemId extends AlternatePublicFolderId {
 
 /**
  * Represents the results of an action performed on a calendar item or meeting message, such as accepting, tentatively accepting or declining a meeting request.
- * 
+ *
  * @sealed
  */
 export class CalendarActionResults {
-	
+
 	/**
  	 * Gets the meeting that was accepted, tentatively accepted or declined.
 	 *
@@ -72977,25 +72993,25 @@ export class CalendarActionResults {
      * from the Deleted Items folder, Appointment is null.
  	 */
 	get Appointment(): Appointment { return this.appointment; }
-	
+
 	/**
 	 * Gets the meeting request that was moved to the Deleted Items folder as a result of an attendee accepting, tentatively accepting or declining a meeting request. If the meeting request is accepted, tentatively accepted or declined from the Deleted Items folder, it is permanently deleted and MeetingRequest is null.
 	 *
 	 */
 	get MeetingRequest(): MeetingRequest { return this.meetingRequest; }
-	
+
 	/**
 	 * Gets the copy of the response that is sent to the organizer of a meeting when the meeting is accepted, tentatively accepted or declined by an attendee. MeetingResponse is null if the attendee chose not to send a response.
 	 *
 	 */
 	get MeetingResponse(): MeetingResponse { return this.meetingResponse; }
-	
+
 	/**
 	 * Gets the copy of the meeting cancellation message sent by the organizer to the attendees of a meeting when the meeting is cancelled.
 	 *
 	 */
 	get MeetingCancellation(): MeetingCancellation { return this.meetingCancellation; }
-	
+
 	private appointment: Appointment;
 	private meetingRequest: MeetingRequest;
 	private meetingResponse: MeetingResponse;
@@ -73005,7 +73021,7 @@ export class CalendarActionResults {
 	 * @internal Initializes a new instance of the **CalendarActionResults** class.
 	 *
 	 * @param   {Item[]}   items   Collection of items that were created or modified as a result of a calendar action.
-	 */	
+	 */
 	constructor(items: Item[]) {
 		this.appointment = EwsUtilities.FindFirstItemOfType<Appointment>(items, TypeContainer.Appointment);
 		this.meetingRequest = EwsUtilities.FindFirstItemOfType<MeetingRequest>(items, TypeContainer.MeetingRequest);
@@ -73305,7 +73321,7 @@ export class ConversationAction {//IJsonSerializable
 
 /**
  * Represents the results of a GetDelegates operation.
- * 
+ *
  * @sealed
  */
 export class DelegateInformation {
@@ -73442,18 +73458,18 @@ export class EwsTraceListener {
 
 
 
-			
+
 
 /**
  * Represents the results of an ExpandGroup operation.
- * 
+ *
  * @sealed
  */
 export class ExpandGroupResults implements IEnumerable<EmailAddress> {
 
 	/**
 	 * True, if all members are returned.
-	 * EWS always returns true on ExpandDL, i.e. all members are returned. 
+	 * EWS always returns true on ExpandDL, i.e. all members are returned.
 	 */
 	private includesAllMembers: boolean = false;
 
@@ -73463,7 +73479,7 @@ export class ExpandGroupResults implements IEnumerable<EmailAddress> {
 	private members: EmailAddress[] = [];
 
 	/**
-	 * Gets the number of members that were returned by the ExpandGroup operation. 
+	 * Gets the number of members that were returned by the ExpandGroup operation.
 	 * Count might be less than the total number of members in the group, in which case the value of the IncludesAllMembers is false.
 	 */
 	get Count(): number {
@@ -73501,7 +73517,7 @@ export class ExpandGroupResults implements IEnumerable<EmailAddress> {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
 	LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 
@@ -73530,7 +73546,7 @@ export class FolderIdWrapperList implements IEnumerable<AbstractFolderIdWrapper>
 
     /**
      * Gets the id count.
-     * 
+     *
      * @value   The count.
      */
     get Count(): number {
@@ -73630,7 +73646,7 @@ export class FolderIdWrapperList implements IEnumerable<AbstractFolderIdWrapper>
     }
 }
 //import ExchangeService = require("../Core/ExchangeService");
-//			
+//
 // class HangingTraceStream extends System.IO.Stream {
 //	CanRead: boolean;
 //	CanSeek: boolean;
@@ -73653,7 +73669,7 @@ export class FolderIdWrapperList implements IEnumerable<AbstractFolderIdWrapper>
 
 
 
-			
+
     //todo: should be done
 export class ImpersonatedUserId {
         IdType: ConnectingIdType;
@@ -73703,7 +73719,7 @@ export class ItemIdWrapperList implements IEnumerable<AbstractItemIdWrapper>{
 
     /**
      * @internal Gets the count.
-     * 
+     *
      * @value   The count.
      */
     get Count(): number {
@@ -73841,7 +73857,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number, //double
                 (s) => Convert.toNumber(s),         //Parse
-                (o) => o.toString()                 //ConvertToString 
+                (o) => o.toString()                 //ConvertToString
                 ));
 
         map.Add(
@@ -73910,7 +73926,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number, //Int64
                 (s) => Convert.toNumber(s),         //Parse
-                (o) => o.toString()                 //ConvertToString 
+                (o) => o.toString()                 //ConvertToString
                 ));
 
         map.Add(
@@ -73927,7 +73943,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number, //double
                 (s) => Convert.toNumber(s),         //Parse
-                (o) => o.toString()                 //ConvertToString 
+                (o) => o.toString()                 //ConvertToString
                 ));
 
         map.Add(
@@ -73944,7 +73960,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number, //Int32
                 (s) => Convert.toNumber(s),         //Parse
-                (o) => o.toString()                 //ConvertToString 
+                (o) => o.toString()                 //ConvertToString
                 ));
 
         map.Add(
@@ -73952,7 +73968,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number, //float
                 (s) => Convert.toNumber(s),         //Parse
-                (o) => o.toString()                 //ConvertToString 
+                (o) => o.toString()                 //ConvertToString
                 ));
 
         map.Add(
@@ -73969,7 +73985,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number,                 //Int32
                 (s) => MapiTypeConverter.ParseMapiIntegerValue(s),  //Parse
-                (o) => o.toString()                                 //ConvertToString 
+                (o) => o.toString()                                 //ConvertToString
                 ));
 
         map.Add(
@@ -73986,7 +74002,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number, //Int64
                 (s) => Convert.toNumber(s),         //Parse
-                (o) => o.toString()                 //ConvertToString 
+                (o) => o.toString()                 //ConvertToString
                 ));
 
         map.Add(
@@ -74024,7 +74040,7 @@ export class MapiTypeConverter {
             new MapiTypeConverterMapEntry(
                 MapiTypeConverterTypeSystem.number, //short
                 (s) => Convert.toNumber(s),         //Parse
-                (o) => o.toString()                 //ConvertToString 
+                (o) => o.toString()                 //ConvertToString
                 ));
 
         map.Add(
@@ -74118,7 +74134,7 @@ export class MapiTypeConverter {
         }
         return num;
     }
-}   
+}
 export class MapiTypeConverterMapEntry {
     Parse: (string) => any = null;
     ConvertToString: (any) => string = null;
@@ -74159,7 +74175,7 @@ export class MapiTypeConverterMapEntry {
         }
         EwsLogging.Assert(false, "MapiTypeConverterMapEntry.ChangeType",
             StringHelper.Format("Not Implemented to convert type from one to another. instance Type: {0}, source Type: {1}", MapiTypeConverterTypeSystem[this.Type], sourcetype));
-        
+
         return value;
     }
     ConvertToValue(stringValue: string): any {
@@ -74205,7 +74221,7 @@ export class MapiTypeConverterMapEntry {
 
 /**
  * Represents a mobile phone.
- * 
+ *
  * @sealed
  */
 export class MobilePhone implements ISelfValidate {
@@ -74301,7 +74317,7 @@ export class NameResolution {
 
 /**
  * Represents a list of suggested name resolutions.
- * 
+ *
  * @sealed
  */
 export class NameResolutionCollection implements IEnumerable<NameResolution> {
@@ -74312,7 +74328,7 @@ export class NameResolutionCollection implements IEnumerable<NameResolution> {
 
     /**
      * @internal Gets the session.
-     * 
+     *
      * @value   The Session.
      */
     get Session(): ExchangeService {
@@ -74327,8 +74343,8 @@ export class NameResolutionCollection implements IEnumerable<NameResolution> {
     }
 
     /**
-     * Gets a value indicating whether more suggested resolutions are available. ResolveName only returns a maximum of 100 name resolutions. 
-     * When IncludesAllResolutions is false, there were more than 100 matching names on the server. To narrow the search, provide a more precise name to ResolveName. 
+     * Gets a value indicating whether more suggested resolutions are available. ResolveName only returns a maximum of 100 name resolutions.
+     * When IncludesAllResolutions is false, there were more than 100 matching names on the server. To narrow the search, provide a more precise name to ResolveName.
      */
     get IncludesAllResolutions(): boolean {
         return this.includesAllResolutions;
@@ -74368,7 +74384,7 @@ export class NameResolutionCollection implements IEnumerable<NameResolution> {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsonProperty: any, service: ExchangeService): void {
         var totalItemsInView: number;
@@ -74383,7 +74399,7 @@ export class NameResolutionCollection implements IEnumerable<NameResolution> {
                     break;
 
                 // This label only exists for Json objects.  The XML doesn't have a "Resolutions"
-                // element.  
+                // element.
                 // This was necessary becaue of the lack of attributes in JSON
                 //
                 case XmlElementNames.Resolution:
@@ -74436,11 +74452,11 @@ export class PrivilegedUserId {
 }
 
 /**
- * Represents SoapFault details. 
- * 
- * /remarks/    ews-javascript-api -> removing internal modifier to, this class will be used to pass on to error delegate of promise instead of Exceptions. 
- * 
- * /remarks/    ews-javascript-api -> 0.9 - Extending from Error object to avoid BlueBird errors when promise is rejected without and Error object 
+ * Represents SoapFault details.
+ *
+ * /remarks/    ews-javascript-api -> removing internal modifier to, this class will be used to pass on to error delegate of promise instead of Exceptions.
+ *
+ * /remarks/    ews-javascript-api -> 0.9 - Extending from Error object to avoid BlueBird errors when promise is rejected without and Error object
  * /remarks/    ews-javascript-api -> 0.9 - extending from Exception which looks like Error to BlueBird. can not extend from Error. Typescript 1.8+ can not extend builtin objects property, it swallows inheriting properties see  https://github.com/Microsoft/TypeScript/wiki/Breaking-Changes#extending-built-ins-like-error-array-and-map-may-no-longer-work
  */
 export class SoapFaultDetails extends Exception {
@@ -74450,7 +74466,7 @@ export class SoapFaultDetails extends Exception {
     private faultActor: string = null;
 
     /**
-     * Response code returned by EWS requests. 
+     * Response code returned by EWS requests.
      * Default to InternalServerError.
      */
     private responseCode: ServiceError = ServiceError.ErrorInternalServerError;
@@ -74487,7 +74503,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the SOAP fault code.
-     * 
+     *
      * @value   The SOAP fault code.
      */
     get FaultCode(): string {
@@ -74499,7 +74515,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the SOAP fault string.
-     * 
+     *
      * @value   The fault string.
      */
     get FaultString(): string {
@@ -74511,7 +74527,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the SOAP fault actor.
-     * 
+     *
      * @value   The fault actor.
      */
     get FaultActor(): string {
@@ -74523,7 +74539,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the response code.
-     * 
+     *
      * @value   The response code.
      */
     get ResponseCode(): ServiceError {
@@ -74535,7 +74551,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the message.
-     * 
+     *
      * @value   The message.
      */
     get Message(): string {
@@ -74547,7 +74563,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the error code.
-     * 
+     *
      * @value   The error code.
      */
     get ErrorCode(): ServiceError {
@@ -74559,7 +74575,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the type of the exception.
-     * 
+     *
      * @value   The type of the exception.
      */
     get ExceptionType(): string {
@@ -74571,7 +74587,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the line number.
-     * 
+     *
      * @value   The line number.
      */
     get LineNumber(): number {
@@ -74583,7 +74599,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the position within line.
-     * 
+     *
      * @value   The position within line.
      */
     get PositionWithinLine(): number {
@@ -74595,7 +74611,7 @@ export class SoapFaultDetails extends Exception {
 
     /**
      * @internal Gets or sets the error details dictionary.
-     * 
+     *
      * @value   The error details dictionary.
      */
     get ErrorDetails(): Dictionary<string, string> {
@@ -74612,7 +74628,7 @@ export class SoapFaultDetails extends Exception {
     Exception: Exception;
 
     /**
-     * ews-javascript-api specific: HTTP status code 
+     * ews-javascript-api specific: HTTP status code
      */
     HttpStatusCode = 200;
 
@@ -75028,7 +75044,7 @@ export class UserConfiguration {//IJsonSerializable
     }
 
     /**
-     * Deletes the user configuration. 
+     * Deletes the user configuration.
      * Calling this method results in a call to EWS.
      * @return  {Promise<void>}    :Promise.
      */
@@ -75056,7 +75072,7 @@ export class UserConfiguration {//IJsonSerializable
      * .  Create new object:  From the UserConfiguration constructor.
      * .  Bind to existing object:  Again from the constructor.  The constructor is called eventually by the GetUserConfiguration request.
      * .  Refresh properties:  From the Load method.
-     * 
+     *
      * @param   {UserConfigurationProperties}   requestedProperties   The properties requested for this UserConfiguration.
      */
     private InitializeProperties(requestedProperties: UserConfigurationProperties): void {
@@ -75100,14 +75116,14 @@ export class UserConfiguration {//IJsonSerializable
                 break;
         }
 
-        // Consider the property updated, if it's been modified, and either 
-        //    . there's a value or 
+        // Consider the property updated, if it's been modified, and either
+        //    . there's a value or
         //    . there's no value but the operation is update.
         return isPropertyDirty && ((!isPropertyEmpty) || (!this.isNew));
     }
 
     /**
-     * Loads the specified properties on the user configuration. 
+     * Loads the specified properties on the user configuration.
      * Calling this method results in a call to EWS.
      * @return  {Promise<void>}    :Promise.
      */
@@ -75121,7 +75137,7 @@ export class UserConfiguration {//IJsonSerializable
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         for (let key in jsObject) {
@@ -75489,7 +75505,7 @@ export class GetEventsResults {
 
 	/**
 	 * Map XML element name to notification event type.
-	 * 
+	 *
 	 * /remarks/ 	If you add a new notification event type, you'll need to add a new entry to the dictionary here.
 	 */
 	private static xmlElementNameToEventTypeMap: LazyMember<Dictionary<string, EventType>> = new LazyMember<Dictionary<string, EventType>>(() => {
@@ -75507,7 +75523,7 @@ export class GetEventsResults {
 
 	/**
 	 * Gets the XML element name to event type mapping.
-	 * 
+	 *
 	 * @value	The XML element name to event type mapping.
 	 */
 	static get XmlElementNameToEventTypeMap(): Dictionary<string, EventType> {
@@ -75569,7 +75585,7 @@ export class GetEventsResults {
 
 	/**
 	 * Gets the collection of folder events.
-	 * 
+	 *
 	 * @value	The folder events.
 	 */
 	get FolderEvents(): FolderEvent[] {
@@ -75578,7 +75594,7 @@ export class GetEventsResults {
 
 	/**
 	 * Gets the collection of item events.
-	 * 
+	 *
 	 * @value	The item events.
 	 */
 	get ItemEvents(): ItemEvent[] {
@@ -75587,7 +75603,7 @@ export class GetEventsResults {
 
 	/**
 	 * Gets the collection of all events.
-	 * 
+	 *
 	 * @value	The events.
 	 */
 	get AllEvents(): NotificationEvent[] {
@@ -75604,8 +75620,8 @@ export class GetEventsResults {
      * Loads the events from XML.
      *
      * @param   {any[]}               jsEventsArray         The json events array.
-     * @param   {string}     		  xmlElementName		Name of the element.    
-     * @param   {ExchangeService}     service               The service.    
+     * @param   {string}     		  xmlElementName		Name of the element.
+     * @param   {ExchangeService}     service               The service.
      */
 	private LoadEventsFromXmlJsObject(jsEventsArray: any[], eventElementName: string, service: ExchangeService): void {
 		for (let jsEvent of jsEventsArray) {
@@ -75636,7 +75652,7 @@ export class GetEventsResults {
      * @internal Loads from XML.
      *
      * @param   {any}                 eventsResponse         The events response Object converted from XML.
-     * @param   {ExchangeService}     service                The service.    
+     * @param   {ExchangeService}     service                The service.
      */
 	LoadFromXmlJsObject(eventsResponse: any, service: ExchangeService): void {
 		let response = eventsResponse;
@@ -75666,7 +75682,7 @@ export class GetEventsResults {
 
 /**
  * @internal Represents a collection of notification events.
- * 
+ *
  * @sealed
  */
 export class GetStreamingEventsResults {
@@ -75678,7 +75694,7 @@ export class GetStreamingEventsResults {
 
 	/**
 	 * @internal Gets the notification collection.
-	 * 
+	 *
 	 * @value	The notification collection.
 	 */
 	get Notifications(): NotificationGroup[] { return this.events; }
@@ -75693,9 +75709,9 @@ export class GetStreamingEventsResults {
      * Loads the events from XML.
      *
      * @param   {any[]}               	jsEventsArray         	The json events array.
-     * @param   {string}     		  	xmlElementName			Name of the element.    
-     * @param   {NotificationGroup}		notifications			Collection of notifications.    
-     * @param   {ExchangeService}     	service               	The service.    
+     * @param   {string}     		  	xmlElementName			Name of the element.
+     * @param   {NotificationGroup}		notifications			Collection of notifications.
+     * @param   {ExchangeService}     	service               	The service.
      */
 	private LoadNotificationEventFromXmlJsObject(jsEventsArray: any[], eventElementName: string, notifications: NotificationGroup, service: ExchangeService): void {
 		for (let jsEvent of jsEventsArray) {
@@ -75725,7 +75741,7 @@ export class GetStreamingEventsResults {
      * @internal Loads from XML.
      *
      * @param   {any}                 eventsResponse         The events response Object converted from XML.
-     * @param   {ExchangeService}     service                The service.    
+     * @param   {ExchangeService}     service                The service.
      */
 	LoadFromXmlJsObject(eventsResponse: any, service: ExchangeService): void {
 
@@ -75758,14 +75774,14 @@ export class NotificationEventArgs {//extends System.EventArgs {
 
 	/**
 	 * Gets the subscription for which notifications have been received.
-	 * 
+	 *
 	 * internal set
 	 */
 	Subscription: StreamingSubscription;
 
 	/**
 	 * Gets the events that were received.
-	 * 
+	 *
 	 * internal set
 	 */
 	Events: NotificationEvent[];
@@ -75800,7 +75816,7 @@ export class NotificationGroup {
 
 /**
  * Represents a connection to an ongoing stream of events.
- * 
+ *
  * @sealed
  */
 export class StreamingSubscriptionConnection {
@@ -75957,7 +75973,7 @@ export class StreamingSubscriptionConnection {
 	/**
 	 * Closes this connection so it stops receiving events from the server.
 	 * This terminates a long-standing call to EWS.
-	 * 
+	 *
 	 * @exception	{InvalidOperationException}		Thrown when Close is called while not connected.
 	 */
 	Close(): void {
@@ -76177,11 +76193,11 @@ export class StreamingSubscriptionConnection {
 	/**
 	 * Opens this connection so it starts receiving events from the server.
 	 * This results in a long-standing call to EWS.
-	 * 
+	 *
 	 * @exception	{InvalidOperationException}		Thrown when Open is called while connected.
 	 */
 	Open(): Promise<void> {
-		//todo: implement blocking and non blocking multi threading when available.		
+		//todo: implement blocking and non blocking multi threading when available.
 		//lock(this.lockObject) {
 		this.ThrowIfDisposed();
 
@@ -76288,14 +76304,14 @@ export class SubscriptionErrorEventArgs /*extends System.EventArgs*/ {
 
 	/**
 	 * Gets the subscription for which an error occurred. If Subscription is null, the error applies to the entire connection.
-	 * 
+	 *
 	 * internal set
 	 */
 	Subscription: StreamingSubscription;
 
 	/**
 	 * Gets the exception representing the error. If Exception is null, the connection was cleanly closed by the server.
-	 * 
+	 *
 	 * internal set
 	 */
 	Exception: Exception;
@@ -76313,7 +76329,7 @@ export class SubscriptionErrorEventArgs /*extends System.EventArgs*/ {
 }
 
 /**
- * Represents an event as exposed by push and pull notifications. 
+ * Represents an event as exposed by push and pull notifications.
  */
 export abstract class NotificationEvent {
 
@@ -76333,8 +76349,8 @@ export abstract class NotificationEvent {
 	private parentFolderId: FolderId = null;
 
 	/**
-	 * Id of the old prarent foldero of the item or folder this event applies to. 
-	 * This property is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied. 
+	 * Id of the old prarent foldero of the item or folder this event applies to.
+	 * This property is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied.
 	 * For all other event types, oldParentFolderId will be null.
 	 */
 	private oldParentFolderId: FolderId = null;
@@ -76364,8 +76380,8 @@ export abstract class NotificationEvent {
 	}
 
 	/**
-	 * Gets the Id of the old parent folder of the item or folder this event applies to. 
-	 * OldParentFolderId is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied. 
+	 * Gets the Id of the old parent folder of the item or folder this event applies to.
+	 * OldParentFolderId is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied.
 	 * For all other event types, OldParentFolderId is null.
 	 */
 	get OldParentFolderId(): FolderId {
@@ -76390,7 +76406,7 @@ export abstract class NotificationEvent {
      * @internal Loads this NotificationEvent from XML.
      *
      * @param   {any}                 jsEvent                Json Object converted from XML.
-     * @param   {ExchangeService}     service                The service.    
+     * @param   {ExchangeService}     service                The service.
      */
     abstract LoadFromXmlJsObject(jsEvent: any, service: ExchangeService): void;
 }
@@ -76414,14 +76430,14 @@ export class FolderEvent extends NotificationEvent {
 	get FolderId(): FolderId {
 		return this.folderId;
 	}
-	
+
 	/**
 	 * Gets the Id of the folder that was moved or copied. OldFolderId is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied. For all other event types, OldFolderId is null.
 	 */
 	get OldFolderId(): FolderId {
 		return this.oldFolderId;
 	}
-	
+
 	/**
 	 * Gets the new number of unread messages. This is is only meaningful when EventType is equal to EventType.Modified. For all other event types, UnreadCount is null.
 	 */
@@ -76443,7 +76459,7 @@ export class FolderEvent extends NotificationEvent {
      * @internal Loads from XML.
      *
      * @param   {any}                 jsEvent                Json Object converted from XML.
-     * @param   {ExchangeService}     service                The service.    
+     * @param   {ExchangeService}     service                The service.
      */
     LoadFromXmlJsObject(jsEvent: any, service: ExchangeService): void {
 		this.folderId = new FolderId();
@@ -76486,7 +76502,7 @@ export class ItemEvent extends NotificationEvent {
 	private itemId: ItemId = null;
 
 	/**
-	 * Id of the item that moved or copied. This is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied. 
+	 * Id of the item that moved or copied. This is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied.
 	 * For all other event types, it's null.
 	 */
 	private oldItemId: ItemId = null;
@@ -76499,7 +76515,7 @@ export class ItemEvent extends NotificationEvent {
 	}
 
 	/**
-	 * Gets the Id of the item that was moved or copied. OldItemId is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied. 
+	 * Gets the Id of the item that was moved or copied. OldItemId is only meaningful when EventType is equal to either EventType.Moved or EventType.Copied.
 	 * For all other event types, OldItemId is null.
 	 */
 	get OldItemId(): ItemId {
@@ -76520,7 +76536,7 @@ export class ItemEvent extends NotificationEvent {
      * @internal Loads from XML.
      *
      * @param   {any}                 jsEvent                Json Object converted from XML.
-     * @param   {ExchangeService}     service                The service.    
+     * @param   {ExchangeService}     service                The service.
      */
     LoadFromXmlJsObject(jsEvent: any, service: ExchangeService): void {
 		this.itemId = new ItemId();
@@ -76557,7 +76573,7 @@ export abstract class SubscriptionBase {
 
 	/**
 	 * Gets the session.
-	 * 
+	 *
 	 * @value The session.
 	 */
 	get Service(): ExchangeService {
@@ -76566,7 +76582,7 @@ export abstract class SubscriptionBase {
 
 	/**
 	 * Gets the Id of the subscription.
-	 * 
+	 *
 	 * internal set
 	 */
 	get Id(): string {
@@ -76578,7 +76594,7 @@ export abstract class SubscriptionBase {
 
 	/**
 	 * Gets the latest watermark of the subscription. Watermark is always null for streaming subscriptions.
-	 * 
+	 *
 	 * internal set
 	 */
 	get Watermark(): string {
@@ -76630,7 +76646,7 @@ export abstract class SubscriptionBase {
      * @internal Loads from XML.
      *
      * @param   {any}                 jsObject               Json Object converted from XML.
-     * @param   {ExchangeService}     service                The service.    
+     * @param   {ExchangeService}     service                The service.
      */
 	LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		this.id = jsObject[XmlElementNames.SubscriptionId];
@@ -76644,13 +76660,13 @@ export abstract class SubscriptionBase {
 
 /**
  * Represents a pull subscription.
- * 
+ *
  * @sealed
  */
 export class PullSubscription extends SubscriptionBase {
 
 	private moreEventsAvailable: boolean = null;
-	
+
 	/**
 	 * Gets a value indicating whether more events are available on the server.
 	 * MoreEventsAvailable is undefined (null) until GetEvents is called.
@@ -76691,7 +76707,7 @@ export class PullSubscription extends SubscriptionBase {
 
 /**
  * Represents a push subscriptions.
- * 
+ *
  * @sealed
  */
 export class PushSubscription extends SubscriptionBase {
@@ -76708,7 +76724,7 @@ export class PushSubscription extends SubscriptionBase {
 
 /**
  * Represents a streaming subscription.
- * 
+ *
  * @sealed
  */
 export class StreamingSubscription extends SubscriptionBase {
@@ -76756,9 +76772,9 @@ export abstract class SearchFilter extends ComplexProperty {
 
     /**
      * Gets the search filter instance.
-     * 
+     *
      * @param {string} localName Name of the local.
-     * @returns {SearchFilter} 
+     * @returns {SearchFilter}
      */
     static GetSearchFilterInstance(localName: string): SearchFilter {
         let searchFilter: SearchFilter;
@@ -76817,8 +76833,8 @@ export abstract class SearchFilter extends ComplexProperty {
      * @internal Loads service object from XML.
      *
      * @param   {any}               jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}   service                 The service.    
-     * @param   {string}            typeName                 type name, when provided prevent call for type name check.    
+     * @param   {ExchangeService}   service                 The service.
+     * @param   {string}            typeName                 type name, when provided prevent call for type name check.
 	 * @return  {SearchFilter}      SearchFilter instance.
      */
     static LoadFromXmlJsObject(jsObject: any, service: ExchangeService, typeName: string = null): SearchFilter {
@@ -76836,7 +76852,7 @@ export abstract class SearchFilter extends ComplexProperty {
 
     /**
      * @internal Writes to XML.
-     * 
+     *
      * @param {EwsServiceXmlWriter} writer  The writer.
      */
     WriteToXml(writer: EwsServiceXmlWriter): void {
@@ -76919,7 +76935,7 @@ export class Not extends SearchFilter {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		this.searchFilter = SearchFilter.LoadFromXmlJsObject(jsObject, service);
@@ -77129,7 +77145,7 @@ export class SearchFilterCollection extends SearchFilter implements IEnumerable<
      * @internal Loads service object from XML.
      *
      * @param   {any}                 jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}     service                 The service.    
+     * @param   {ExchangeService}     service                 The service.
      */
 	LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		for (var key in jsObject) {
@@ -77260,7 +77276,7 @@ export abstract class PropertyBasedFilter extends SearchFilter {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		this.PropertyDefinition = PropertyDefinitionBase.LoadFromXmlJsObject(jsObject);
@@ -77367,7 +77383,7 @@ export class ContainsSubstring extends PropertyBasedFilter {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
 		super.LoadFromXmlJsObject(jsObject, service);
@@ -77453,8 +77469,8 @@ export class ExcludesBitmask extends PropertyBasedFilter {
      * @internal Loads service object from XML.
      *
      * @param   {any}               jsObject                Json Object converted from XML.
-     * @param   {ExchangeService}   service                 The service.    
-     * @param   {string}            typeName                 type name, when provided prevent call for type name check.    
+     * @param   {ExchangeService}   service                 The service.
+     * @param   {string}            typeName                 type name, when provided prevent call for type name check.
 	 * @return  {SearchFilter}      SearchFilter instance.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
@@ -77523,7 +77539,7 @@ export abstract class RelationalFilter extends PropertyBasedFilter {
     private value: any;
 
     /**
-     * Gets or sets the definition of the property to compare with. Property definitions are available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.) 
+     * Gets or sets the definition of the property to compare with. Property definitions are available as static members from schema classes (for example, EmailMessageSchema.Subject, AppointmentSchema.Start, ContactSchema.GivenName, etc.)
      * The OtherPropertyDefinition and Value properties are mutually exclusive; setting one resets the other to null.
      */
     get OtherPropertyDefinition(): PropertyDefinitionBase {
@@ -77588,7 +77604,7 @@ export abstract class RelationalFilter extends PropertyBasedFilter {
         }
         else if (this.value != null) {
             // All common value types (String, Int32, DateTime, ...) implement IConvertible.
-            // Value types that don't implement IConvertible must implement ISearchStringProvider 
+            // Value types that don't implement IConvertible must implement ISearchStringProvider
             // in order to be used in a search filter.
             if (!(TypeSystem.IsGenericType(this.value) || (typeof this.value.GetSearchString === 'function'))) // checking - ISearchStringProvider
             {
@@ -77602,7 +77618,7 @@ export abstract class RelationalFilter extends PropertyBasedFilter {
      * @internal Loads service object from XML.
      *
      * @param   {any}				jsObject	Json Object converted from XML.
-     * @param   {ExchangeService}	service	The service.    
+     * @param   {ExchangeService}	service	The service.
      */
     LoadFromXmlJsObject(jsObject: any, service: ExchangeService): void {
         super.LoadFromXmlJsObject(jsObject, service);
@@ -78022,7 +78038,7 @@ export abstract class ViewBase {
  * Represents a date range view of appointments in calendar folder search operations.
  */
 export class CalendarView extends ViewBase {
-    
+
     private traversal: ItemTraversal = ItemTraversal.Shallow;
     private maxItemsReturned: number = null;
     private startDate: DateTime = null;
@@ -78164,7 +78180,7 @@ export class CalendarView extends ViewBase {
 
 /**
  * Represents the view settings in a folder search operation.
- * 
+ *
  * @sealed
  */
 export class SeekToConditionItemView extends ViewBase {
@@ -78200,8 +78216,8 @@ export class SeekToConditionItemView extends ViewBase {
 	}
 
 	/**
-	 * Gets or sets the condition for seek. 
-	 * Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection. 
+	 * Gets or sets the condition for seek.
+	 * Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection.
 	 * If SearchFilter is null, no search filters are applied.
 	 */
 	get Condition(): SearchFilter {
@@ -78487,7 +78503,7 @@ export abstract class PagedView extends ViewBase { //abstract
 
 /**
  * Represents the view settings in a folder search operation.
- * 
+ *
  * @sealed
  */
 export class ConversationIndexedItemView extends PagedView {
@@ -78504,8 +78520,8 @@ export class ConversationIndexedItemView extends PagedView {
 	}
 
 	/**
-	 * Gets or sets the conversation query traversal mode. 
-	 * 
+	 * Gets or sets the conversation query traversal mode.
+	 *
 	 * @Nullable
 	 */
 	get Traversal(): ConversationQueryTraversal {
@@ -78516,8 +78532,8 @@ export class ConversationIndexedItemView extends PagedView {
 	}
 
 	/**
-	 * Gets or sets the view filter. 
-	 * 
+	 * Gets or sets the view filter.
+	 *
 	 * @Nullable
 	 */
 	get ViewFilter(): ViewFilter {
@@ -78704,7 +78720,7 @@ export class FolderView extends PagedView {
 
 /**
  * Represents the view settings in a folder search operation.
- * 
+ *
  * @sealed
  */
 export class ItemView extends PagedView {
@@ -78807,7 +78823,7 @@ export class ItemView extends PagedView {
 
 /**
  * Represents the results of an conversation search operation.
- * 
+ *
  * @sealed
  */
 export class FindConversationResults {
@@ -78842,7 +78858,7 @@ export class FindConversationResults {
 
 /**
  * Represents the results of a folder search operation.
- * 
+ *
  * @sealed
  */
 export class FindFoldersResults implements IEnumerable<Folder>  {
@@ -78853,7 +78869,7 @@ export class FindFoldersResults implements IEnumerable<Folder>  {
     private folders: Folder[] = [];
 
     /**
-     * Gets the total number of folders matching the search criteria available in the searched folder. 
+     * Gets the total number of folders matching the search criteria available in the searched folder.
      */
     get TotalCount(): number {
         return this.totalCount;
@@ -78905,7 +78921,7 @@ export class FindFoldersResults implements IEnumerable<Folder>  {
 
 /**
  * Represents the results of an item search operation.
- * 
+ *
  * @sealed
  * @type    {TItem}  Item type
  */
@@ -78938,7 +78954,7 @@ export class FindItemsResults<TItem extends Item> { //IEnumerable<TItem>
     }
 
     /**
-     * Gets a value indicating whether more items matching the search criteria are available in the searched folder. 
+     * Gets a value indicating whether more items matching the search criteria are available in the searched folder.
      */
     get MoreAvailable(): boolean {
         return this.moreAvailable;
@@ -78972,7 +78988,7 @@ export class FindItemsResults<TItem extends Item> { //IEnumerable<TItem>
 
 /**
  * Represents the results of an item search operation.
- * 
+ *
  * @sealed
  * @type    {TItem} The type of item returned by the search operation.
  */
@@ -79008,7 +79024,7 @@ export class GroupedFindItemsResults<TItem extends Item> {    //: IEnumerable<It
     }
 
     /**
-     * Gets a value indicating whether more items corresponding to the search criteria are available in the searched folder. 
+     * Gets a value indicating whether more items corresponding to the search criteria are available in the searched folder.
      */
     get MoreAvailable(): boolean {
         return this.moreAvailable;
@@ -79035,7 +79051,7 @@ export class GroupedFindItemsResults<TItem extends Item> {    //: IEnumerable<It
 
 /**
  * Represents grouping options in item search operations.
- * 
+ *
  * @sealed
  */
 export class Grouping implements ISelfValidate { //:IJsonSerializable
@@ -79110,7 +79126,7 @@ export class Grouping implements ISelfValidate { //:IJsonSerializable
     Validate(): void {
         this.InternalValidate();
     }
-    
+
     /**
      * @internal Writes to XML.
      *
@@ -79150,7 +79166,7 @@ export type PropertyDefinitionSortDirectionPair = KeyValuePair<PropertyDefinitio
 
 /**
  * Represents an ordered collection of property definitions qualified with a sort direction.
- * 
+ *
  * @sealed
  */
 export class OrderByCollection implements IEnumerable<PropertyDefinitionSortDirectionPair> {  //: IJsonSerializable
@@ -79285,7 +79301,7 @@ export class OrderByCollection implements IEnumerable<PropertyDefinitionSortDire
         }
     }
 }
-			
+
 // class SafeXmlDocument extends System.Xml.XmlDocument {
 //	private settings: any /*System.Xml.XmlReaderSettings*/;
 //	Load(inStream: any /*System.IO.Stream*/): void{ throw new Error("SafeXmlDocument.ts - Load : Not implemented.");}
@@ -79299,7 +79315,7 @@ export class OrderByCollection implements IEnumerable<PropertyDefinitionSortDire
 
 
 
-			
+
 export class SafeXmlFactory {
 	private static defaultSettings: any /*System.Xml.XmlReaderSettings*/;
 	CreateSafeXmlTextReader(stream: any /*System.IO.Stream*/): any /*System.Xml.XmlTextReader*/{ throw new Error("SafeXmlFactory.ts - CreateSafeXmlTextReader : Not implemented.");}
@@ -79327,8 +79343,8 @@ export class SafeXmlFactory {
 
 
 
-			
-			
+
+
 // class SafeXmlSchema extends System.Xml.Schema.XmlSchema {
 //	private static defaultSettings: any /*System.Xml.XmlReaderSettings*/;
 //	Read(stream: any /*System.IO.Stream*/, validationEventHandler: any /*System.Xml.Schema.ValidationEventHandler*/): any /*System.Xml.Schema.XmlSchema*/{ throw new Error("SafeXmlSchema.ts - Read : Not implemented.");}
@@ -79341,7 +79357,7 @@ export class SafeXmlFactory {
 
 
 
-			
+
 export class SecurityTimestamp {
 	static DefaultTimestampValidityDurationString: string = "00:05:00";
 	static DefaultFormat: string = "yyyy-MM-ddTHH:mm:ss.fffZ";
@@ -79371,8 +79387,8 @@ export class SecurityTimestamp {
 
 
 
-			
-			
+
+
 // class XmlDtdException extends System.Xml.XmlException {
 //	Message: string;
 //}
@@ -79382,7 +79398,7 @@ export class SecurityTimestamp {
 
 
 
-			
+
 
 /**
  * Represents a change as returned by a synchronization operation.
@@ -79490,7 +79506,7 @@ export class ChangeCollection<TChange extends Change> implements IEnumerable<TCh
 	}
 
 	/**
-	 * @internal Initializes a new instance of the **ChangeCollection<TChange>** class. 
+	 * @internal Initializes a new instance of the **ChangeCollection<TChange>** class.
 	 */
 	constructor() {
 	}
@@ -79532,7 +79548,7 @@ export class ChangeCollection<TChange extends Change> implements IEnumerable<TCh
 
 /**
  * Represents a change on a folder as returned by a synchronization operation.
- * 
+ *
  * @sealed
  */
 export class FolderChange extends Change {
@@ -79563,14 +79579,14 @@ export class FolderChange extends Change {
 	 *
 	 * @return  {ServiceId}      A FolderId.
 	 */
-	CreateId(): ServiceId { 
+	CreateId(): ServiceId {
 		return new FolderId();
 	}
 }
 
 /**
  * Represents a change on an item as returned by a synchronization operation.
- * 
+ *
  * @sealed
  */
 export class ItemChange extends Change {
