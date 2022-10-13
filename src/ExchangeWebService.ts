@@ -30485,7 +30485,7 @@ export class ExtendedPropertyDefinition extends PropertyDefinitionBase {
     /**
      * Gets the property type.
      */
-    Type: any;// System.Type;
+    // get Type: any;// System.Type;
 
     /**
      * @internal Initializes a new instance of the **ExtendedPropertyDefinition** class.
@@ -31108,7 +31108,7 @@ export class EffectiveRightsPropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    Type: any;//System.Type;
+    // Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **EffectiveRightsPropertyDefinition** class.
@@ -31197,7 +31197,7 @@ export class MeetingTimeZonePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    Type: any;//System.Type;
+    // Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **MeetingTimeZonePropertyDefinition** class.
@@ -31261,7 +31261,7 @@ export class RecurrencePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    Type: any;//System.Type;
+//    Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **RecurrencePropertyDefinition** class.
@@ -31417,7 +31417,7 @@ export class ResponseObjectsPropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    Type: any;//System.Type;
+    // Type: any;//System.Type;
 
     /**
      * Gets the response action.
@@ -31507,7 +31507,7 @@ export class DateTimePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    Type: any;//System.Type;
+    // Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **DateTimePropertyDefinition** class.
@@ -32011,7 +32011,7 @@ export type GenericEnumType = typeof AppointmentType | typeof ContactSource | ty
  */
 export class GenericPropertyDefinition<TPropertyValue> extends TypedPropertyDefinition {
 
-    Type: any;//System.Type;
+    // Type: any;//System.Type;
     /** ews-javascript-api specific - need to capture Enum type based on constructor */
     enumType: GenericEnumType;
 
@@ -32546,9 +32546,9 @@ export abstract class ComplexPropertyDefinitionBase extends PropertyDefinition {
  * @type <TComplexProperty> The type of the complex property.
  */
 export class ComplexPropertyDefinition<TComplexProperty extends ComplexProperty> extends ComplexPropertyDefinitionBase {
-    
-    Type: any;// System.Type; //todo: implement Type using typeof type
-    
+
+    // Type: any;// System.Type; //todo: implement Type using typeof type
+
     private propertyCreationDelegate: CreateComplexPropertyDelegate<TComplexProperty>;
 
 
@@ -32809,7 +32809,7 @@ export class TimeZonePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    Type: any;//System.Type;
+    // Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **TimeZonePropertyDefinition** class.
