@@ -3,9 +3,75 @@
 // Packages license notices pending
 
 import * as b64 from 'base64-js';
-import * as uuid from 'uuid';
+import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment-timezone';
 
+
+export const enum HttpStatusCode {
+    // Informational 1xx
+    Continue = 100,
+    SwitchingProtocols = 101,
+
+    // Successful 2xx
+    OK = 200,
+    Created = 201,
+    Accepted = 202,
+    NonAuthoritativeInformation = 203,
+    NoContent = 204,
+    ResetContent = 205,
+    PartialContent = 206,
+
+    // Redirection 3xx
+    MultipleChoices = 300,
+    Ambiguous = 300,
+    MovedPermanently = 301,
+    Moved = 301,
+    Found = 302,
+    Redirect = 302,
+    SeeOther = 303,
+    RedirectMethod = 303,
+    NotModified = 304,
+    UseProxy = 305,
+    Unused = 306,
+    TemporaryRedirect = 307,
+    RedirectKeepVerb = 307,
+
+    // Client Error 4xx
+    BadRequest = 400,
+    Unauthorized = 401,
+    PaymentRequired = 402,
+    Forbidden = 403,
+    NotFound = 404,
+    MethodNotAllowed = 405,
+    NotAcceptable = 406,
+    ProxyAuthenticationRequired = 407,
+    RequestTimeout = 408,
+    Conflict = 409,
+    Gone = 410,
+    LengthRequired = 411,
+    PreconditionFailed = 412,
+    RequestEntityTooLarge = 413,
+    RequestUriTooLong = 414,
+    UnsupportedMediaType = 415,
+    RequestedRangeNotSatisfiable = 416,
+    ExpectationFailed = 417,
+
+    UpgradeRequired = 426,
+
+    // Server Error 5xx
+    InternalServerError = 500,
+    NotImplemented = 501,
+    BadGateway = 502,
+    ServiceUnavailable = 503,
+    GatewayTimeout = 504,
+    HttpVersionNotSupported = 505,
+
+
+
+    // exchange specific
+    Autodiscover_ContactAdmin = 456,
+    Autodiscover_PasswordReset = 457,
+}
 
 export interface IndexerWithStringKey<TValue> {
     [index: string]: TValue;
@@ -345,6 +411,10 @@ export class ConfigurationApi {
     static ConfigureXHR(xhrApi: IXHRApi) {
         XHRFactory.xhrHelper = xhrApi;
     }
+
+    // static SetXHROptions(fetchOptions: FetchOptions) {
+    //     XHRDefault.defaultOptions = fetchOptions;
+    // }
 
     static ConfigurePromise(promise: PromiseConstructor) {
         ConfigurePromise(promise);
@@ -901,9 +971,6 @@ enum momentValidity {
     milliseconds,
 }
 
-/// <reference path="../../typings/base64-js.d.ts" />
-
-
 export module StringHelper {
     export function IsNullOrEmpty(str: string): boolean {
         return str == null || typeof str === 'undefined' || str === '';
@@ -981,7 +1048,7 @@ module object {
         var chain: any[] = [];
         var proto = ctor.prototype;
         while (proto) {
-            chain.push(proto.constructor)
+            chain.push(proto.constructor);
             proto = Object.getPrototypeOf(proto);
         }
         return chain;
@@ -1008,9 +1075,9 @@ export function hasValue(obj: any): boolean {
 export module ArrayHelper {
     export function AddRange<T>(array: Array<T>, items: Array<T>, uniqueOnly: boolean = false): void {
         if (Object.prototype.toString.call(array) !== "[object Array]")
-            throw new Error("input obj is not an array")
+            throw new Error("input obj is not an array");
         if (Object.prototype.toString.call(items) !== "[object Array]")
-            throw new Error("input range is not an array")
+            throw new Error("input range is not an array");
         for (var item of items) {
             if (!(uniqueOnly && array.indexOf(item) >= 0)) {
                 array.push(item);
@@ -1030,7 +1097,7 @@ export module ArrayHelper {
             return lastLength - array.length === 1;
         }
         else {
-            return false
+            return false;
         }
     }
 
@@ -1102,7 +1169,7 @@ export class TypeSystem {
             }
         }
 
-        return methods
+        return methods;
     }
 
     static GetObjectStaticPropertiesByClassName(className: string): string[] {
@@ -1189,9 +1256,9 @@ export class TypeSystem {
     }
 }
 
-//use this class to to work with node - https://github.com/jindw/xmldom - tested working with commit f053be7ceb.
+//use this class to to work with node - https://github.com/xmldom/xmldom - tested working with commit c4ac0056284aa60d0c13d6912cc4695644ee8d4e.
 //This library creates DOMParser object like functionality in node.For browsers, skip xmldom library and use inbuilt browser object
-//var DOMParser = require('xmldom').DOMParser;
+//var DOMParser = require('@xmldom/xmldom').DOMParser;
 //var dom = new DOMParser().parseFromString("xml data", 'text/xml');
 //ewslogging.log(JSON.stringify(xmlToJson(dom.documentElement)));
 export class xml2JsObject {
@@ -1393,18 +1460,18 @@ export class UriHelper {
 }
 
 declare var window: any;
-var isNode = (typeof window === 'undefined')
+var isNode = (typeof window === 'undefined');
 var dp: any = undefined;
 declare var Buffer: any;
 declare var require: any;
 
-// if (isNode) {
+if (isNode) {
 
-//     var dr: any = require('xmldom');
-//     dp = dr.DOMParser;
-// } else {
+    var dr = require('@xmldom/xmldom');
+    dp = dr.DOMParser;
+} else {
     dp = window.DOMParser;
-// }
+}
 
 export var DOMParser = dp;
 
@@ -1424,14 +1491,14 @@ export class Convert {
     static toNumber(value: any): number {
         return Number(value);
     }
-    static toBool(value: any, truefalseString = true, throwIfNotBool = false) {
+    static toBool(value: any, trueFalseString = true, throwIfNotBool = false) {
         if (typeof value === 'boolean') return value;
         var num = Number(value);
         if (!isNaN(num)) {
             return num !== 0;
         }
-        if (truefalseString) {
-            return (<string>value).toLowerCase() === 'true'
+        if (trueFalseString) {
+            return (<string>value).toLowerCase() === 'true';
         }
 
         if (throwIfNotBool) throw new Error("not a boolean");
@@ -1497,7 +1564,7 @@ export class Guid {
 				this.guid = str;
 			} else {
 				if (!Guid.ParseStrict && regxRelax.test(str)) {
-					EwsLogging.DebugLog("info: Guid.ctor - guid is in generic format. if you want to error on non uuid v4 format, set `Guid.ParseStrict = true`")
+					EwsLogging.DebugLog("info: Guid.ctor - guid is in generic format. if you want to error on non uuid v4 format, set `Guid.ParseStrict = true`");
 					this.guid = str;
 				}
 				else {
@@ -1514,13 +1581,13 @@ export class Guid {
 	}
 
 	static NewGuid(): Guid {
-		return new Guid(uuid.v4());
+		return new Guid(uuidv4());
 	}
 	static Parse(str: string): Guid {
 		return new Guid(str);
 	}
 
-	static TryParse(str, _parsed_output: { guid: Guid } = { guid: null }) {
+	static TryParse(str, _parsed_output: { guid: Guid; } = { guid: null }) {
 		try {
 			_parsed_output.guid = new Guid(str);
 			return true;
@@ -1538,6 +1605,7 @@ export interface IXHROptions {
 	headers?: any;
 	data?: any;
 	responseType?: string;
+	allowRedirect?: boolean;
 	customRequestInitializer?: (request: XMLHttpRequest) => void;
 }
 
@@ -1559,304 +1627,8 @@ export interface IXHRApi {
 	apiName?: string;
 }
 
-/**
- * Represents the completion of an asynchronous operation
- * @typescript 2.1.1 lib.es6.d.ts Promise Description
- */
-export interface Promise<T> {
-    // /**
-    //  * Attaches callbacks for the resolution and/or rejection of the Promise.
-    //  * @param onfulfilled The callback to execute when the Promise is resolved.
-    //  * @param onrejected The callback to execute when the Promise is rejected.
-    //  * @returns A Promise for the completion of which ever callback is executed.
-    //  */
-    // then(onfulfilled?: ((value: T) => T | PromiseLike<T>) | undefined | null, onrejected?: ((reason: any) => T | PromiseLike<T>) | undefined | null): Promise<T>;
-
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult>(onfulfilled: ((value: T) => T | PromiseLike<T>) | undefined | null, onrejected: (reason: any) => TResult | PromiseLike<TResult>): Promise<T | TResult>;
-
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult>(onfulfilled: (value: T) => TResult | PromiseLike<TResult>, onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): Promise<TResult>;
-
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1, TResult2>(onfulfilled: (value: T) => TResult1 | PromiseLike<TResult1>, onrejected: (reason: any) => TResult2 | PromiseLike<TResult2>): Promise<TResult1 | TResult2>;
-
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch(onrejected?: ((reason: any) => T | PromiseLike<T>) | undefined | null): Promise<T>;
-
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult>(onrejected: (reason: any) => TResult | PromiseLike<TResult>): Promise<T | TResult>;
-}
-
-export interface PromiseLike<T> {
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then(
-        onfulfilled?: ((value: T) => T | PromiseLike<T>) | undefined | null,
-        onrejected?: ((reason: any) => T | PromiseLike<T>) | undefined | null): PromiseLike<T>;
-
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult>(
-        onfulfilled: ((value: T) => T | PromiseLike<T>) | undefined | null,
-        onrejected: (reason: any) => TResult | PromiseLike<TResult>): PromiseLike<T | TResult>;
-
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult>(
-        onfulfilled: (value: T) => TResult | PromiseLike<TResult>,
-        onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): PromiseLike<TResult>;
-
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1, TResult2>(
-        onfulfilled: (value: T) => TResult1 | PromiseLike<TResult1>,
-        onrejected: (reason: any) => TResult2 | PromiseLike<TResult2>): PromiseLike<TResult1 | TResult2>;
-}
-
-export interface PromiseConstructor {
-    /**
-      * A reference to the prototype.
-      */
-    readonly prototype: Promise<any>;
-
-    /**
-     * Creates a new Promise.
-     * @param executor A callback used to initialize the promise. This callback is passed two arguments:
-     * a resolve callback used resolve the promise with a value or the result of another promise,
-     * and a reject callback used to reject the promise with a provided reason or error.
-     */
-    new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void) => void): Promise<T>;
-    //new <T>(executor: (resolve: (value?: T | PromiseLike<T>) => void, reject: (reason?: any) => void, onProgress?: (progress: any) => void) => void): Promise<T>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>, T10 | PromiseLike<T10>]): Promise<[T1, T2, T3, T4, T5, T6, T7, T8, T9, T10]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3, T4, T5, T6, T7, T8, T9>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>]): Promise<[T1, T2, T3, T4, T5, T6, T7, T8, T9]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3, T4, T5, T6, T7, T8>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>]): Promise<[T1, T2, T3, T4, T5, T6, T7, T8]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3, T4, T5, T6, T7>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>]): Promise<[T1, T2, T3, T4, T5, T6, T7]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3, T4, T5, T6>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>]): Promise<[T1, T2, T3, T4, T5, T6]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3, T4, T5>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>]): Promise<[T1, T2, T3, T4, T5]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3, T4>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>]): Promise<[T1, T2, T3, T4]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2, T3>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>]): Promise<[T1, T2, T3]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T1, T2>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>]): Promise<[T1, T2]>;
-
-    /**
-     * Creates a Promise that is resolved with an array of results when all of the provided Promises
-     * resolve, or rejected when any Promise is rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    all<T>(values: (T | PromiseLike<T>)[]): Promise<T[]>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3, T4, T5, T6, T7, T8, T9, T10>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>, T10 | PromiseLike<T10>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9 | T10>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3, T4, T5, T6, T7, T8, T9>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>, T9 | PromiseLike<T9>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8 | T9>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3, T4, T5, T6, T7, T8>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>, T8 | PromiseLike<T8>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7 | T8>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3, T4, T5, T6, T7>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>, T7 | PromiseLike<T7>]): Promise<T1 | T2 | T3 | T4 | T5 | T6 | T7>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3, T4, T5, T6>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>, T6 | PromiseLike<T6>]): Promise<T1 | T2 | T3 | T4 | T5 | T6>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3, T4, T5>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>, T5 | PromiseLike<T5>]): Promise<T1 | T2 | T3 | T4 | T5>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3, T4>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>, T4 | PromiseLike<T4>]): Promise<T1 | T2 | T3 | T4>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2, T3>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>, T3 | PromiseLike<T3>]): Promise<T1 | T2 | T3>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T1, T2>(values: [T1 | PromiseLike<T1>, T2 | PromiseLike<T2>]): Promise<T1 | T2>;
-
-    /**
-     * Creates a Promise that is resolved or rejected when any of the provided Promises are resolved
-     * or rejected.
-     * @param values An array of Promises.
-     * @returns A new Promise.
-     */
-    race<T>(values: (T | PromiseLike<T>)[]): Promise<T>;
-
-    /**
-     * Creates a new rejected promise for the provided reason.
-     * @param reason The reason the promise was rejected.
-     * @returns A new rejected Promise.
-     */
-    reject(reason: any): Promise<never>;
-
-    /**
-     * Creates a new rejected promise for the provided reason.
-     * @param reason The reason the promise was rejected.
-     * @returns A new rejected Promise.
-     */
-    reject<T>(reason: any): Promise<T>;
-
-    /**
-      * Creates a new resolved promise for the provided value.
-      * @param value A promise.
-      * @returns A promise whose internal state matches the provided promise.
-      */
-    resolve<T>(value: T | PromiseLike<T>): Promise<T>;
-
-    /**
-     * Creates a new resolved promise .
-     * @returns A resolved promise.
-     */
-    resolve(): Promise<void>;
-}
-
-export var Promise: PromiseConstructor = window.Promise;
+// export type PromiseConstructor = PromiseConstructorLike;
+// export let Promise: PromiseConstructor = window.Promise as any;
 
 // class PromiseType<T> {
 //     constructor() {
@@ -2225,17 +1997,7 @@ export class Uri {
     static UriSchemeHttps: string = "https";
 
 }
-
-export class XHRFactory {
-
-	static xhrHelper: IXHRApi;
-	static get XHRApi() {
-		if (typeof this.xhrHelper === 'undefined' || this.xhrHelper === null) {
-			this.xhrHelper = new XHRBrowser();
-		}
-		return this.xhrHelper;
-	}
-}
+//src\js\XHRDefaults.ts
 
 let schemeRegex = /^(\w+)\:\/\//;
 
@@ -2384,6 +2146,22 @@ export class XHRBrowser implements IXHRApi {
 }
 
 function noop() {
+}
+
+export class XHRFactory {
+
+	static xhrHelper: IXHRApi;
+	static get XHRApi() {
+		if (typeof this.xhrHelper === 'undefined' || this.xhrHelper === null) {
+			this.xhrHelper = new XHRBrowser();
+		}
+		return this.xhrHelper;
+	}
+
+	public static newXHRApi() {
+		console.warn("depricated, import and use \"new XHRDefault(options?)\" instead")
+		return new XHRBrowser();
+	}
 }
 
 
@@ -2884,8 +2662,8 @@ export class TimeZoneInfo {
 
 
     private static CreateLocal(): TimeZoneInfo {
-        let tzGuess: string = moment.tz.guess();
-        let offset: number = moment().utcOffset();
+        let tzGuess: string = TimeZoneInfo.GuessLocalTimeZone();
+        let offset: number = -Math.round(new Date().getTimezoneOffset());
         if (StringHelper.IsNullOrEmpty(tzGuess) || StringHelper.IsNullOrEmpty(TimeZoneMappingData[tzGuess])) {
             console.log("Unable to guess timezone, switching to Utc");
             tzGuess = "Etc/UTC";
@@ -2981,7 +2759,7 @@ export class TimeZoneInfo {
     }
 
     public static GuessLocalTimeZone(): string {
-        return moment.tz.guess();
+        return Intl.DateTimeFormat().resolvedOptions().timeZone;
     }
 
     public HasSameRules(other: TimeZoneInfo): boolean {
@@ -3342,6 +3120,7 @@ export interface IEnumerable<T> {
 	GetEnumerator(): Array<T>
 }
 
+ /** @internal */
  export interface IEwsHttpWebRequest {
 	Accept: string;
 	AllowAutoRedirect: boolean;
@@ -3376,6 +3155,7 @@ export interface IEnumerable<T> {
 
 
 
+/** @internal */
 export interface IEwsHttpWebRequestFactory {
     CreateExceptionResponse(exception: any /*System.Net.WebException*/): IEwsHttpWebResponse;
     CreateRequest(uri: string /*Uri*/): IEwsHttpWebRequest;
@@ -3389,12 +3169,13 @@ export interface IEwsHttpWebRequestFactory {
 
 
 
+/** @internal */
  export interface IEwsHttpWebResponse {
 	ContentEncoding: string;
 	ContentType: string;
 	Headers: any /*System.Net.WebHeaderCollection*/;
 	ResponseUri: string /*Uri*/;
-	StatusCode: any /*System.Net.HttpStatusCode*/;
+	StatusCode: HttpStatusCode /*System.Net.HttpStatusCode*/;
 	StatusDescription: string;
 	ProtocolVersion: any /*System.Version*/;
 	Close(): void;
@@ -3478,17 +3259,18 @@ export interface IRefParam<T> {
 export interface ISelfValidate {
     Validate(): any;
 }
-
- export interface ITraceListener {
-	Trace(traceType: string, traceMessage: string): void;
+/**
+ * ITraceListener handles message tracing.
+ */
+export interface ITraceListener {
+	/**
+	 * Handles a trace message
+	 *
+	 * @param   {string}   traceType      Type of trace message.
+	 * @param   {string}   traceMessage   The trace message.
+	 */
+  Trace(traceType: string, traceMessage: string): void;
 }
-
-
-
-
-
-
-
 
 export interface HasEwsEnumAttribute {
     FromEwsEnumString(value: string): any
@@ -4068,7 +3850,7 @@ export enum ConnectionFailureCause {
      */
     Other = 4
 }
-//D:\dr\gh\ews-javascript-api_ForNewFeatures\build\temp\src\js\Enumerations\ConnectionStatus.ts
+//src\js\Enumerations\ConnectionStatus.ts
 
 /**
  * The consent states enumeration
@@ -4813,7 +4595,7 @@ export enum EmailPosition {
      */
     Signature = 3
 }
-//D:\dr\gh\ews-javascript-api_ForNewFeatures\build\temp\src\js\Enumerations\EnumToExchangeVersionMappingHelper.ts
+//src\js\Enumerations\EnumToExchangeVersionMappingHelper.ts
 /**custom created to simplify creation of above Enum(s) to ExchangeVersion mapping in EwsUtil, There is no c# like Attribute typesystem and reflection available */
 export enum EnumToSchemaMappingHelper {
     WellKnownFolderName,
@@ -11349,20 +11131,21 @@ export module WellKnownFolderName {
     }
 
     const cachedValues = Object.keys(WellKnownFolderName)
-      .filter(key => typeof WellKnownFolderName[key] == 'number')
-      .map(item => item.toLowerCase())
-      .reduce((prev, item, index) => ({...prev, [item]: index, [index]: item }), {});
+        .filter(key => typeof WellKnownFolderName[key] == 'number')
+        .map(item => item.toLowerCase())
+        .reduce((prev, item, index) => ({...prev, [item]: index, [index]: item }), {});
 
     /**EwsEnumAttribute */
     export function FromEwsEnumString(value: string): any {
-      const result = cachedValues[value];
-      return result;
+        const result = cachedValues[value];
+        return result;
     }
 
     /**EwsEnumAttribute */
     export function ToEwsEnumString(value: any) {
-      return WellKnownFolderName[value].toLowerCase();
+        return WellKnownFolderName[value].toLowerCase();
     }
+
 }
 
 /**
@@ -15848,8 +15631,13 @@ export class TimeZoneDefinition extends ComplexProperty {
         this.Validate();
 
         if (!parse) {
-            //ref: skipped creation based on server data, directly creating using TimeZone Mapping data. complex to translate Windows TimeZoneInfo subclasses to javascript.
-            return TimeZoneInfo.FindSystemTimeZoneById(this.Id);
+            try {
+                //ref: skipped creation based on server data, directly creating using TimeZone Mapping data. complex to translate Windows TimeZoneInfo subclasses to javascript.
+                return TimeZoneInfo.FindSystemTimeZoneById(this.Id);
+            }
+            catch {
+                EwsLogging.DebugLog(`Could not resolve a system timezone with Id "${this.Id}"`);
+            }
         }
         let result: TimeZoneInfo;
 
@@ -18559,8 +18347,7 @@ export class ExtendedProperty extends ComplexProperty {
                         "PropertyDefintion is missing");
 
                     var stringList: StringList = new StringList(XmlElementNames.Value);
-                    var jsonCollection = EwsServiceJsonReader.ReadAsArray(jsonProperty, key);
-                    stringList.CreateFromXmlJsObjectCollection(jsonCollection, service);
+                    stringList.CreateFromXmlJsObjectCollection(jsonProperty[key], service);
                     this.value = MapiTypeConverter.ConvertToValue(this.PropertyDefinition.MapiType, stringList.GetEnumerator());
                     break;
                 default:
@@ -28192,7 +27979,7 @@ export class AttachmentCollection extends ComplexPropertyCollection<Attachment> 
         if (argsLength === 2) {
             throw new Error("AttachmentCollection.ts - Can only use this method with base64 content");
             let fileAttachment: FileAttachment = new FileAttachment(this.owner);
-            fileAttachment.Name = nameOrFileName;
+            fileAttachment.Name = 'name';
             fileAttachment.FileName = fileNameOrContent;
             this.InternalAdd(fileAttachment);
             return fileAttachment;
@@ -28200,7 +27987,7 @@ export class AttachmentCollection extends ComplexPropertyCollection<Attachment> 
         if (argsLength == 3) {
             if (isContent === true) {
                 let fileAttachment: FileAttachment = new FileAttachment(this.owner);
-                fileAttachment.Name = nameOrFileName;
+                fileAttachment.Name = 'name';
                 fileAttachment.Base64Content = fileNameOrContent;
                 this.InternalAdd(fileAttachment);
                 return fileAttachment;
@@ -30365,7 +30152,7 @@ export abstract class PropertyDefinitionBase {
      *
      * @value {ExchangeVersion} The version.
      */
-    abstract get Version(): ExchangeVersion;
+    Version: ExchangeVersion;
 
     /**
      * Gets the type of the property.
@@ -30496,12 +30283,14 @@ export class ExtendedPropertyDefinition extends PropertyDefinitionBase {
      *
      * @value {ExchangeVersion} The version.
      */
+    // @ts-ignore
     get Version(): ExchangeVersion { return ExchangeVersion.Exchange2007_SP1; }
 
     /**
      * Gets the property type.
      */
-    // get Type: any;// System.Type;
+    // @ts-ignore
+    Type: any;// System.Type;
 
     /**
      * @internal Initializes a new instance of the **ExtendedPropertyDefinition** class.
@@ -30744,6 +30533,7 @@ export abstract class ServiceObjectPropertyDefinition extends PropertyDefinition
      *
      * @value {ExchangeVersion} The version.
      */
+    // @ts-ignore
     get Version(): ExchangeVersion { return ExchangeVersion.Exchange2007_SP1; }
 
     /**
@@ -31124,7 +30914,8 @@ export class EffectiveRightsPropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    // Type: any;//System.Type;
+    // @ts-ignore
+    Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **EffectiveRightsPropertyDefinition** class.
@@ -31213,7 +31004,8 @@ export class MeetingTimeZonePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    // Type: any;//System.Type;
+    // @ts-ignore
+    Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **MeetingTimeZonePropertyDefinition** class.
@@ -31277,7 +31069,8 @@ export class RecurrencePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-//    Type: any;//System.Type;
+    // @ts-ignore
+    Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **RecurrencePropertyDefinition** class.
@@ -31433,7 +31226,8 @@ export class ResponseObjectsPropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    // Type: any;//System.Type;
+    // @ts-ignore
+    Type: any;//System.Type;
 
     /**
      * Gets the response action.
@@ -31523,7 +31317,8 @@ export class DateTimePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    // Type: any;//System.Type;
+    // @ts-ignore
+    Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **DateTimePropertyDefinition** class.
@@ -31565,9 +31360,9 @@ export class DateTimePropertyDefinition extends PropertyDefinition {
                 super(propertyName, xmlElementName, uri, <PropertyDefinitionFlags>versionOrFlags, version);
                 break;
             default:
-                throw new Exception("Invalid number of arguments");
                 break;
         }
+        // @ts-ignore
         this.isNullable = isNullable || false;
     }
 
@@ -31855,9 +31650,9 @@ export abstract class TypedPropertyDefinition extends PropertyDefinition {
                 super(propertyName, xmlElementName, uri, <PropertyDefinitionFlags>versionOrFlags, version);
                 break;
             default:
-                throw new Exception("Invalid number of arguments");
                 break;
         }
+        // @ts-ignore
         this.isNullable = isNullable || false;
     }
 
@@ -32027,7 +31822,8 @@ export type GenericEnumType = typeof AppointmentType | typeof ContactSource | ty
  */
 export class GenericPropertyDefinition<TPropertyValue> extends TypedPropertyDefinition {
 
-    // Type: any;//System.Type;
+    // @ts-ignore
+    Type: any;//System.Type;
     /** ews-javascript-api specific - need to capture Enum type based on constructor */
     enumType: GenericEnumType;
 
@@ -32563,7 +32359,8 @@ export abstract class ComplexPropertyDefinitionBase extends PropertyDefinition {
  */
 export class ComplexPropertyDefinition<TComplexProperty extends ComplexProperty> extends ComplexPropertyDefinitionBase {
 
-    // Type: any;// System.Type; //todo: implement Type using typeof type
+    // @ts-ignore
+    Type: any;// System.Type; //todo: implement Type using typeof type
 
     private propertyCreationDelegate: CreateComplexPropertyDelegate<TComplexProperty>;
 
@@ -32825,7 +32622,8 @@ export class TimeZonePropertyDefinition extends PropertyDefinition {
     /**
      * Gets the property type.
      */
-    // Type: any;//System.Type;
+    // @ts-ignore
+    Type: any;//System.Type;
 
     /**
      * @internal Initializes a new instance of the **TimeZonePropertyDefinition** class.
@@ -33028,14 +32826,14 @@ var util: any = undefined;
 
 declare var require: any;
 
-// if (isNode) {
-//     util = require('util');
-// }
-// else {
+if (isNode) {
+    util = require('util');
+}
+else {
     util = {
         inspect: (obj: any, option: any) => { return obj; }
     }
-// }
+}
 
 
 export class EwsLogging {
@@ -33783,708 +33581,768 @@ export type RequiredServerVersionEnums = typeof ConversationQueryTraversal | typ
  */
 export class EwsUtilities {
 
-    //#region constants in c# - typescript static
-    static XSFalse: string = "false";
-    static XSTrue: string = "true";
-    static EwsTypesNamespacePrefix: string = "t";
-    static EwsMessagesNamespacePrefix: string = "m";
-    static EwsErrorsNamespacePrefix: string = "e";
-    static EwsSoapNamespacePrefix: string = "soap";
-    static EwsXmlSchemaInstanceNamespacePrefix: string = "xsi";
-    static PassportSoapFaultNamespacePrefix: string = "psf";
-    static WSTrustFebruary2005NamespacePrefix: string = "wst";
-    static WSAddressingNamespacePrefix: string = "wsa";
-    static AutodiscoverSoapNamespacePrefix: string = "a";
-    static WSSecurityUtilityNamespacePrefix: string = "wsu";
-    static WSSecuritySecExtNamespacePrefix: string = "wsse";
-    static EwsTypesNamespace: string = "http://schemas.microsoft.com/exchange/services/2006/types";
-    static EwsMessagesNamespace: string = "http://schemas.microsoft.com/exchange/services/2006/messages";
-    static EwsErrorsNamespace: string = "http://schemas.microsoft.com/exchange/services/2006/errors";
-    static EwsSoapNamespace: string = "http://schemas.xmlsoap.org/soap/envelope/";
-    static EwsSoap12Namespace: string = "http://www.w3.org/2003/05/soap-envelope";
-    static EwsXmlSchemaInstanceNamespace: string = "http://www.w3.org/2001/XMLSchema-instance";
-    static PassportSoapFaultNamespace: string = "http://schemas.microsoft.com/Passport/SoapServices/SOAPFault";
-    static WSTrustFebruary2005Namespace: string = "http://schemas.xmlsoap.org/ws/2005/02/trust";
-    static WSAddressingNamespace: string = "http://www.w3.org/2005/08/addressing";
-    static AutodiscoverSoapNamespace: string = "http://schemas.microsoft.com/exchange/2010/Autodiscover";
-    static WSSecurityUtilityNamespace: string = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
-    static WSSecuritySecExtNamespace: string = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
+  //#region constants in c# - typescript static
+  static XSFalse: string = "false";
+  static XSTrue: string = "true";
+  static EwsTypesNamespacePrefix: string = "t";
+  static EwsMessagesNamespacePrefix: string = "m";
+  static EwsErrorsNamespacePrefix: string = "e";
+  static EwsSoapNamespacePrefix: string = "soap";
+  static EwsXmlSchemaInstanceNamespacePrefix: string = "xsi";
+  static PassportSoapFaultNamespacePrefix: string = "psf";
+  static WSTrustFebruary2005NamespacePrefix: string = "wst";
+  static WSAddressingNamespacePrefix: string = "wsa";
+  static AutodiscoverSoapNamespacePrefix: string = "a";
+  static WSSecurityUtilityNamespacePrefix: string = "wsu";
+  static WSSecuritySecExtNamespacePrefix: string = "wsse";
+  static EwsTypesNamespace: string = "http://schemas.microsoft.com/exchange/services/2006/types";
+  static EwsMessagesNamespace: string = "http://schemas.microsoft.com/exchange/services/2006/messages";
+  static EwsErrorsNamespace: string = "http://schemas.microsoft.com/exchange/services/2006/errors";
+  static EwsSoapNamespace: string = "http://schemas.xmlsoap.org/soap/envelope/";
+  static EwsSoap12Namespace: string = "http://www.w3.org/2003/05/soap-envelope";
+  static EwsXmlSchemaInstanceNamespace: string = "http://www.w3.org/2001/XMLSchema-instance";
+  static PassportSoapFaultNamespace: string = "http://schemas.microsoft.com/Passport/SoapServices/SOAPFault";
+  static WSTrustFebruary2005Namespace: string = "http://schemas.xmlsoap.org/ws/2005/02/trust";
+  static WSAddressingNamespace: string = "http://www.w3.org/2005/08/addressing";
+  static AutodiscoverSoapNamespace: string = "http://schemas.microsoft.com/exchange/2010/Autodiscover";
+  static WSSecurityUtilityNamespace: string = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-utility-1.0.xsd";
+  static WSSecuritySecExtNamespace: string = "http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd";
 
-    /// <summary>
-    /// Regular expression for legal domain names.
-    /// </summary>
-    static DomainRegex: string = "^[-a-zA-Z0-9_.]+$";
-    //#endregion
+  /// <summary>
+  /// Regular expression for legal domain names.
+  /// </summary>
+  static DomainRegex: string = "^[-a-zA-Z0-9_.]+$";
+  //#endregion
 
 
-    static BuildVersion: string;
-    // private static serviceObjectInfo: LazyMember<ServiceObjectInfo> = new LazyMember<ServiceObjectInfo>(
-    //     () => {
-    //         //return new ServiceObjectInfo();
-    //     });
-    //private static buildVersion: LazyMember<T>;
-    // private static enumVersionDictionaries: LazyMember<EnumToExhcangeVersionDelegateDictionary> = new LazyMember<EnumToExhcangeVersionDelegateDictionary>(
-    //     () => {
-    //         var e2evmh = EnumToExchangeVersionMappingHelper;
-    //         var dict: EnumToExhcangeVersionDelegateDictionary = {};
-    //         dict[e2evmh[e2evmh.WellKnownFolderName]] = EwsUtilities.BuildEnumDict(e2evmh.WellKnownFolderName);
-    //         dict[e2evmh[e2evmh.ItemTraversal]] = EwsUtilities.BuildEnumDict(e2evmh.ItemTraversal);
-    //         dict[e2evmh[e2evmh.ConversationQueryTraversal]] = EwsUtilities.BuildEnumDict(e2evmh.ConversationQueryTraversal);
-    //         dict[e2evmh[e2evmh.FileAsMapping]] = EwsUtilities.BuildEnumDict(e2evmh.FileAsMapping);
-    //         dict[e2evmh[e2evmh.EventType]] = EwsUtilities.BuildEnumDict(e2evmh.EventType);
-    //         dict[e2evmh[e2evmh.MeetingRequestsDeliveryScope]] = EwsUtilities.BuildEnumDict(e2evmh.MeetingRequestsDeliveryScope);
-    //         dict[e2evmh[e2evmh.ViewFilter]] = EwsUtilities.BuildEnumDict(e2evmh.ViewFilter);
-    //         dict[e2evmh[e2evmh.MailboxType]] = EwsUtilities.BuildEnumDict(e2evmh.MailboxType);
-    //         return dict;
-    //     });
-    // private static schemaToEnumDictionaries: LazyMember<DictionaryWithNumericKey<DictionaryWithStringKey<number>>> = new LazyMember<DictionaryWithNumericKey<DictionaryWithStringKey<number>>>(
-    //     () => {
-    //         var dict = new DictionaryWithNumericKey<DictionaryWithStringKey<number>>();
-    //         dict.addUpdate(EnumToSchemaMappingHelper.WellKnownFolderName, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.WellKnownFolderName));
-    //         dict.addUpdate(EnumToSchemaMappingHelper.ItemTraversal, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.ItemTraversal));
-    //         dict.addUpdate(EnumToSchemaMappingHelper.ConversationQueryTraversal, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.ConversationQueryTraversal));
-    //         dict.addUpdate(EnumToSchemaMappingHelper.FileAsMapping, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.FileAsMapping));
-    //         dict.addUpdate(EnumToSchemaMappingHelper.EventType, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.EventType));
-    //         dict.addUpdate(EnumToSchemaMappingHelper.MeetingRequestsDeliveryScope, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.MeetingRequestsDeliveryScope));
-    //         dict.addUpdate(EnumToSchemaMappingHelper.ViewFilter, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.ViewFilter));
-    //         dict.addUpdate(EnumToSchemaMappingHelper.MailboxType, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.EventType));
-    //         return dict;
-    //     });
-    // private static enumToSchemaDictionaries: LazyMember<DictionaryWithNumericKey<DictionaryWithNumericKey<string>>>;
-    //private static typeNameToShortNameMap: LazyMember<T>;
+  static BuildVersion: string;
+  // private static serviceObjectInfo: LazyMember<ServiceObjectInfo> = new LazyMember<ServiceObjectInfo>(
+  //     () => {
+  //         //return new ServiceObjectInfo();
+  //     });
+  //private static buildVersion: LazyMember<T>;
+  // private static enumVersionDictionaries: LazyMember<EnumToExhcangeVersionDelegateDictionary> = new LazyMember<EnumToExhcangeVersionDelegateDictionary>(
+  //     () => {
+  //         var e2evmh = EnumToExchangeVersionMappingHelper;
+  //         var dict: EnumToExhcangeVersionDelegateDictionary = {};
+  //         dict[e2evmh[e2evmh.WellKnownFolderName]] = EwsUtilities.BuildEnumDict(e2evmh.WellKnownFolderName);
+  //         dict[e2evmh[e2evmh.ItemTraversal]] = EwsUtilities.BuildEnumDict(e2evmh.ItemTraversal);
+  //         dict[e2evmh[e2evmh.ConversationQueryTraversal]] = EwsUtilities.BuildEnumDict(e2evmh.ConversationQueryTraversal);
+  //         dict[e2evmh[e2evmh.FileAsMapping]] = EwsUtilities.BuildEnumDict(e2evmh.FileAsMapping);
+  //         dict[e2evmh[e2evmh.EventType]] = EwsUtilities.BuildEnumDict(e2evmh.EventType);
+  //         dict[e2evmh[e2evmh.MeetingRequestsDeliveryScope]] = EwsUtilities.BuildEnumDict(e2evmh.MeetingRequestsDeliveryScope);
+  //         dict[e2evmh[e2evmh.ViewFilter]] = EwsUtilities.BuildEnumDict(e2evmh.ViewFilter);
+  //         dict[e2evmh[e2evmh.MailboxType]] = EwsUtilities.BuildEnumDict(e2evmh.MailboxType);
+  //         return dict;
+  //     });
+  // private static schemaToEnumDictionaries: LazyMember<DictionaryWithNumericKey<DictionaryWithStringKey<number>>> = new LazyMember<DictionaryWithNumericKey<DictionaryWithStringKey<number>>>(
+  //     () => {
+  //         var dict = new DictionaryWithNumericKey<DictionaryWithStringKey<number>>();
+  //         dict.addUpdate(EnumToSchemaMappingHelper.WellKnownFolderName, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.WellKnownFolderName));
+  //         dict.addUpdate(EnumToSchemaMappingHelper.ItemTraversal, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.ItemTraversal));
+  //         dict.addUpdate(EnumToSchemaMappingHelper.ConversationQueryTraversal, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.ConversationQueryTraversal));
+  //         dict.addUpdate(EnumToSchemaMappingHelper.FileAsMapping, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.FileAsMapping));
+  //         dict.addUpdate(EnumToSchemaMappingHelper.EventType, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.EventType));
+  //         dict.addUpdate(EnumToSchemaMappingHelper.MeetingRequestsDeliveryScope, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.MeetingRequestsDeliveryScope));
+  //         dict.addUpdate(EnumToSchemaMappingHelper.ViewFilter, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.ViewFilter));
+  //         dict.addUpdate(EnumToSchemaMappingHelper.MailboxType, EwsUtilities.BuildSchemaToEnumDict(EnumToSchemaMappingHelper.EventType));
+  //         return dict;
+  //     });
+  // private static enumToSchemaDictionaries: LazyMember<DictionaryWithNumericKey<DictionaryWithNumericKey<string>>>;
+  //private static typeNameToShortNameMap: LazyMember<T>;
 
-    static BoolToXSBool(value: boolean): string {
-        var boolvalue = Convert.toBool(value)
-        return boolvalue ? EwsUtilities.XSTrue : EwsUtilities.XSFalse;
-        //throw new Error("EwsUtilities.ts - static BoolToXSBool : Not implemented.");
+  static BoolToXSBool(value: boolean): string {
+    var boolvalue = Convert.toBool(value)
+    return boolvalue ? EwsUtilities.XSTrue : EwsUtilities.XSFalse;
+    //throw new Error("EwsUtilities.ts - static BoolToXSBool : Not implemented.");
+  }
+  //static BuildEnumDict(enumType: System.Type): System.Collections.Generic.Dictionary<TKey, TValue>{ throw new Error("EwsUtilities.ts - static BuildEnumDict : Not implemented.");}
+  //deviation - need to work with static data for enum to exchange version dict, there is no Attribute type system in javascript.
+  // static BuildEnumDict(enumType: EnumToExchangeVersionMappingHelper): EnumVersionDelegate {
+  //     var enumDelegate = (value: any) => { return ExchangeVersion.Exchange2007_SP1 };
+  //     switch (enumType) {
+  //         //TODO: fix numbering to named enum value if possible
+  //         case EnumToExchangeVersionMappingHelper.WellKnownFolderName:
+  //             enumDelegate = (value) => {
+  //                 var enumVersion = ExchangeVersion.Exchange2007_SP1;
+  //                 if (value <= 15) //<= WellKnownFolderName.VoiceMail
+  //                     enumVersion = ExchangeVersion.Exchange2007_SP1;
+  //                 else if (value >= 16 && value <= 26) //>= RecoverableItemsRoot && <= ArchiveRecoverableItemsPurges
+  //                     enumVersion = ExchangeVersion.Exchange2010_SP1;
+  //                 else if (value >= 27 && value <= 34) //>= SyncIssues && <= ToDoSearch
+  //                     enumVersion = ExchangeVersion.Exchange2013;
+  //                 else
+  //                     enumVersion = ExchangeVersion.Exchange_Version_Not_Updated;
+
+  //                 return enumVersion;
+  //             };
+  //             break;
+  //         case EnumToExchangeVersionMappingHelper.ItemTraversal:
+  //             enumDelegate = (value) => {
+  //                 if (value <= 1) //<= ItemTraversal.SoftDeleted
+  //                     return ExchangeVersion.Exchange2007_SP1;
+  //                 else if (value == 2) // === Associated
+  //                     return ExchangeVersion.Exchange2010;
+
+  //                 return ExchangeVersion.Exchange_Version_Not_Updated;
+  //             };
+  //             break;
+  //         case EnumToExchangeVersionMappingHelper.ConversationQueryTraversal:
+  //             enumDelegate = (value) => {
+  //                 if (value <= 1) //<= ConversationQueryTraversal.Deep
+  //                     return ExchangeVersion.Exchange2013;
+  //                 return ExchangeVersion.Exchange_Version_Not_Updated;
+  //             };
+  //             break;
+  //         case EnumToExchangeVersionMappingHelper.FileAsMapping:
+  //             enumDelegate = (value) => {
+  //                 if (value <= 12) //<= FileAsMapping.SurnameSpaceGivenName
+  //                     return ExchangeVersion.Exchange2007_SP1;
+  //                 else if (value >= 13 && value <= 17) // >= DisplayName && <=Empty
+  //                     return ExchangeVersion.Exchange2010;
+
+  //                 return ExchangeVersion.Exchange_Version_Not_Updated;
+  //             };
+  //             break;
+  //         case EnumToExchangeVersionMappingHelper.EventType:
+  //             enumDelegate = (value) => {
+  //                 if (value <= 6) //<= EventType.Created
+  //                     return ExchangeVersion.Exchange2007_SP1;
+  //                 else if (value == 7) // == FreeBusyChanged
+  //                     return ExchangeVersion.Exchange2010_SP1;
+
+  //                 return ExchangeVersion.Exchange_Version_Not_Updated;
+  //             };
+  //             break;
+  //         case EnumToExchangeVersionMappingHelper.MeetingRequestsDeliveryScope:
+  //             enumDelegate = (value) => {
+  //                 if (value <= 2) //<= MeetingRequestsDeliveryScope.DelegatesAndSendInformationToMe
+  //                     return ExchangeVersion.Exchange2007_SP1;
+  //                 else if (value == 3) // == NoForward
+  //                     return ExchangeVersion.Exchange2010_SP1;
+
+  //                 return ExchangeVersion.Exchange_Version_Not_Updated;
+  //             };
+  //             break;
+  //         case EnumToExchangeVersionMappingHelper.ViewFilter:
+  //             enumDelegate = (value) => {
+  //                 if (value <= 10) //<=ViewFilter.SuggestionsDelete
+  //                     return ExchangeVersion.Exchange2013;
+
+  //                 return ExchangeVersion.Exchange_Version_Not_Updated;
+  //             };
+  //             break;
+  //         case EnumToExchangeVersionMappingHelper.MailboxType:
+  //             enumDelegate = (value) => {
+  //                 if (value <= 1) //<=MailboxType.OneOff
+  //                     return ExchangeVersion.Exchange2010;
+  //                 if (value <= 6) //<=MailboxType.Contact
+  //                     return ExchangeVersion.Exchange2007_SP1;
+  //                 if (value <= 7) //<=MailboxType.GroupMailbox
+  //                     return ExchangeVersion.Exchange2015;
+
+  //                 return ExchangeVersion.Exchange_Version_Not_Updated;
+  //             };
+  //             break;
+  //         default:
+  //             throw new Error("EwsUtilities.ts - BuildEnumDict - no mapping available for this enumtype" + EnumToExchangeVersionMappingHelper[<number>enumType]);
+  //     }
+
+  //     return enumDelegate;
+  // }
+  /**@internal */
+  //deviation - need to work with static data for enum to exchange version dict, there is no Attribute type system in javascript.
+  static BuildEnumToSchemaDict(enumType: EnumToSchemaMappingHelper): Dictionary<number, string> { throw new Error("EwsUtilities.ts - static BuildEnumToSchemaDict : Not implemented."); }
+  /**@internal */
+  //deviation - need to work with static data for enum to exchange version dict, there is no Attribute type system in javascript.
+  static BuildSchemaToEnumDict(enumType: EnumToSchemaMappingHelper): Dictionary<string, number> { throw new Error("EwsUtilities.ts - static BuildSchemaToEnumDict : Not implemented."); }
+
+  static GetDictionaryKeyTypeEnum(dictionaryKeyType: DictionaryKeyType): any {
+    switch (dictionaryKeyType) {
+      case DictionaryKeyType.EmailAddressKey:
+        return EmailAddressKey;
+      case DictionaryKeyType.ImAddressKey:
+        return ImAddressKey;
+      case DictionaryKeyType.PhoneNumberKey:
+        return PhoneNumberKey;
+      case DictionaryKeyType.PhysicalAddressKey:
+        return PhysicalAddressKey;
+      default:
+        throw new Error("EwsUtilities.ts - GetDictionaryKeyTypeEnum - invalid value: " + dictionaryKeyType);
     }
-    //static BuildEnumDict(enumType: System.Type): System.Collections.Generic.Dictionary<TKey, TValue>{ throw new Error("EwsUtilities.ts - static BuildEnumDict : Not implemented.");}
-    //deviation - need to work with static data for enum to exchange version dict, there is no Attribute type system in javascript.
-    // static BuildEnumDict(enumType: EnumToExchangeVersionMappingHelper): EnumVersionDelegate {
-    //     var enumDelegate = (value: any) => { return ExchangeVersion.Exchange2007_SP1 };
-    //     switch (enumType) {
-    //         //TODO: fix numbering to named enum value if possible
-    //         case EnumToExchangeVersionMappingHelper.WellKnownFolderName:
-    //             enumDelegate = (value) => {
-    //                 var enumVersion = ExchangeVersion.Exchange2007_SP1;
-    //                 if (value <= 15) //<= WellKnownFolderName.VoiceMail
-    //                     enumVersion = ExchangeVersion.Exchange2007_SP1;
-    //                 else if (value >= 16 && value <= 26) //>= RecoverableItemsRoot && <= ArchiveRecoverableItemsPurges
-    //                     enumVersion = ExchangeVersion.Exchange2010_SP1;
-    //                 else if (value >= 27 && value <= 34) //>= SyncIssues && <= ToDoSearch
-    //                     enumVersion = ExchangeVersion.Exchange2013;
-    //                 else
-    //                     enumVersion = ExchangeVersion.Exchange_Version_Not_Updated;
+  }
+  // private static GetExchangeVersionFromEnumDelegate(enumType: EnumToExchangeVersionMappingHelper, enumValue: number): ExchangeVersion {
+  //     var delegate = this.enumVersionDictionaries.Member[EnumToExchangeVersionMappingHelper[enumType]];
+  //     if (delegate && typeof delegate === 'function') {
+  //         try {
+  //             return delegate(enumValue);
+  //         }
+  //         catch (ex) { }
+  //     }
 
-    //                 return enumVersion;
-    //             };
-    //             break;
-    //         case EnumToExchangeVersionMappingHelper.ItemTraversal:
-    //             enumDelegate = (value) => {
-    //                 if (value <= 1) //<= ItemTraversal.SoftDeleted
-    //                     return ExchangeVersion.Exchange2007_SP1;
-    //                 else if (value == 2) // === Associated
-    //                     return ExchangeVersion.Exchange2010;
-
-    //                 return ExchangeVersion.Exchange_Version_Not_Updated;
-    //             };
-    //             break;
-    //         case EnumToExchangeVersionMappingHelper.ConversationQueryTraversal:
-    //             enumDelegate = (value) => {
-    //                 if (value <= 1) //<= ConversationQueryTraversal.Deep
-    //                     return ExchangeVersion.Exchange2013;
-    //                 return ExchangeVersion.Exchange_Version_Not_Updated;
-    //             };
-    //             break;
-    //         case EnumToExchangeVersionMappingHelper.FileAsMapping:
-    //             enumDelegate = (value) => {
-    //                 if (value <= 12) //<= FileAsMapping.SurnameSpaceGivenName
-    //                     return ExchangeVersion.Exchange2007_SP1;
-    //                 else if (value >= 13 && value <= 17) // >= DisplayName && <=Empty
-    //                     return ExchangeVersion.Exchange2010;
-
-    //                 return ExchangeVersion.Exchange_Version_Not_Updated;
-    //             };
-    //             break;
-    //         case EnumToExchangeVersionMappingHelper.EventType:
-    //             enumDelegate = (value) => {
-    //                 if (value <= 6) //<= EventType.Created
-    //                     return ExchangeVersion.Exchange2007_SP1;
-    //                 else if (value == 7) // == FreeBusyChanged
-    //                     return ExchangeVersion.Exchange2010_SP1;
-
-    //                 return ExchangeVersion.Exchange_Version_Not_Updated;
-    //             };
-    //             break;
-    //         case EnumToExchangeVersionMappingHelper.MeetingRequestsDeliveryScope:
-    //             enumDelegate = (value) => {
-    //                 if (value <= 2) //<= MeetingRequestsDeliveryScope.DelegatesAndSendInformationToMe
-    //                     return ExchangeVersion.Exchange2007_SP1;
-    //                 else if (value == 3) // == NoForward
-    //                     return ExchangeVersion.Exchange2010_SP1;
-
-    //                 return ExchangeVersion.Exchange_Version_Not_Updated;
-    //             };
-    //             break;
-    //         case EnumToExchangeVersionMappingHelper.ViewFilter:
-    //             enumDelegate = (value) => {
-    //                 if (value <= 10) //<=ViewFilter.SuggestionsDelete
-    //                     return ExchangeVersion.Exchange2013;
-
-    //                 return ExchangeVersion.Exchange_Version_Not_Updated;
-    //             };
-    //             break;
-    //         case EnumToExchangeVersionMappingHelper.MailboxType:
-    //             enumDelegate = (value) => {
-    //                 if (value <= 1) //<=MailboxType.OneOff
-    //                     return ExchangeVersion.Exchange2010;
-    //                 if (value <= 6) //<=MailboxType.Contact
-    //                     return ExchangeVersion.Exchange2007_SP1;
-    //                 if (value <= 7) //<=MailboxType.GroupMailbox
-    //                     return ExchangeVersion.Exchange2015;
-
-    //                 return ExchangeVersion.Exchange_Version_Not_Updated;
-    //             };
-    //             break;
-    //         default:
-    //             throw new Error("EwsUtilities.ts - BuildEnumDict - no mapping available for this enumtype" + EnumToExchangeVersionMappingHelper[<number>enumType]);
-    //     }
-
-    //     return enumDelegate;
-    // }
-    /**@internal */
-    //deviation - need to work with static data for enum to exchange version dict, there is no Attribute type system in javascript.
-    static BuildEnumToSchemaDict(enumType: EnumToSchemaMappingHelper): Dictionary<number, string> { throw new Error("EwsUtilities.ts - static BuildEnumToSchemaDict : Not implemented."); }
-    /**@internal */
-    //deviation - need to work with static data for enum to exchange version dict, there is no Attribute type system in javascript.
-    static BuildSchemaToEnumDict(enumType: EnumToSchemaMappingHelper): Dictionary<string, number> { throw new Error("EwsUtilities.ts - static BuildSchemaToEnumDict : Not implemented."); }
-
-    static GetDictionaryKeyTypeEnum(dictionaryKeyType: DictionaryKeyType): any {
-        switch (dictionaryKeyType) {
-            case DictionaryKeyType.EmailAddressKey:
-                return EmailAddressKey;
-            case DictionaryKeyType.ImAddressKey:
-                return ImAddressKey;
-            case DictionaryKeyType.PhoneNumberKey:
-                return PhoneNumberKey;
-            case DictionaryKeyType.PhysicalAddressKey:
-                return PhysicalAddressKey;
-            default:
-                throw new Error("EwsUtilities.ts - GetDictionaryKeyTypeEnum - invalid value: " + dictionaryKeyType);
-        }
+  //     return ExchangeVersion.Exchange2007_SP1;
+  // }
+  static ConvertTime(dateTime: DateTime, sourceTimeZone: TimeZoneInfo, destinationTimeZone: TimeZoneInfo): DateTime {
+    try {
+      return TimeZoneInfo.ConvertTime(
+        dateTime,
+        sourceTimeZone,
+        destinationTimeZone);
     }
-    // private static GetExchangeVersionFromEnumDelegate(enumType: EnumToExchangeVersionMappingHelper, enumValue: number): ExchangeVersion {
-    //     var delegate = this.enumVersionDictionaries.Member[EnumToExchangeVersionMappingHelper[enumType]];
-    //     if (delegate && typeof delegate === 'function') {
-    //         try {
-    //             return delegate(enumValue);
-    //         }
-    //         catch (ex) { }
-    //     }
-
-    //     return ExchangeVersion.Exchange2007_SP1;
-    // }
-    static ConvertTime(dateTime: DateTime, sourceTimeZone: TimeZoneInfo, destinationTimeZone: TimeZoneInfo): DateTime {
-        try {
-            return TimeZoneInfo.ConvertTime(
-                dateTime,
-                sourceTimeZone,
-                destinationTimeZone);
-        }
-        catch (ex)//ArgumentException
-        {
-            throw new TimeZoneConversionException(
-                StringHelper.Format(
-                    Strings.CannotConvertBetweenTimeZones,
-                    EwsUtilities.DateTimeToXSDateTime(dateTime),
-                    sourceTimeZone.DisplayName,
-                    destinationTimeZone.DisplayName),
-                ex);
-        }
+    catch (ex)//ArgumentException
+    {
+      throw new TimeZoneConversionException(
+        StringHelper.Format(
+          Strings.CannotConvertBetweenTimeZones,
+          EwsUtilities.DateTimeToXSDateTime(dateTime),
+          sourceTimeZone.DisplayName,
+          destinationTimeZone.DisplayName),
+        ex);
     }
-    //static CopyStream(source: System.IO.Stream, target: System.IO.Stream): any{ throw new Error("EwsUtilities.ts - static CopyStream : Not implemented.");}
-    static CountMatchingChars(str: string, charPredicate: any): number { throw new Error("EwsUtilities.ts - static CountMatchingChars : Not implemented."); }
-    static CreateEwsObjectFromXmlElementName<TServiceObject extends ServiceObject>(service: ExchangeService, xmlElementName: string): TServiceObject {
-        throw new Error("EwsUtilities - CreateEwsObjectFromXmlElementName: - this is moved in folderinfo/iteminfo classes to avoid circular loop caused by serviceobjectinfo class");
-        //     //var itemClass = TypeSystem.GetObjectByClassName("Microsoft.Exchange.WebServices.Data." + xmlElementName
-        //     debugger;
+  }
+  //static CopyStream(source: System.IO.Stream, target: System.IO.Stream): any{ throw new Error("EwsUtilities.ts - static CopyStream : Not implemented.");}
+  static CountMatchingChars(str: string, charPredicate: any): number { throw new Error("EwsUtilities.ts - static CountMatchingChars : Not implemented."); }
+  static CreateEwsObjectFromXmlElementName<TServiceObject extends ServiceObject>(service: ExchangeService, xmlElementName: string): TServiceObject {
+    throw new Error("EwsUtilities - CreateEwsObjectFromXmlElementName: - this is moved in folderinfo/iteminfo classes to avoid circular loop caused by serviceobjectinfo class");
+    //     //var itemClass = TypeSystem.GetObjectByClassName("Microsoft.Exchange.WebServices.Data." + xmlElementName
+    //     debugger;
 
-        //     //        var creationDelegate = EwsUtilities.serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam[xmlElementName];
-        //     //
-        //     //        if (creationDelegate) {
-        //     //            return creationDelegate(service);
-        //     //        }
-        //     //        else return null;
+    //     //        var creationDelegate = EwsUtilities.serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam[xmlElementName];
+    //     //
+    //     //        if (creationDelegate) {
+    //     //            return creationDelegate(service);
+    //     //        }
+    //     //        else return null;
 
-        //     //var itemClass = EwsUtilities.serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap[xmlElementName];
-        //     //if (itemClass) {
-        //     //    //return new itemClass(service);
+    //     //var itemClass = EwsUtilities.serviceObjectInfo.Member.XmlElementNameToServiceObjectClassMap[xmlElementName];
+    //     //if (itemClass) {
+    //     //    //return new itemClass(service);
 
-        //     //    creationDelegate: CreateServiceObjectWithServiceParam;
+    //     //    creationDelegate: CreateServiceObjectWithServiceParam;
 
 
-        //     //    //if (EwsUtilities.serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(itemClass, out creationDelegate)) {
-        //     //    //    return (TServiceObject)creationDelegate(service);
-        //     //    //}
-        //     //    //else {
-        //     //    //    throw new ArgumentException(Strings.NoAppropriateConstructorForItemClass);
-        //     //    //}
-        //     //}
-        //     //else {
-        //     //    return null; //default(TServiceObject);
-        //     //}
-    }
-    //static CreateItemFromItemClass(itemAttachment: ItemAttachment, itemClass: System.Type, isNew: boolean): Item{ throw new Error("EwsUtilities.ts - static CreateItemFromItemClass : Not implemented.");}
-    static CreateItemFromXmlElementName(itemAttachment: ItemAttachment, xmlElementName: string): Item { throw new Error("EwsUtilities.ts - static CreateItemFromXmlElementName : Not implemented."); }
-    public static DateTimeToXSDate(date: DateTime): string { return DateTime.DateTimeToXSDate(date); }
-    public static DateTimeToXSDateTime(dateTime: DateTime): string { return DateTime.DateTimeToXSDateTime(dateTime); }
-    static DomainFromEmailAddress(emailAddress: string): string {
-        var emailAddressParts: string[] = emailAddress.split('@');
+    //     //    //if (EwsUtilities.serviceObjectInfo.Member.ServiceObjectConstructorsWithServiceParam.TryGetValue(itemClass, out creationDelegate)) {
+    //     //    //    return (TServiceObject)creationDelegate(service);
+    //     //    //}
+    //     //    //else {
+    //     //    //    throw new ArgumentException(Strings.NoAppropriateConstructorForItemClass);
+    //     //    //}
+    //     //}
+    //     //else {
+    //     //    return null; //default(TServiceObject);
+    //     //}
+  }
+  //static CreateItemFromItemClass(itemAttachment: ItemAttachment, itemClass: System.Type, isNew: boolean): Item{ throw new Error("EwsUtilities.ts - static CreateItemFromItemClass : Not implemented.");}
+  static CreateItemFromXmlElementName(itemAttachment: ItemAttachment, xmlElementName: string): Item { throw new Error("EwsUtilities.ts - static CreateItemFromXmlElementName : Not implemented."); }
+  public static DateTimeToXSDate(date: DateTime): string { return DateTime.DateTimeToXSDate(date); }
+  public static DateTimeToXSDateTime(dateTime: DateTime): string { return DateTime.DateTimeToXSDateTime(dateTime); }
+  static DomainFromEmailAddress(emailAddress: string): string {
+    var emailAddressParts: string[] = emailAddress.split('@');
 
-        if (emailAddressParts.length != 2 || StringHelper.IsNullOrEmpty(emailAddressParts[1])) {
-            throw new Error(Strings.InvalidEmailAddress);
-        }
-
-        return emailAddressParts[1];
-    }
-    static EwsToSystemDayOfWeek(dayOfTheWeek: DayOfTheWeek): DayOfWeek {
-        if (dayOfTheWeek == DayOfTheWeek.Day ||
-            dayOfTheWeek == DayOfTheWeek.Weekday ||
-            dayOfTheWeek == DayOfTheWeek.WeekendDay) {
-            throw new ArgumentException(
-                StringHelper.Format("Cannot convert {0} to System.DayOfWeek enum value", dayOfTheWeek),
-                "dayOfTheWeek");
-        }
-        else {
-            return <DayOfWeek><any>dayOfTheWeek;
-        }
+    if (emailAddressParts.length != 2 || StringHelper.IsNullOrEmpty(emailAddressParts[1])) {
+      throw new Error(Strings.InvalidEmailAddress);
     }
 
-    static FindFirstItemOfType<T extends Item>(items: Item[], type: any): T {
-        for (var item of items) {
-            if (item instanceof type) {
-                return <T>item;
-            }
-        }
+    return emailAddressParts[1];
+  }
+  static EwsToSystemDayOfWeek(dayOfTheWeek: DayOfTheWeek): DayOfWeek {
+    if (dayOfTheWeek == DayOfTheWeek.Day ||
+      dayOfTheWeek == DayOfTheWeek.Weekday ||
+      dayOfTheWeek == DayOfTheWeek.WeekendDay) {
+      throw new ArgumentException(
+        StringHelper.Format("Cannot convert {0} to System.DayOfWeek enum value", dayOfTheWeek),
+        "dayOfTheWeek");
     }
-    //static ForEach(collection: System.Collections.Generic.IEnumerable<T>, action: any): any{ throw new Error("EwsUtilities.ts - static ForEach : Not implemented.");}
-    //static FormatHttpHeaders(headers: System.Net.WebHeaderCollection): string{ throw new Error("EwsUtilities.ts - static FormatHttpHeaders : Not implemented.");}
-    //static FormatHttpHeaders(sb: any, headers: System.Net.WebHeaderCollection): any{ throw new Error("EwsUtilities.ts - static FormatHttpHeaders : Not implemented.");}
-    //static FormatHttpRequestHeaders(request: IEwsHttpWebRequest): string{ throw new Error("EwsUtilities.ts - static FormatHttpRequestHeaders : Not implemented.");}
-    //static FormatHttpRequestHeaders(request: any): string{ throw new Error("EwsUtilities.ts - static FormatHttpRequestHeaders : Not implemented.");}
-    private static FormatHttpResponseHeaders(response: any /*IEwsHttpWebResponse*/): string { throw new Error("EwsUtilities.ts - static FormatHttpResponseHeaders : Not implemented."); }
-    static FormatLogMessage(entryKind: string, logEntry: string): string { throw new Error("EwsUtilities.ts - static FormatLogMessage : Not implemented."); }
-    static FormatLogMessageWithXmlContent(entryKind: string, memoryStream: any): string { throw new Error("EwsUtilities.ts - static FormatLogMessageWithXmlContent : Not implemented."); }
-    static GetEnumeratedObjectAt(objects: any, index: number): any { throw new Error("EwsUtilities.ts - static GetEnumeratedObjectAt : Not implemented."); }
-    static GetEnumeratedObjectCount(objects: any): number { throw new Error("EwsUtilities.ts - static GetEnumeratedObjectCount : Not implemented."); }
-
-
-    //static GetEnumSchemaName(enumType: System.Type, enumName: string): string{ throw new Error("EwsUtilities.ts - static GetEnumSchemaName : Not implemented.");}
-    //static GetEnumVersion(enumType: System.Type, enumName: string): ExchangeVersion{ throw new Error("EwsUtilities.ts - static GetEnumVersion : Not implemented.");}
-    //static GetItemTypeFromXmlElementName(xmlElementName: string): System.Type{ throw new Error("EwsUtilities.ts - static GetItemTypeFromXmlElementName : Not implemented.");}
-
-    static GetNamespaceFromUri(namespaceUri: string): XmlNamespace {
-        switch (namespaceUri) {
-            case this.EwsErrorsNamespace:
-                return XmlNamespace.Errors;
-            case this.EwsTypesNamespace:
-                return XmlNamespace.Types;
-            case this.EwsMessagesNamespace:
-                return XmlNamespace.Messages;
-            case this.EwsSoapNamespace:
-                return XmlNamespace.Soap;
-            case this.EwsSoap12Namespace:
-                return XmlNamespace.Soap12;
-            case this.EwsXmlSchemaInstanceNamespace:
-                return XmlNamespace.XmlSchemaInstance;
-            case this.PassportSoapFaultNamespace:
-                return XmlNamespace.PassportSoapFault;
-            case this.WSTrustFebruary2005Namespace:
-                return XmlNamespace.WSTrustFebruary2005;
-            case this.WSAddressingNamespace:
-                return XmlNamespace.WSAddressing;
-            default:
-                return XmlNamespace.NotSpecified;
-        }
+    else {
+      return <DayOfWeek><any>dayOfTheWeek;
     }
-    static GetNamespacePrefix(xmlNamespace: XmlNamespace): string {
-        switch (xmlNamespace) {
-            case XmlNamespace.Types:
-                return EwsUtilities.EwsTypesNamespacePrefix;
-            case XmlNamespace.Messages:
-                return EwsUtilities.EwsMessagesNamespacePrefix;
-            case XmlNamespace.Errors:
-                return EwsUtilities.EwsErrorsNamespacePrefix;
-            case XmlNamespace.Soap:
-            case XmlNamespace.Soap12:
-                return EwsUtilities.EwsSoapNamespacePrefix;
-            case XmlNamespace.XmlSchemaInstance:
-                return EwsUtilities.EwsXmlSchemaInstanceNamespacePrefix;
-            case XmlNamespace.PassportSoapFault:
-                return EwsUtilities.PassportSoapFaultNamespacePrefix;
-            case XmlNamespace.WSTrustFebruary2005:
-                return EwsUtilities.WSTrustFebruary2005NamespacePrefix;
-            case XmlNamespace.WSAddressing:
-                return EwsUtilities.WSAddressingNamespacePrefix;
-            case XmlNamespace.Autodiscover:
-                return EwsUtilities.AutodiscoverSoapNamespacePrefix;
-            default:
-                return "";
-        }
+  }
+
+  static FindFirstItemOfType<T extends Item>(items: Item[], type: any): T {
+    for (var item of items) {
+      if (item instanceof type) {
+        return <T>item;
+      }
     }
-    static GetNamespaceUri(xmlNamespace: XmlNamespace): string {
-        switch (xmlNamespace) {
-            case XmlNamespace.Types:
-                return EwsUtilities.EwsTypesNamespace;
-            case XmlNamespace.Messages:
-                return EwsUtilities.EwsMessagesNamespace;
-            case XmlNamespace.Errors:
-                return EwsUtilities.EwsErrorsNamespace;
-            case XmlNamespace.Soap:
-                return EwsUtilities.EwsSoapNamespace;
-            case XmlNamespace.Soap12:
-                return EwsUtilities.EwsSoap12Namespace;
-            case XmlNamespace.XmlSchemaInstance:
-                return EwsUtilities.EwsXmlSchemaInstanceNamespace;
-            case XmlNamespace.PassportSoapFault:
-                return EwsUtilities.PassportSoapFaultNamespace;
-            case XmlNamespace.WSTrustFebruary2005:
-                return EwsUtilities.WSTrustFebruary2005Namespace;
-            case XmlNamespace.WSAddressing:
-                return EwsUtilities.WSAddressingNamespace;
-            case XmlNamespace.Autodiscover:
-                return EwsUtilities.AutodiscoverSoapNamespace;
-            default:
-                return "";
-        }
+  }
+
+  // static ForEach(collection: System.Collections.Generic.IEnumerable<T>, action: any): any { throw new Error("EwsUtilities.ts - static ForEach : Not implemented."); }
+
+  // static FormatHttpHeaders(sb: any, headers: System.Net.WebHeaderCollection): any { throw new Error("EwsUtilities.ts - static FormatHttpHeaders : Not implemented."); }
+
+  private static FormatHttpHeaders(headers: object = {}): string {
+    let header = "";
+    for (var key in headers) {
+      header += key + " : " + headers[key] + "\r\n";
     }
+    return header;
+  }
+
+  // static FormatHttpRequestHeaders(request: IEwsHttpWebRequest): string { throw new Error("EwsUtilities.ts - static FormatHttpRequestHeaders : Not implemented."); }
+  /**
+   * @internal Format request HTTP headers.
+   *
+   * @param   {IXHROptions}   request   The HTTP request.
+   */
+  static FormatHttpRequestHeaders(request: IXHROptions): string {
+    let sb = StringHelper.Format("{0} {1} HTTP/1.1\n", request.type, request.url);
+    sb += EwsUtilities.FormatHttpHeaders(request.headers);
+    sb += "\n";
+    return sb;
+  }
+
+  /**
+   * @internal Format response HTTP headers.
+   *
+   * @param   {XMLHttpRequest}   response   The HTTP response.
+   */
+  static FormatHttpResponseHeaders(response: XMLHttpRequest): string {
+    let sb = StringHelper.Format("HTTP/{0} {1} {2}\n", 1 /*response.ProtocolVersion*/, response.status, response.statusText);
+    sb += response.getAllResponseHeaders(); // EwsUtilities.FormatHttpHeaders(response.getAllResponseHeaders());
+    sb += "\n";
+    return sb;
+  }
+
+  /**
+   * @internal Format log message.
+   *
+   * @param   {string}   entryKind   Kind of the entry.
+   * @param   {string}   logEntry    The log entry.
+   * @return  {string}               XML log entry as a string.
+   */
+  static FormatLogMessage(entryKind: string, logEntry: string): string {
+    return `
+      <${entryKind}>
+        ${logEntry}
+      </${entryKind}>
+    `
+  }
+
+  /**
+   * @internal Format XML content in a response for message.
+   *
+   * @param   {string}          entryKind      Kind of the entry.
+   * @param   {XMLHttpRequest}  memoryStream   The XMLHttpRequest.
+   * @return  {string}          XML log entry as a string.
+   */
+  static FormatLogMessageWithXmlContent(entryKind: string, memoryStream: XMLHttpRequest): string {
+    return `
+      <${entryKind}>
+        ${memoryStream.responseText || memoryStream.response}
+      </${entryKind}>
+    `
+  }
+
+  static GetEnumeratedObjectAt(objects: any, index: number): any { throw new Error("EwsUtilities.ts - static GetEnumeratedObjectAt : Not implemented."); }
+  static GetEnumeratedObjectCount(objects: any): number { throw new Error("EwsUtilities.ts - static GetEnumeratedObjectCount : Not implemented."); }
 
 
-    public static GetPrintableTypeName(type: any /*instance */): string {
-        var typename: string = typeof type;
-        if (typename.indexOf("object") >= 0) {
-            try {
-                typename = type.__proto__.constructor.name;
+  //static GetEnumSchemaName(enumType: System.Type, enumName: string): string{ throw new Error("EwsUtilities.ts - static GetEnumSchemaName : Not implemented.");}
+  //static GetEnumVersion(enumType: System.Type, enumName: string): ExchangeVersion{ throw new Error("EwsUtilities.ts - static GetEnumVersion : Not implemented.");}
+  //static GetItemTypeFromXmlElementName(xmlElementName: string): System.Type{ throw new Error("EwsUtilities.ts - static GetItemTypeFromXmlElementName : Not implemented.");}
 
-            } catch (error) {
-                typename += " - Error getting name";
-            }
-        }
-
-        return typename;
-        //         if (type.IsGenericType)
-        //             {
-        //                 // Convert generic type to printable form (e.g. List<Item>)
-        //                 string genericPrefix = type.Name.Substring(0, type.Name.IndexOf('`'));
-        //                 StringBuilder nameBuilder = new StringBuilder(genericPrefix);
-        //
-        //                 // Note: building array of generic parameters is done recursively. Each parameter could be any type.
-        //                 string[] genericArgs = type.GetGenericArguments().ToList<Type>().ConvertAll<string>(t => GetPrintableTypeName(t)).ToArray<string>();
-        //
-        //                 nameBuilder.Append("<");
-        //                 nameBuilder.Append(string.Join(",", genericArgs));
-        //                 nameBuilder.Append(">");
-        //                 return nameBuilder.ToString();
-        //             }
-        //             else if (type.IsArray)
-        //             {
-        //                 // Convert array type to printable form.
-        //                 string arrayPrefix = type.Name.Substring(0, type.Name.IndexOf('['));
-        //                 StringBuilder nameBuilder = new StringBuilder(EwsUtilities.GetSimplifiedTypeName(arrayPrefix));
-        //                 for (int rank = 0; rank < type.GetArrayRank(); rank++)
-        //                 {
-        //                     nameBuilder.Append("[]");
-        //                 }
-        //                 return nameBuilder.ToString();
-        //             }
-        //             else
-        //             {
-        //                 return EwsUtilities.GetSimplifiedTypeName(type.Name);
-        //             }
+  static GetNamespaceFromUri(namespaceUri: string): XmlNamespace {
+    switch (namespaceUri) {
+      case this.EwsErrorsNamespace:
+        return XmlNamespace.Errors;
+      case this.EwsTypesNamespace:
+        return XmlNamespace.Types;
+      case this.EwsMessagesNamespace:
+        return XmlNamespace.Messages;
+      case this.EwsSoapNamespace:
+        return XmlNamespace.Soap;
+      case this.EwsSoap12Namespace:
+        return XmlNamespace.Soap12;
+      case this.EwsXmlSchemaInstanceNamespace:
+        return XmlNamespace.XmlSchemaInstance;
+      case this.PassportSoapFaultNamespace:
+        return XmlNamespace.PassportSoapFault;
+      case this.WSTrustFebruary2005Namespace:
+        return XmlNamespace.WSTrustFebruary2005;
+      case this.WSAddressingNamespace:
+        return XmlNamespace.WSAddressing;
+      default:
+        return XmlNamespace.NotSpecified;
     }
-    //static GetSimplifiedTypeName(typeName: string): string{ throw new Error("EwsUtilities.ts - static GetSimplifiedTypeName : Not implemented.");}
-    static IsLocalTimeZone(timeZone: TimeZoneInfo): boolean {
-        return (TimeZoneInfo.Local == timeZone) || (TimeZoneInfo.Local.Id == timeZone.Id && TimeZoneInfo.Local.HasSameRules(timeZone));
+  }
+  static GetNamespacePrefix(xmlNamespace: XmlNamespace): string {
+    switch (xmlNamespace) {
+      case XmlNamespace.Types:
+        return EwsUtilities.EwsTypesNamespacePrefix;
+      case XmlNamespace.Messages:
+        return EwsUtilities.EwsMessagesNamespacePrefix;
+      case XmlNamespace.Errors:
+        return EwsUtilities.EwsErrorsNamespacePrefix;
+      case XmlNamespace.Soap:
+      case XmlNamespace.Soap12:
+        return EwsUtilities.EwsSoapNamespacePrefix;
+      case XmlNamespace.XmlSchemaInstance:
+        return EwsUtilities.EwsXmlSchemaInstanceNamespacePrefix;
+      case XmlNamespace.PassportSoapFault:
+        return EwsUtilities.PassportSoapFaultNamespacePrefix;
+      case XmlNamespace.WSTrustFebruary2005:
+        return EwsUtilities.WSTrustFebruary2005NamespacePrefix;
+      case XmlNamespace.WSAddressing:
+        return EwsUtilities.WSAddressingNamespacePrefix;
+      case XmlNamespace.Autodiscover:
+        return EwsUtilities.AutodiscoverSoapNamespacePrefix;
+      default:
+        return "";
     }
-    //static Parse(value: string): any{ throw new Error("EwsUtilities.ts - static Parse : Not implemented.");}
-    static ParseEnum(value: string, ewsenum): any { throw new Error("EwsUtilities.ts - static Parse : Not implemented."); }
-    static ParseAsUnbiasedDatetimescopedToServicetimeZone(dateString: string, service: ExchangeService): DateTime {
-        // Convert the element's value to a DateTime with no adjustment.
-        //var tempDate: DateTime = DateTime.Parse(dateString + "Z");
-
-        // Set the kind according to the service's time zone
-        if (service.TimeZone == TimeZoneInfo.Utc) {
-            return DateTime.Parse(dateString, DateTimeKind.Utc);
-        }
-        else if (EwsUtilities.IsLocalTimeZone(service.TimeZone)) {
-            return DateTime.Parse(dateString, DateTimeKind.Local);
-        }
-        else {
-            return DateTime.DateimeStringToTimeZone(dateString, service.TimeZone.IanaId);
-            //return DateTime.Parse(dateString, DateTimeKind.Unspecified);
-        }
+  }
+  static GetNamespaceUri(xmlNamespace: XmlNamespace): string {
+    switch (xmlNamespace) {
+      case XmlNamespace.Types:
+        return EwsUtilities.EwsTypesNamespace;
+      case XmlNamespace.Messages:
+        return EwsUtilities.EwsMessagesNamespace;
+      case XmlNamespace.Errors:
+        return EwsUtilities.EwsErrorsNamespace;
+      case XmlNamespace.Soap:
+        return EwsUtilities.EwsSoapNamespace;
+      case XmlNamespace.Soap12:
+        return EwsUtilities.EwsSoap12Namespace;
+      case XmlNamespace.XmlSchemaInstance:
+        return EwsUtilities.EwsXmlSchemaInstanceNamespace;
+      case XmlNamespace.PassportSoapFault:
+        return EwsUtilities.PassportSoapFaultNamespace;
+      case XmlNamespace.WSTrustFebruary2005:
+        return EwsUtilities.WSTrustFebruary2005Namespace;
+      case XmlNamespace.WSAddressing:
+        return EwsUtilities.WSAddressingNamespace;
+      case XmlNamespace.Autodiscover:
+        return EwsUtilities.AutodiscoverSoapNamespace;
+      default:
+        return "";
     }
-    static ParseEnumValueList<T>(list: any[], value: string, separators: string, enumType: any): void {
-        // EwsLogging.Assert(
-        //         typeof(T).IsEnum,
-        //         "EwsUtilities.ParseEnumValueList",
-        //         "T is not an enum type.");
+  }
 
-        if (!value) {
-            return;
-        }
 
-        var enumValues: string[] = value.split(separators);
+  public static GetPrintableTypeName(type: any /*instance */): string {
+    var typename: string = typeof type;
+    if (typename.indexOf("object") >= 0) {
+      try {
+        typename = type.__proto__.constructor.name;
 
-        for (var enumValue of enumValues) {
-            var enumValueParsed = enumType[enumValue];
-            if (typeof enumValueParsed !== 'undefined')
-                list.push(enumValueParsed);
-        }
-    }
-    //static SerializeEnum(value: any): string{ throw new Error("EwsUtilities.ts - static SerializeEnum : Not implemented.");}
-
-    static SystemToEwsDayOfTheWeek(dayOfWeek: DayOfWeek): DayOfTheWeek {
-        return <DayOfTheWeek><any>dayOfWeek;
+      } catch (error) {
+        typename += " - Error getting name";
+      }
     }
 
-    static TimeSpanToXSDuration(timeSpan: TimeSpan): string {
-        // Optional '-' offset
-        var offsetStr: string = (timeSpan.TotalSeconds < 0) ? "-" : StringHelper.Empty;
+    return typename;
+    //         if (type.IsGenericType)
+    //             {
+    //                 // Convert generic type to printable form (e.g. List<Item>)
+    //                 string genericPrefix = type.Name.Substring(0, type.Name.IndexOf('`'));
+    //                 StringBuilder nameBuilder = new StringBuilder(genericPrefix);
+    //
+    //                 // Note: building array of generic parameters is done recursively. Each parameter could be any type.
+    //                 string[] genericArgs = type.GetGenericArguments().ToList<Type>().ConvertAll<string>(t => GetPrintableTypeName(t)).ToArray<string>();
+    //
+    //                 nameBuilder.Append("<");
+    //                 nameBuilder.Append(string.Join(",", genericArgs));
+    //                 nameBuilder.Append(">");
+    //                 return nameBuilder.ToString();
+    //             }
+    //             else if (type.IsArray)
+    //             {
+    //                 // Convert array type to printable form.
+    //                 string arrayPrefix = type.Name.Substring(0, type.Name.IndexOf('['));
+    //                 StringBuilder nameBuilder = new StringBuilder(EwsUtilities.GetSimplifiedTypeName(arrayPrefix));
+    //                 for (int rank = 0; rank < type.GetArrayRank(); rank++)
+    //                 {
+    //                     nameBuilder.Append("[]");
+    //                 }
+    //                 return nameBuilder.ToString();
+    //             }
+    //             else
+    //             {
+    //                 return EwsUtilities.GetSimplifiedTypeName(type.Name);
+    //             }
+  }
+  //static GetSimplifiedTypeName(typeName: string): string{ throw new Error("EwsUtilities.ts - static GetSimplifiedTypeName : Not implemented.");}
+  static IsLocalTimeZone(timeZone: TimeZoneInfo): boolean {
+    return (TimeZoneInfo.Local == timeZone) || (TimeZoneInfo.Local.Id == timeZone.Id && TimeZoneInfo.Local.HasSameRules(timeZone));
+  }
+  //static Parse(value: string): any{ throw new Error("EwsUtilities.ts - static Parse : Not implemented.");}
+  static ParseEnum(value: string, ewsenum): any { throw new Error("EwsUtilities.ts - static Parse : Not implemented."); }
+  static ParseAsUnbiasedDatetimescopedToServicetimeZone(dateString: string, service: ExchangeService): DateTime {
+    // Convert the element's value to a DateTime with no adjustment.
+    //var tempDate: DateTime = DateTime.Parse(dateString + "Z");
 
-        // The TimeSpan structure does not have a Year or Month
-        // property, therefore we wouldn't be able to return an xs:duration
-        // string from a TimeSpan that included the nY or nM components.
-        return StringHelper.Format(
-            "{0}P{1}DT{2}H{3}M{4}S",
-            offsetStr,
-            Math.abs(timeSpan.Days),
-            Math.abs(timeSpan.Hours),
-            Math.abs(timeSpan.Minutes),
-            Math.abs(timeSpan.Seconds) + "." + Math.abs(timeSpan.Milliseconds));
+    // Set the kind according to the service's time zone
+    if (service.TimeZone == TimeZoneInfo.Utc) {
+      return DateTime.Parse(dateString, DateTimeKind.Utc);
     }
-    private static numPad(num: number, length: number) {
-        var str = num.toString();
-        while (str.length < length)
-            str = "0" + str;
-        return str;
+    else if (EwsUtilities.IsLocalTimeZone(service.TimeZone)) {
+      return DateTime.Parse(dateString, DateTimeKind.Local);
     }
-    static TimeSpanToXSTime(timeSpan: TimeSpan): string {
-        return StringHelper.Format(
-            "{0}:{1}:{2}",
-            this.numPad(timeSpan.Hours, 2),
-            this.numPad(timeSpan.Minutes, 2),
-            this.numPad(timeSpan.Seconds, 2));
+    else {
+      return DateTime.DateimeStringToTimeZone(dateString, service.TimeZone.IanaId);
+      //return DateTime.Parse(dateString, DateTimeKind.Unspecified);
     }
-    static XSDurationToTimeSpan(xsDuration: string): TimeSpan {
-        var regex: RegExp = /(-)?P(([0-9]+)Y)?(([0-9]+)M)?(([0-9]+)D)?(T(([0-9]+)H)?(([0-9]+)M)?(([0-9]+)(\.([0-9]+))?S)?)?/; //ref: info: not using \\, may be a bug in EWS managed api. does not match "-P2Y6M5DT12H35M30.4S" with \\ //old /(-)?P([0-9]+)Y?([0-9]+)M?([0-9]+)D?T([0-9]+)H?([0-9]+)M?([0-9]+\.[0-9]+)?S?/;
+  }
+  static ParseEnumValueList<T>(list: any[], value: string, separators: string, enumType: any): void {
+    // EwsLogging.Assert(
+    //         typeof(T).IsEnum,
+    //         "EwsUtilities.ParseEnumValueList",
+    //         "T is not an enum type.");
 
-        if (xsDuration.match(regex) === null) {
-            throw new ArgumentException(Strings.XsDurationCouldNotBeParsed);
-        }
-        return new TimeSpan(xsDuration);//using moment, it recognize the format.
-
-    }
-    //static TrueForAll(collection: System.Collections.Generic.IEnumerable<T>, predicate: any): boolean{ throw new Error("EwsUtilities.ts - static TrueForAll : Not implemented.");}
-
-    static ValidateClassVersion(service: ExchangeService, minimumServerVersion: ExchangeVersion, className: string): void {
-        if (service.RequestedServerVersion < minimumServerVersion) {
-            throw new ServiceVersionException(
-                StringHelper.Format(
-                    Strings.ClassIncompatibleWithRequestVersion,
-                    className,
-                    ExchangeVersion[minimumServerVersion]));
-        }
-    }
-
-    static ValidateDomainNameAllowNull(domainName: string, paramName: string): void {
-
-        //todo: validate domain names per ews managed api
-
-        //if (domainName != null) {
-        //    Regex regex = new Regex(DomainRegex);
-
-        //    if (!regex.IsMatch(domainName)) {
-        //        throw new ArgumentException(string.Format(Strings.InvalidDomainName, domainName), paramName);
-        //    }
-        //}
-    }
-
-    /**
-     * Validates the enum value against the request version.
-     *
-     * @param   {RequiredServerVersionEnums}   enumType        one of Enum type which has RequiredServerVersionAttrubute
-     * @param   {number}            enumValue        The enum value.
-     * @param   {ExchangeVersion}   requestVersion   The request version.
-     * @param   {string}            name   The request version.
-     */
-    static ValidateEnumVersionValue(enumType: RequiredServerVersionEnums, enumValue: number, requestVersion: ExchangeVersion, name: string): void {
-        //default is 2007_SP1
-        var enumVersion = ExchangeVersion.Exchange2007_SP1;
-        //if it has RequiredServerVersionAttrubute (ews-javascript-api, those enums has static function named 'RequiredServerVersion' )
-        if (TypeGuards.hasRequiredServerVersionAttribute(enumType)) {
-            enumVersion = enumType.RequiredServerVersion(enumValue);
-        }
-
-        if (requestVersion < enumVersion) {
-            throw new ServiceVersionException(
-                StringHelper.Format(
-                    Strings.EnumValueIncompatibleWithRequestVersion,
-                    enumType[enumValue],
-                    name,
-                    ExchangeVersion[enumVersion]));
-        }
-
-    }
-    static ValidateMethodVersion(service: ExchangeService, minimumServerVersion: ExchangeVersion, methodName: string): void {
-        if (service.RequestedServerVersion < minimumServerVersion) {
-            throw new ServiceVersionException(
-                StringHelper.Format(
-                    Strings.MethodIncompatibleWithRequestVersion,
-                    methodName,
-                    ExchangeVersion[minimumServerVersion]));
-        }
+    if (!value) {
+      return;
     }
 
-    /**
-     * Validates string parameter to be non-empty string (null value not allowed).
-     *
-     * @param   {string}   param       The string parameter.
-     * @param   {string}   paramName   Name of the parameter.
-     */
-    static ValidateNonBlankStringParam(param: string, paramName: string): void {
-        if (param == null) {
-            throw new ArgumentNullException(paramName);
-        }
+    var enumValues: string[] = value.split(separators);
 
-        this.ValidateNonBlankStringParamAllowNull(param, paramName);
+    for (var enumValue of enumValues) {
+      var enumValueParsed = enumType[enumValue];
+      if (typeof enumValueParsed !== 'undefined')
+        list.push(enumValueParsed);
+    }
+  }
+  //static SerializeEnum(value: any): string{ throw new Error("EwsUtilities.ts - static SerializeEnum : Not implemented.");}
+
+  static SystemToEwsDayOfTheWeek(dayOfWeek: DayOfWeek): DayOfTheWeek {
+    return <DayOfTheWeek><any>dayOfWeek;
+  }
+
+  static TimeSpanToXSDuration(timeSpan: TimeSpan): string {
+    // Optional '-' offset
+    var offsetStr: string = (timeSpan.TotalSeconds < 0) ? "-" : StringHelper.Empty;
+
+    // The TimeSpan structure does not have a Year or Month
+    // property, therefore we wouldn't be able to return an xs:duration
+    // string from a TimeSpan that included the nY or nM components.
+    return StringHelper.Format(
+      "{0}P{1}DT{2}H{3}M{4}S",
+      offsetStr,
+      Math.abs(timeSpan.Days),
+      Math.abs(timeSpan.Hours),
+      Math.abs(timeSpan.Minutes),
+      Math.abs(timeSpan.Seconds) + "." + Math.abs(timeSpan.Milliseconds));
+  }
+  private static numPad(num: number, length: number) {
+    var str = num.toString();
+    while (str.length < length)
+      str = "0" + str;
+    return str;
+  }
+  static TimeSpanToXSTime(timeSpan: TimeSpan): string {
+    return StringHelper.Format(
+      "{0}:{1}:{2}",
+      this.numPad(timeSpan.Hours, 2),
+      this.numPad(timeSpan.Minutes, 2),
+      this.numPad(timeSpan.Seconds, 2));
+  }
+  static XSDurationToTimeSpan(xsDuration: string): TimeSpan {
+    var regex: RegExp = /(-)?P(([0-9]+)Y)?(([0-9]+)M)?(([0-9]+)D)?(T(([0-9]+)H)?(([0-9]+)M)?(([0-9]+)(\.([0-9]+))?S)?)?/; //ref: info: not using \\, may be a bug in EWS managed api. does not match "-P2Y6M5DT12H35M30.4S" with \\ //old /(-)?P([0-9]+)Y?([0-9]+)M?([0-9]+)D?T([0-9]+)H?([0-9]+)M?([0-9]+\.[0-9]+)?S?/;
+
+    if (xsDuration.match(regex) === null) {
+      throw new ArgumentException(Strings.XsDurationCouldNotBeParsed);
+    }
+    return new TimeSpan(xsDuration);//using moment, it recognize the format.
+
+  }
+  //static TrueForAll(collection: System.Collections.Generic.IEnumerable<T>, predicate: any): boolean{ throw new Error("EwsUtilities.ts - static TrueForAll : Not implemented.");}
+
+  static ValidateClassVersion(service: ExchangeService, minimumServerVersion: ExchangeVersion, className: string): void {
+    if (service.RequestedServerVersion < minimumServerVersion) {
+      throw new ServiceVersionException(
+        StringHelper.Format(
+          Strings.ClassIncompatibleWithRequestVersion,
+          className,
+          ExchangeVersion[minimumServerVersion]));
+    }
+  }
+
+  static ValidateDomainNameAllowNull(domainName: string, paramName: string): void {
+
+    //todo: validate domain names per ews managed api
+
+    //if (domainName != null) {
+    //    Regex regex = new Regex(DomainRegex);
+
+    //    if (!regex.IsMatch(domainName)) {
+    //        throw new ArgumentException(string.Format(Strings.InvalidDomainName, domainName), paramName);
+    //    }
+    //}
+  }
+
+  /**
+   * Validates the enum value against the request version.
+   *
+   * @param   {RequiredServerVersionEnums}   enumType        one of Enum type which has RequiredServerVersionAttrubute
+   * @param   {number}            enumValue        The enum value.
+   * @param   {ExchangeVersion}   requestVersion   The request version.
+   * @param   {string}            name   The request version.
+   */
+  static ValidateEnumVersionValue(enumType: RequiredServerVersionEnums, enumValue: number, requestVersion: ExchangeVersion, name: string): void {
+    //default is 2007_SP1
+    var enumVersion = ExchangeVersion.Exchange2007_SP1;
+    //if it has RequiredServerVersionAttrubute (ews-javascript-api, those enums has static function named 'RequiredServerVersion' )
+    if (TypeGuards.hasRequiredServerVersionAttribute(enumType)) {
+      enumVersion = enumType.RequiredServerVersion(enumValue);
     }
 
-    /**
-     * Validates string parameter to be non-empty string (null value allowed).
-     *
-     * @param   {string}   param       The string parameter.
-     * @param   {string}   paramName   Name of the parameter.
-     */
-    static ValidateNonBlankStringParamAllowNull(param: string, paramName: string): void {
-        if (param) {
-            // Non-empty string has at least one character which is *not* a whitespace character
-            if (param.replace(/\s*/g, '').length === 0) {
-                throw new ArgumentException(Strings.ArgumentIsBlankString, paramName);
-            }
-        }
+    if (requestVersion < enumVersion) {
+      throw new ServiceVersionException(
+        StringHelper.Format(
+          Strings.EnumValueIncompatibleWithRequestVersion,
+          enumType[enumValue],
+          name,
+          ExchangeVersion[enumVersion]));
     }
 
-    /**
-     * Validates parameter (null value not allowed).
-     *
-     * @param   {any}       param       The param.
-     * @param   {string}    paramName   Name of the param.
-     */
-    static ValidateParam(param: any, paramName: string): void {
-        var isValid = false;
+  }
+  static ValidateMethodVersion(service: ExchangeService, minimumServerVersion: ExchangeVersion, methodName: string): void {
+    if (service.RequestedServerVersion < minimumServerVersion) {
+      throw new ServiceVersionException(
+        StringHelper.Format(
+          Strings.MethodIncompatibleWithRequestVersion,
+          methodName,
+          ExchangeVersion[minimumServerVersion]));
+    }
+  }
 
-        if (typeof (param) == "string") {
-            isValid = !StringHelper.IsNullOrEmpty(param);
-        }
-        else {
-            isValid = param != null && typeof (param) !== 'undefined';
-        }
-
-        if (!isValid) {
-            throw new ArgumentNullException(paramName);
-        }
-
-        this.ValidateParamAllowNull(param, paramName);
+  /**
+   * Validates string parameter to be non-empty string (null value not allowed).
+   *
+   * @param   {string}   param       The string parameter.
+   * @param   {string}   paramName   Name of the parameter.
+   */
+  static ValidateNonBlankStringParam(param: string, paramName: string): void {
+    if (param == null) {
+      throw new ArgumentNullException(paramName);
     }
 
-    /**
-     * Validates parameter (and allows null value).
-     *
-     * @param   {any}       param       The param.
-     * @param   {string}    paramName   Name of the param.
-     */
-    static ValidateParamAllowNull(param: any, paramName: string): void {
-        var selfValidate: ISelfValidate = param;
-        // look for null/undefined
-        if (TypeGuards.isISelfValidate(selfValidate)) {//todo: interface detection for ISelfValidate
-            try {
-                selfValidate.Validate();
-            }
-            catch (e) {
-                throw new ArgumentException(
-                    Strings.ValidationFailed,
-                    paramName,
-                    e);
-            }
-        }
+    this.ValidateNonBlankStringParamAllowNull(param, paramName);
+  }
 
-        let ewsObject: ServiceObject = param;
+  /**
+   * Validates string parameter to be non-empty string (null value allowed).
+   *
+   * @param   {string}   param       The string parameter.
+   * @param   {string}   paramName   Name of the parameter.
+   */
+  static ValidateNonBlankStringParamAllowNull(param: string, paramName: string): void {
+    if (param) {
+      // Non-empty string has at least one character which is *not* a whitespace character
+      if (param.replace(/\s*/g, '').length === 0) {
+        throw new ArgumentException(Strings.ArgumentIsBlankString, paramName);
+      }
+    }
+  }
 
-        if (ewsObject instanceof TypeContainer.ServiceObject) {
-            if (ewsObject.IsNew) {
-                throw new ArgumentException(Strings.ObjectDoesNotHaveId, paramName);
-            }
-        }
+  /**
+   * Validates parameter (null value not allowed).
+   *
+   * @param   {any}       param       The param.
+   * @param   {string}    paramName   Name of the param.
+   */
+  static ValidateParam(param: any, paramName: string): void {
+    var isValid = false;
+
+    if (typeof (param) == "string") {
+      isValid = !StringHelper.IsNullOrEmpty(param);
+    }
+    else {
+      isValid = param != null && typeof (param) !== 'undefined';
     }
 
-    /**
-     * Validates parameter collection.
-     *
-     * @param   {any[]}     collection   The collection.
-     * @param   {string}    paramName    Name of the param.
-     */
-    static ValidateParamCollection(collection: any[], paramName: string): void {
-        this.ValidateParam(collection, paramName);
-
-        let count: number = 0;
-
-        for (let obj of collection) {
-            try {
-                this.ValidateParam(obj, StringHelper.Format("collection[{0}]", count));
-            }
-            catch (e) {
-                throw new ArgumentException(
-                    StringHelper.Format("The element at position {0} is invalid", count),
-                    paramName,
-                    e);
-            }
-
-            count++;
-        }
-
-        if (count == 0) {
-            throw new ArgumentException(Strings.CollectionIsEmpty, paramName);
-        }
+    if (!isValid) {
+      throw new ArgumentNullException(paramName);
     }
 
-    /**
-     * Validates property version against the request version.
-     *
-     * @param   {ExchangeService}   service                The Exchange service.
-     * @param   {ExchangeVersion}   minimumServerVersion   The minimum server version that supports the property.
-     * @param   {string}            propertyName           Name of the property.
-     */
-    static ValidatePropertyVersion(service: ExchangeService, minimumServerVersion: ExchangeVersion, propertyName: string): void {
-        if (service.RequestedServerVersion < minimumServerVersion) {
-            throw new ServiceVersionException(
-                StringHelper.Format(
-                    Strings.PropertyIncompatibleWithRequestVersion,
-                    propertyName,
-                    ExchangeVersion[minimumServerVersion]));
-        }
+    this.ValidateParamAllowNull(param, paramName);
+  }
+
+  /**
+   * Validates parameter (and allows null value).
+   *
+   * @param   {any}       param       The param.
+   * @param   {string}    paramName   Name of the param.
+   */
+  static ValidateParamAllowNull(param: any, paramName: string): void {
+    var selfValidate: ISelfValidate = param;
+    // look for null/undefined
+    if (TypeGuards.isISelfValidate(selfValidate)) {//todo: interface detection for ISelfValidate
+      try {
+        selfValidate.Validate();
+      }
+      catch (e) {
+        throw new ArgumentException(
+          Strings.ValidationFailed,
+          paramName,
+          e);
+      }
     }
-    static ValidateServiceObjectVersion(serviceObject: ServiceObject, requestVersion: ExchangeVersion): any { throw new Error("EwsUtilities.ts - static ValidateServiceObjectVersion : Not implemented."); }
-    //static WriteTraceStartElement(writer: System.Xml.XmlWriter, traceTag: string, includeVersion: boolean): any{ throw new Error("EwsUtilities.ts - static WriteTraceStartElement : Not implemented.");}
+
+    let ewsObject: ServiceObject = param;
+
+    if (ewsObject instanceof TypeContainer.ServiceObject) {
+      if (ewsObject.IsNew) {
+        throw new ArgumentException(Strings.ObjectDoesNotHaveId, paramName);
+      }
+    }
+  }
+
+  /**
+   * Validates parameter collection.
+   *
+   * @param   {any[]}     collection   The collection.
+   * @param   {string}    paramName    Name of the param.
+   */
+  static ValidateParamCollection(collection: any[], paramName: string): void {
+    this.ValidateParam(collection, paramName);
+
+    let count: number = 0;
+
+    for (let obj of collection) {
+      try {
+        this.ValidateParam(obj, StringHelper.Format("collection[{0}]", count));
+      }
+      catch (e) {
+        throw new ArgumentException(
+          StringHelper.Format("The element at position {0} is invalid", count),
+          paramName,
+          e);
+      }
+
+      count++;
+    }
+
+    if (count == 0) {
+      throw new ArgumentException(Strings.CollectionIsEmpty, paramName);
+    }
+  }
+
+  /**
+   * Validates property version against the request version.
+   *
+   * @param   {ExchangeService}   service                The Exchange service.
+   * @param   {ExchangeVersion}   minimumServerVersion   The minimum server version that supports the property.
+   * @param   {string}            propertyName           Name of the property.
+   */
+  static ValidatePropertyVersion(service: ExchangeService, minimumServerVersion: ExchangeVersion, propertyName: string): void {
+    if (service.RequestedServerVersion < minimumServerVersion) {
+      throw new ServiceVersionException(
+        StringHelper.Format(
+          Strings.PropertyIncompatibleWithRequestVersion,
+          propertyName,
+          ExchangeVersion[minimumServerVersion]));
+    }
+  }
+  static ValidateServiceObjectVersion(serviceObject: ServiceObject, requestVersion: ExchangeVersion): any { throw new Error("EwsUtilities.ts - static ValidateServiceObjectVersion : Not implemented."); }
+  //static WriteTraceStartElement(writer: System.Xml.XmlWriter, traceTag: string, includeVersion: boolean): any{ throw new Error("EwsUtilities.ts - static WriteTraceStartElement : Not implemented.");}
 }
 
 
 export interface EnumToExhcangeVersionDelegateDictionary {
-    [index: string]: EnumVersionDelegate;
+  [index: string]: EnumVersionDelegate;
 }
 
 export interface EnumVersionDelegate {
-    (value: number): ExchangeVersion;
+  (value: number): ExchangeVersion;
 }
 
 
@@ -34535,402 +34393,827 @@ export class ExchangeServerInfo {
 }
 
 
-export class ExchangeServiceBase {
+/**
+ * Represents an abstract binding to an Exchange Service.
+ */
+export abstract class ExchangeServiceBase {
+  //#region const members
+  // private static lockObj: any = new Object();
+  private readonly requestedServerVersion: ExchangeVersion = ExchangeVersion.Exchange2013_SP1;
 
-    static AccountIsLocked: any /*System.Net.systemnet.HttpStatusCode*/ = 456;
+  /**
+   * @internal Special HTTP status code that indicates that the account is locked.
+   */
+  static AccountIsLocked: HttpStatusCode = HttpStatusCode.Autodiscover_ContactAdmin;
 
-    AcceptGzipEncoding: boolean;
-    ClientRequestId: string;
-    ConnectionGroupName: string;
-    CookieContainer: any;//System.Net.CookieContainer;
-    Credentials: ExchangeCredentials;
-    HttpHeaders: { [index: string]: string };//System.Collections.Generic.IDictionary<string, string>;
-    HttpResponseHeaders: { [index: string]: string };//System.Collections.Generic.IDictionary<string, string>;
-    HttpWebRequestFactory: IEwsHttpWebRequestFactory;
-    KeepAlive: boolean;
-    PreAuthenticate: boolean;
-    get RequestedServerVersion(): ExchangeVersion { return this.requestedServerVersion; }
-    ReturnClientRequestId: boolean;
-    SendClientLatencies: boolean;
-    ServerInfo: ExchangeServerInfo;
-    static SessionKey: any[];//System.Byte[];
-    SuppressXmlVersionHeader: boolean;
-    Timeout: number;
-    get TimeZone(): TimeZoneInfo {
-        return this.timeZone;
+  /**
+   * The binary secret.
+   */
+  private static binarySecret: number[] = null;
+  //#endregion
+
+  //#region static members
+
+  /**
+   * Default UserAgent
+   */
+  private static defaultUserAgent: string = `ExchangeServicesClient/${EwsUtilities.BuildVersion}`;
+  //#endregion
+
+  //#region fields
+
+  OnResponseHeadersCaptured: ResponseHeadersCapturedHandler;
+
+  private credentials: ExchangeCredentials = null;
+  // private useDefaultCredentials: boolean = false;
+  private timeout: number = 100000;
+  private traceEnabled: boolean = false;
+  private sendClientLatencies: boolean = true;
+  private traceFlags: TraceFlags = TraceFlags.All;
+  private traceListener: ITraceListener = new EwsTraceListener();
+  private preAuthenticate: boolean = false;
+  private userAgent: string = ExchangeServiceBase.defaultUserAgent;
+  private acceptGzipEncoding: boolean = true;
+  private keepAlive: boolean = true;
+  private connectionGroupName: string = null;
+  private clientRequestId: string = null;
+  private returnClientRequestId: boolean = false;
+  // private cookieContainer: CookieContainer = new CookieContainer();
+  protected timeZone: TimeZoneInfo = TimeZoneInfo.Local;
+  private timeZoneDefinition: TimeZoneDefinition = null;
+  private serverInfo: ExchangeServerInfo = null;
+  // private webProxy: IWebProxy = null;
+  private httpHeaders: Dictionary<string, string> = new DictionaryWithStringKey<string>();
+  private httpResponseHeaders: Dictionary<string, string> = new DictionaryWithStringKey<string>();
+  // private ewsHttpWebRequestFactory: IEwsHttpWebRequestFactory = new EwsHttpWebRequestFactory();
+  private suppressXmlVersionHeader: boolean = false;
+
+  //#endregion
+
+  //#region event handlers
+
+  /**
+   * Provides an event that applications can implement to emit custom SOAP headers in requests that are sent to Exchange.
+   * @event
+   */
+  OnSerializeCustomSoapHeaders: CustomXmlSerializationDelegate;
+  //#endregion
+
+  //#region Properties
+
+  // /**
+  //  * Gets or sets the cookie container.
+  // */
+  // get CookieContainer(): CookieContainer {
+  //   return this.cookieContainer;
+  // }
+  // set CookieContainer(value: CookieContainer) {
+  //   this.cookieContainer = value;
+  // }
+
+  /**
+   * @internal Gets the time zone this service is scoped to.
+   */
+  get TimeZone(): TimeZoneInfo {
+    return this.timeZone;
+  }
+
+  /**
+   * @internal Gets a time zone definition generated from the time zone info to which this service is scoped.
+   */
+  get TimeZoneDefinition(): TimeZoneDefinition {
+    if (this.timeZoneDefinition === null) {
+      this.timeZoneDefinition = new TimeZoneDefinition(this.TimeZone);
     }
-    /**@internal */
-    get TimeZoneDefinition(): TimeZoneDefinition {
-        if (this.timeZoneDefinition == null) {
-            this.timeZoneDefinition = new TimeZoneDefinition(this.TimeZone);
-        }
-        return this.timeZoneDefinition;
+    return this.timeZoneDefinition;
+  }
+
+  /**
+   * Gets or sets a value indicating whether client latency info is push to server.
+   */
+  get SendClientLatencies(): boolean {
+    return this.sendClientLatencies;
+  }
+  set SendClientLatencies(value: boolean) {
+    this.sendClientLatencies = value;
+  }
+
+  /**
+   * Gets or sets a value indicating whether tracing is enabled.
+   */
+  get TraceEnabled(): boolean {
+    return this.traceEnabled;
+  }
+  set TraceEnabled(value: boolean) {
+    this.traceEnabled = value;
+    if (this.traceEnabled && this.traceListener === null) {
+      this.traceListener = new EwsTraceListener();
     }
-    TraceEnabled: boolean;
-    TraceFlags: TraceFlags;
-    TraceListener: ITraceListener;
-    UseDefaultCredentials: boolean;
-    UserAgent: string;
-    WebProxy: any;//System.Net.IWebProxy;
+  }
 
-    //private acceptGzipEncoding: boolean;
-    private clientRequestId: string;
-    private connectionGroupName: string;
-    //private cookieContainer: any;//System.Net.CookieContainer;
-    private credentials: ExchangeCredentials;
-    private ewsHttpWebRequestFactory: IEwsHttpWebRequestFactory;
-    private httpHeaders: { [index: string]: string };//System.Collections.Generic.IDictionary<string, string>;
-    private httpResponseHeaders: { [index: string]: string };//System.Collections.Generic.IDictionary<string, string>;
-    private keepAlive: boolean;
-    private OnResponseHeadersCaptured: Function;// ResponseHeadersCapturedHandler;
-    private OnSerializeCustomSoapHeaders: Function;// CustomXmlSerializationDelegate;
-    private preAuthenticate: boolean;
-    private requestedServerVersion: ExchangeVersion = ExchangeVersion.Exchange2013_SP1;
-    private returnClientRequestId: boolean;
-    private sendClientLatencies: boolean;
-    private serverInfo: ExchangeServerInfo;
-    private timeout: number;
-    protected timeZone: TimeZoneInfo = TimeZoneInfo.Local;
+  /**
+   * Gets or sets the trace flags.
+   */
+  get TraceFlags(): TraceFlags {
+    return this.traceFlags;
+  }
+  set TraceFlags(value: TraceFlags) {
+    this.traceFlags = value;
+  }
 
-    private timeZoneDefinition: TimeZoneDefinition;
-    private traceEnabled: boolean;
-    private traceFlags: TraceFlags;
-    private traceListener: ITraceListener;
-    private useDefaultCredentials: boolean;
-    private userAgent: string;
-    private webProxy: any;//System.Net.IWebProxy;
+  /**
+   * Gets or sets the trace listener.
+   */
+  get TraceListener(): ITraceListener {
+    return this.traceListener;
+  }
+  set TraceListener(value: ITraceListener) {
+    this.traceListener = value;
+    this.traceEnabled = (value !== null);
+  }
 
-    private static lockObj: any;
-    private static binarySecret: any;//System.Byte[];
-    private static defaultUserAgent: string;
+  /**
+   * Gets or sets the credentials used to authenticate with the Exchange Web Services. Setting the Credentials property automatically sets the UseDefaultCredentials to false.
+   */
+  get Credentials(): ExchangeCredentials {
+    return this.credentials;
+  }
+  set Credentials(value: ExchangeCredentials) {
+    this.credentials = value;
+    // this.useDefaultCredentials = false;
+    // this.cookieContainer = new CookieContainer();
+  }
 
-    private xhrApi: IXHRApi = null;
-    get XHRApi(): IXHRApi {
-        return this.xhrApi || XHRFactory.XHRApi;
+  // /** // REF: No default credential in NodeJs
+  //  * Gets or sets a value indicating whether the credentials of the user currently logged into Windows should be used to authenticate with the Exchange Web Services. Setting UseDefaultCredentials to true automatically sets the Credentials property to null.
+  //  */
+  // get UseDefaultCredentials(): boolean {
+  //   return this.useDefaultCredentials;
+  // }
+  // set UseDefaultCredentials(value: boolean) {
+  //   this.useDefaultCredentials = value;
+  //   if (value) {
+  //     this.credentials = null;
+  //     // this.cookieContainer = new CookieContainer();
+  //   }
+  // }
+
+  /**
+   * Gets or sets the timeout used when sending HTTP requests and when receiving HTTP responses, in milliseconds. Defaults to 100000.
+   */
+  get Timeout(): number {
+    return this.timeout;
+  }
+  set Timeout(value: number) {
+    if (value < 1) {
+      throw new ArgumentException(Strings.TimeoutMustBeGreaterThanZero);
     }
-    set XHRApi(xhrApi: IXHRApi) {
-        this.xhrApi = xhrApi || XHRFactory.XHRApi;
+    this.timeout = value;
+  }
+
+  /**
+   * Gets or sets a value that indicates whether HTTP pre-authentication should be performed.
+   */
+  get PreAuthenticate(): boolean {
+    return this.preAuthenticate;
+  }
+  set PreAuthenticate(value: boolean) {
+    this.preAuthenticate = value;
+  }
+
+  /**
+   * Gets or sets a value indicating whether GZip compression encoding should be accepted.
+   * @remarks This value will tell the server that the client is able to handle GZip compression encoding. The server will only send Gzip compressed content if it has been configured to do so.
+   * @remarks {ewsjs} not used in ewsjs
+   */
+  get AcceptGzipEncoding(): boolean {
+    return this.acceptGzipEncoding;
+  }
+  set AcceptGzipEncoding(value: boolean) {
+    this.acceptGzipEncoding = value;
+  }
+
+  /**
+   * Gets the requested server version.
+   */
+  get RequestedServerVersion(): ExchangeVersion {
+    return this.requestedServerVersion;
+  }
+
+  /**
+   * Gets or sets the user agent.
+   */
+  get UserAgent(): string {
+    return this.userAgent;
+  }
+  set UserAgent(value: string) {
+    this.userAgent = `${value} (${ExchangeServiceBase.defaultUserAgent})`;
+  }
+
+  /**
+   * Gets information associated with the server that processed the last request. Will be null if no requests have been processed.
+   */
+  get ServerInfo(): ExchangeServerInfo {
+    return this.serverInfo;
+  }
+  /** @internal set */
+  set ServerInfo(value: ExchangeServerInfo) {
+    this.serverInfo = value;
+  }
+
+  // /**
+  //  * Gets or sets the web proxy that should be used when sending requests to EWS. Set this property to null to use the default web proxy.
+  //  */
+  // get WebProxy(): IWebProxy {
+  //   return this.webProxy;
+  // }
+  // set WebProxy(value: IWebProxy) {
+  //   this.webProxy = value;
+  // }
+
+  /**
+   * Gets or sets if the request to the internet resource should contain a Connection HTTP header with the value Keep-alive
+   */
+  get KeepAlive(): boolean {
+    return this.keepAlive;
+  }
+  set KeepAlive(value: boolean) {
+    this.keepAlive = value;
+  }
+
+  /**
+   * Gets or sets the name of the connection group for the request.
+   */
+  get ConnectionGroupName(): string {
+    return this.connectionGroupName;
+  }
+  set ConnectionGroupName(value: string) {
+    this.connectionGroupName = value;
+  }
+
+  /**
+   * Gets or sets the request id for the request.
+   */
+  get ClientRequestId(): string {
+    return this.clientRequestId;
+  }
+  set ClientRequestId(value: string) {
+    this.clientRequestId = value;
+  }
+
+  /**
+   * Gets or sets a flag to indicate whether the client requires the server side to return the  request id.
+   */
+  get ReturnClientRequestId(): boolean {
+    return this.returnClientRequestId;
+  }
+  set ReturnClientRequestId(value: boolean) {
+    this.returnClientRequestId = value;
+  }
+
+  /**
+   * Gets a collection of HTTP headers that will be sent with each request to EWS.
+   */
+  get HttpHeaders(): Dictionary<string, string> {
+    return this.httpHeaders;
+  }
+
+  /**
+   * Gets a collection of HTTP headers from the last response.
+   */
+  get HttpResponseHeaders(): Dictionary<string, string> {
+    return this.httpResponseHeaders;
+  }
+
+  /**
+   * @internal Gets the session key.
+   */
+  static get SessionKey(): number[] {
+    // TODO: fix when implement Partner tokens
+    // // this has to be computed only once.
+    // lock(ExchangeServiceBase.lockObj)
+    // {
+    //   if (ExchangeServiceBase.binarySecret === null) {
+    //     RandomNumberGenerator randomNumberGenerator = RandomNumberGenerator.Create();
+    //     ExchangeServiceBase.binarySecret = new byte[256 / 8];
+    //     randomNumberGenerator.GetNonZeroBytes(binarySecret);
+    //   }
+
+    //   return ExchangeServiceBase.binarySecret;
+    // }
+    return null;
+  }
+
+  // /**
+  //  * Gets or sets the HTTP web request factory.
+  //  */
+  // get HttpWebRequestFactory(): IEwsHttpWebRequestFactory {
+  //   return this.ewsHttpWebRequestFactory;
+  // }
+  // set HttpWebRequestFactory(value: IEwsHttpWebRequestFactory) {
+  //   this.ewsHttpWebRequestFactory = ((value === null) ? new EwsHttpWebRequestFactory() : value);
+  // }
+
+  /**
+   * @internal For testing: suppresses generation of the SOAP version header.
+   */
+  get SuppressXmlVersionHeader(): boolean {
+    return this.suppressXmlVersionHeader;
+  }
+  set SuppressXmlVersionHeader(value: boolean) {
+    this.suppressXmlVersionHeader = value;
+  }
+  //#endregion
+
+  //#region EWS JavaScript code
+  private xhrApi: IXHRApi = null;
+  get XHRApi(): IXHRApi {
+    return this.xhrApi || XHRFactory.XHRApi;
+  }
+  set XHRApi(xhrApi: IXHRApi) {
+    this.xhrApi = xhrApi || XHRFactory.XHRApi;
+  }
+  //#endregion
+
+  //#region Constructor
+
+  /**
+   * Initializes a new instance of the **ExchangeServiceBase** class.
+   *
+   */
+  constructor();
+  /**
+   * Initializes a new instance of the **ExchangeServiceBase** class.
+   *
+   * @param   {TimeZoneInfo}   timeZone   The time zone to which the service is scoped.
+   */
+  constructor(timeZone: TimeZoneInfo);
+  /**
+   * Initializes a new instance of the **ExchangeServiceBase** class.
+   *
+   * @param   {ExchangeVersion}   requestedServerVersion   The requested server version.
+   */
+  constructor(requestedServerVersion: ExchangeVersion);
+  /**
+   * Initializes a new instance of the **ExchangeServiceBase** class.
+   *
+   * @param   {ExchangeVersion}   requestedServerVersion   The requested server version.
+   * @param   {TimeZoneInfo}      timeZone                 The time zone to which the service is scoped.
+   */
+  constructor(requestedServerVersion: ExchangeVersion, timeZone: TimeZoneInfo);
+  /**
+   * @internal Initializes a new instance of the **ExchangeServiceBase** class.
+   *
+   * @param   {ExchangeServiceBase}   service                  The other service.
+   */
+  constructor(service: ExchangeServiceBase);
+  /**
+   * @internal Initializes a new instance of the **ExchangeServiceBase** class.
+   *
+   * @param   {ExchangeServiceBase}   service                  The other service.
+   * @param   {ExchangeVersion}       requestedServerVersion   The requested server version.
+   */
+  constructor(service: ExchangeServiceBase, requestedServerVersion: ExchangeVersion);
+  constructor(
+    versionServiceorTZ?: ExchangeVersion | ExchangeServiceBase | TimeZoneInfo,
+    versionOrTZ?: ExchangeVersion | TimeZoneInfo
+  ) {
+    var argsLength = arguments.length;
+    if (argsLength > 2) {
+      throw new Error("ExchangeServiceBase.ts - ctor with " + argsLength + " parameters, invalid number of arguments, check documentation and try again.");
+    }
+    var timeZone: TimeZoneInfo = null;
+    var requestedServerVersion: ExchangeVersion = ExchangeVersion.Exchange2013_SP1;
+    var service: ExchangeServiceBase = null;
+
+    if (argsLength >= 1) {
+      if (versionServiceorTZ instanceof TimeZoneInfo) {
+        timeZone = versionServiceorTZ;
+      }
+      else if (versionServiceorTZ instanceof ExchangeServiceBase) {
+        service = versionServiceorTZ;
+      }
+      else if (typeof versionServiceorTZ === 'number') {
+        requestedServerVersion = versionServiceorTZ;
+      }
+    }
+    if (argsLength === 2) {
+      if (versionOrTZ instanceof TimeZoneInfo) {
+        if (typeof versionServiceorTZ !== 'number') {
+          throw new Error("ExchangeServiceBase.ts - ctor with " + argsLength + " parameters - incorrect uses of parameter at 1st position, it must be ExchangeVersion when using TimeZoneInfo at 2nd place");
+        }
+        timeZone = versionOrTZ;
+      }
+      else if (typeof versionOrTZ === 'number') {
+        if (!(versionServiceorTZ instanceof ExchangeServiceBase)) {
+          throw new Error("ExchangeServiceBase.ts - ctor with " + argsLength + " parameters - incorrect uses of parameter at 1st position, it must be ExchangeServiceBase when using ExchangeVersion at 2nd place");
+        }
+        requestedServerVersion = versionOrTZ;
+      }
     }
 
-    constructor();
-    constructor(timeZone: TimeZoneInfo);
-    constructor(requestedServerVersion: ExchangeVersion);
-    constructor(requestedServerVersion: ExchangeVersion, timeZone: TimeZoneInfo);
-    constructor(service: ExchangeServiceBase);
-    constructor(service: ExchangeServiceBase, requestedServerVersion: ExchangeVersion);
+    this.requestedServerVersion = requestedServerVersion;
 
-    constructor(
-        versionServiceorTZ?: ExchangeVersion | ExchangeServiceBase | TimeZoneInfo,
-        versionOrTZ?: ExchangeVersion | TimeZoneInfo
-    ) {
-        var argsLength = arguments.length;
-        if (argsLength > 2) {
-            throw new Error("ExchangeServiceBase.ts - ctor with " + argsLength + " parameters, invalid number of arguments, check documentation and try again.");
-        }
-        var timeZone: TimeZoneInfo = null;
-        var requestedServerVersion: ExchangeVersion = ExchangeVersion.Exchange2013_SP1;
-        var service: ExchangeServiceBase = null;
-
-        if (argsLength >= 1) {
-            if (versionServiceorTZ instanceof TimeZoneInfo) {
-                timeZone = versionServiceorTZ;
-            }
-            else if (versionServiceorTZ instanceof ExchangeServiceBase) {
-                service = versionServiceorTZ;
-            }
-            else if (typeof versionServiceorTZ === 'number') {
-                requestedServerVersion = versionServiceorTZ;
-            }
-        }
-        if (argsLength == 2) {
-            if (versionOrTZ instanceof TimeZoneInfo) {
-                if (typeof versionServiceorTZ !== 'number') {
-                    throw new Error("ExchangeServiceBase.ts - ctor with " + argsLength + " parameters - incorrect uses of parameter at 1st position, it must be ExchangeVersion when using TimeZoneInfo at 2nd place");
-                }
-                timeZone = versionOrTZ;
-            }
-            else if (typeof versionOrTZ === 'number') {
-                if (!(versionServiceorTZ instanceof ExchangeServiceBase)) {
-                    throw new Error("ExchangeServiceBase.ts - ctor with " + argsLength + " parameters - incorrect uses of parameter at 1st position, it must be ExchangeServiceBase when using ExchangeVersion at 2nd place");
-                }
-                requestedServerVersion = versionOrTZ;
-            }
-        }
-
-
-
-        this.requestedServerVersion = requestedServerVersion;
-
-        if (service !== null && typeof service !== 'undefined') {
-            this.useDefaultCredentials = service.useDefaultCredentials;
-            this.credentials = service.credentials;
-            this.traceEnabled = service.traceEnabled;
-            this.traceListener = service.traceListener;
-            this.traceFlags = service.traceFlags;
-            this.timeout = service.timeout;
-            this.preAuthenticate = service.preAuthenticate;
-            this.userAgent = service.userAgent;
-            //this.acceptGzipEncoding = service.acceptGzipEncoding;
-            this.keepAlive = service.keepAlive;
-            this.connectionGroupName = service.connectionGroupName;
-            this.timeZone = service.timeZone;
-            this.httpHeaders = service.httpHeaders;
-            this.ewsHttpWebRequestFactory = service.ewsHttpWebRequestFactory;
-        }
-
-        if (timeZone !== null && typeof timeZone !== 'undefined') {
-            this.timeZone = timeZone;
-            //this.useDefaultCredentials = true; //ref: no default credential in node.js
-        }
+    if (hasValue(timeZone)) {
+      this.timeZone = timeZone;
+      //this.useDefaultCredentials = true; //ref: no default credential in node.js
     }
 
-
-    ConvertDateTimeToUniversalDateTimeString(value: DateTime): string {
-        var dateTime: DateTime;
-
-        switch (value.Kind) {
-            case DateTimeKind.Unspecified:
-                dateTime = EwsUtilities.ConvertTime(
-                    value,
-                    this.TimeZone,
-                    TimeZoneInfo.Utc);
-
-                break;
-            case DateTimeKind.Local:
-                dateTime = EwsUtilities.ConvertTime(
-                    value,
-                    TimeZoneInfo.Local,
-                    TimeZoneInfo.Utc);
-
-                break;
-            default:
-                // The date is already in UTC, no need to convert it.
-                dateTime = value;
-
-                break;
-        }
-        //debug://todo:iso string should work
-        return dateTime.ToISOString();// ISO string should work .ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+    if (hasValue(service)) {
+      // this.useDefaultCredentials = service.useDefaultCredentials;
+      this.credentials = service.credentials;
+      this.Credentials = service.Credentials;
+      this.traceEnabled = service.traceEnabled;
+      this.traceListener = service.traceListener;
+      this.traceFlags = service.traceFlags;
+      this.timeout = service.timeout;
+      this.preAuthenticate = service.preAuthenticate;
+      this.userAgent = service.userAgent;
+      //this.acceptGzipEncoding = service.acceptGzipEncoding;
+      this.keepAlive = service.keepAlive;
+      this.connectionGroupName = service.connectionGroupName;
+      this.timeZone = service.timeZone;
+      this.httpHeaders = service.httpHeaders;
+      // this.ewsHttpWebRequestFactory = service.ewsHttpWebRequestFactory;
+      this.xhrApi = service.xhrApi;
     }
-    ConvertStartDateToUnspecifiedDateTime(value: string): DateTime {
-        //EwsLogging.Log("ExchangeServiceBase.ConvConvertStartDateToUnspecifiedDateTime : DateTimeOffset not implemented, check date values")
-        value = value.substring(0, 10); //info: //ref: for DateTimeOffset substitution, this is being called only from recurring datetime StartDate and
-        if (StringHelper.IsNullOrEmpty(value)) {
-            return null;
+  }
+  //#endregion
+
+  /**
+   * @internal Converts the date time to universal date time string.
+   *
+   * @param   {DateTime}  value   The value.
+   * @return  {string}    String representation of DateTime.
+   */
+  ConvertDateTimeToUniversalDateTimeString(value: DateTime): string {
+    var dateTime: DateTime;
+
+    switch (value.Kind) {
+      case DateTimeKind.Unspecified:
+        dateTime = EwsUtilities.ConvertTime(
+          value,
+          this.TimeZone,
+          TimeZoneInfo.Utc);
+
+        break;
+      case DateTimeKind.Local:
+        dateTime = EwsUtilities.ConvertTime(
+          value,
+          TimeZoneInfo.Local,
+          TimeZoneInfo.Utc);
+
+        break;
+      default:
+        // The date is already in UTC, no need to convert it.
+        dateTime = value;
+
+        break;
+    }
+    //debug://todo:iso string should work
+    return dateTime.ToISOString();// ISO string should work .ToString("yyyy-MM-ddTHH:mm:ss.fffZ", CultureInfo.InvariantCulture);
+  }
+
+  /**
+   * @internal Converts xs:dateTime string with either "Z", "-00:00" bias, or "" suffixes to unspecified StartDate value ignoring the suffix.
+  *
+  * @param   {string}   value   The string value to parse.
+  * @return  {DateTime} The parsed DateTime value.
+  */
+  ConvertStartDateToUnspecifiedDateTime(value: string): DateTime {
+    //EwsLogging.Log("ExchangeServiceBase.ConvConvertStartDateToUnspecifiedDateTime : DateTimeOffset not implemented, check date values")
+    value = value.substring(0, 10); //info: //ref: for DateTimeOffset substitution, this is being called only from recurring datetime StartDate and
+    if (StringHelper.IsNullOrEmpty(value)) {
+      return null;
+    }
+    else {
+      return DateTime.Parse(value);
+
+      //let dateTimeOffset:DateTimeOffset = DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
+
+      // Return only the date part with the kind==Unspecified.
+      //return dateTimeOffset.Date;
+    }
+  }
+
+  /**
+   * @internal Converts the universal date time string to local date time.
+   *
+   * @param   {string}    value   The value.
+   * @return  {DateTime}  DateTime
+   */
+  ConvertUniversalDateTimeStringToLocalDateTime(value: string): DateTime {
+    if (StringHelper.IsNullOrEmpty(value)) {
+      return null;
+    }
+    else {
+      // Assume an unbiased date/time is in UTC. Convert to UTC otherwise.
+      //ref: //fix: hard convert to UTC date as no request contains TZ information.
+      if (value.toLowerCase().indexOf("z") < 0 && ["+", "-"].indexOf(value.substr(19, 1)) < 0) {
+        value += "Z";
+      }
+
+      var dateTime: DateTime = DateTime.Parse(
+        value);
+      // CultureInfo.InvariantCulture,
+      // DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal);
+
+      if (this.TimeZone === TimeZoneInfo.Utc) {
+        // This returns a DateTime with Kind.Utc
+        return dateTime;
+      }
+      else {
+        var localTime: DateTime = EwsUtilities.ConvertTime(
+
+          dateTime,
+          TimeZoneInfo.Utc,
+          this.TimeZone);
+
+        if (EwsUtilities.IsLocalTimeZone(this.TimeZone)) {
+          // This returns a DateTime with Kind.Local
+          return new DateTime(localTime.TotalMilliSeconds, DateTimeKind.Local);
         }
         else {
-            return DateTime.Parse(value);
-
-            //let dateTimeOffset:DateTimeOffset = DateTimeOffset.Parse(value, CultureInfo.InvariantCulture);
-
-            // Return only the date part with the kind==Unspecified.
-            //return dateTimeOffset.Date;
+          // This returns a DateTime with Kind.Unspecified
+          return localTime;
         }
+      }
     }
-    ConvertUniversalDateTimeStringToLocalDateTime(value: string): DateTime {
-        if (StringHelper.IsNullOrEmpty(value)) {
-            return null;
-        }
-        else {
-            // Assume an unbiased date/time is in UTC. Convert to UTC otherwise.
-            //ref: //fix: hard convert to UTC date as no request contains TZ information.
-            if (value.toLowerCase().indexOf("z") < 0 && ["+", "-"].indexOf(value.substr(19, 1)) < 0) {
-                value += "Z";
-            }
+  }
 
-            var dateTime: DateTime = DateTime.Parse(
-                value);
-            // CultureInfo.InvariantCulture,
-            // DateTimeStyles.AdjustToUniversal | DateTimeStyles.AssumeUniversal);
+  /**
+   * @internal Calls the custom SOAP header serialization event handlers, if defined.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The XmlWriter to which to write the custom SOAP headers.
+   */
+  DoOnSerializeCustomSoapHeaders(writer: EwsServiceXmlWriter): void {
+    EwsLogging.Assert(
+      writer != null,
+      "ExchangeServiceBase.DoOnSerializeCustomSoapHeaders",
+      "writer is null");
 
-            if (this.TimeZone == TimeZoneInfo.Utc) {
-                // This returns a DateTime with Kind.Utc
-                return dateTime;
-            }
-            else {
-                var localTime: DateTime = EwsUtilities.ConvertTime(
-
-                    dateTime,
-                    TimeZoneInfo.Utc,
-                    this.TimeZone);
-
-                if (EwsUtilities.IsLocalTimeZone(this.TimeZone)) {
-                    // This returns a DateTime with Kind.Local
-                    return new DateTime(localTime.TotalMilliSeconds, DateTimeKind.Local);
-                }
-                else {
-                    // This returns a DateTime with Kind.Unspecified
-                    return localTime;
-                }
-            }
-        }
+    if (this.OnSerializeCustomSoapHeaders != null) {
+      this.OnSerializeCustomSoapHeaders(writer);
     }
-    DoOnSerializeCustomSoapHeaders(writer: any /*System.Xml.XmlWriter*/): void {
-        EwsLogging.Assert(
-            writer != null,
-            "ExchangeServiceBase.DoOnSerializeCustomSoapHeaders",
-            "writer is null");
+  }
 
-        if (this.OnSerializeCustomSoapHeaders != null) {
-            this.OnSerializeCustomSoapHeaders(writer);
-        }
+  /**
+   * @internal Processes an HTTP error response
+   *
+   * /remarks/    This method doesn't handle 500 ISE errors. This is handled by the caller since 500 ISE typically indicates that a SOAP fault has occurred and the handling of a SOAP fault is currently service specific.
+   * @param   {XMLHttpRequest}    httpWebResponse            The HTTP web response.
+   * @param   {SoapFaultDetails}  webException               The web exception.
+   * @param   {TraceFlags}        responseHeadersTraceFlag   The trace flag for response headers.
+   * @param   {TraceFlags}        responseTraceFlag          The trace flag for responses.
+   *
+   */
+  InternalProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest, soapFault: SoapFaultDetails, responseHeadersTraceFlag: TraceFlags, responseTraceFlag: TraceFlags): void {
+    EwsLogging.Assert(
+      httpWebResponse.status != 500, // HttpStatusCode.InternalServerError,
+      "ExchangeServiceBase.InternalProcessHttpErrorResponse",
+      "InternalProcessHttpErrorResponse does not handle 500 ISE errors, the caller is supposed to handle this.");
+
+    this.ProcessHttpResponseHeaders(responseHeadersTraceFlag, httpWebResponse);
+
+    let exception: Exception = null;
+    // Deal with new HTTP error code indicating that account is locked.
+    // The "unlock" URL is returned as the status description in the response.
+    if (httpWebResponse.status === ExchangeServiceBase.AccountIsLocked) {
+      EwsLogging.Assert(false, "ExchangeServiceBase.InternalProcessHttpErrorResponse", "Please report back to ews-javascript-api with example or response XML for future improvements of this code.");
+
+      let location: string = httpWebResponse.getResponseHeader("StatusDescription");
+
+      let accountUnlockUrl: Uri = null;
+
+      //if (Uri.IsWellFormedUriString(location, UriKind.Absolute)) {
+      if (Uri.ParseString(location).authority) { //todo: implement better Url parsing in Uri.
+        accountUnlockUrl = new Uri(location);
+      }
+
+      this.TraceMessage(responseTraceFlag, StringHelper.Format("Account is locked. Unlock URL is {0}", accountUnlockUrl.ToString()));
+
+      exception = new AccountIsLockedException(
+        StringHelper.Format(Strings.AccountIsLocked, accountUnlockUrl),
+        accountUnlockUrl,
+        null);
     }
-
-    /**
-     * @internal Processes an HTTP error response
-     *
-     * /remarks/    This method doesn't handle 500 ISE errors. This is handled by the caller since 500 ISE typically indicates that a SOAP fault has occurred and the handling of a SOAP fault is currently service specific.
-     * @param   {XMLHttpRequest}    httpWebResponse            The HTTP web response.
-     * @param   {SoapFaultDetails}  webException               The web exception.
-     * @param   {TraceFlags}        responseHeadersTraceFlag   The trace flag for response headers.
-     * @param   {TraceFlags}        responseTraceFlag          The trace flag for responses.
-     *
-     */
-    InternalProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest, soapFault: SoapFaultDetails, responseHeadersTraceFlag: TraceFlags, responseTraceFlag: TraceFlags): void {
-        EwsLogging.Assert(
-            httpWebResponse.status != 500, // HttpStatusCode.InternalServerError,
-            "ExchangeServiceBase.InternalProcessHttpErrorResponse",
-            "InternalProcessHttpErrorResponse does not handle 500 ISE errors, the caller is supposed to handle this.");
-
-        this.ProcessHttpResponseHeaders(responseHeadersTraceFlag, httpWebResponse);
-
-        let exception: Exception = null;
-        // Deal with new HTTP error code indicating that account is locked.
-        // The "unlock" URL is returned as the status description in the response.
-        if (httpWebResponse.status == ExchangeServiceBase.AccountIsLocked) {
-            EwsLogging.Assert(false, "ExchangeServiceBase.InternalProcessHttpErrorResponse", "Please report back to ews-javascript-api with example or response XML for future improvements of this code.");
-
-            let location: string = httpWebResponse.getResponseHeader("StatusDescription");
-
-            let accountUnlockUrl: Uri = null;
-
-            //if (Uri.IsWellFormedUriString(location, UriKind.Absolute)) {
-            if (Uri.ParseString(location).authority) { //todo: implement better Url parsing in Uri.
-                accountUnlockUrl = new Uri(location);
-            }
-
-            this.TraceMessage(responseTraceFlag, StringHelper.Format("Account is locked. Unlock URL is {0}", accountUnlockUrl.ToString()));
-
-            exception = new AccountIsLockedException(
-                StringHelper.Format(Strings.AccountIsLocked, accountUnlockUrl),
-                accountUnlockUrl,
-                null);
-        }
-        else if (httpWebResponse.status === 401 /*Unauthorized*/) {
-            exception = new ServiceRequestUnauthorizedException("401 Unauthorized");
-        }
-
-        if (exception) {
-            if (soapFault !== null) {
-                soapFault.Exception = exception;
-                if (StringHelper.IsNullOrEmpty(soapFault.message) && !StringHelper.IsNullOrEmpty(exception.message)) {
-                    soapFault.message = exception.message;
-                }
-            }
-            else {
-                throw exception;
-            }
-        }
+    else if (httpWebResponse.status === 401 /*Unauthorized*/) {
+      exception = new ServiceRequestUnauthorizedException("401 Unauthorized");
     }
 
-    IsTraceEnabledFor(traceFlags: TraceFlags): boolean { return this.TraceEnabled && ((this.TraceFlags & traceFlags) != 0); }
-    PrepareHttpWebRequestForUrl(url: Uri, acceptGzipEncoding: boolean, allowAutoRedirect: boolean): IXHROptions /*IEwsHttpWebRequest*/ {
-        // Verify that the protocol is something that we can handle
-        if ((url.Scheme != Uri.UriSchemeHttp) && (url.Scheme != Uri.UriSchemeHttps)) {
-            throw new ServiceLocalException("unsupported web protocol" + url);//string.Format(Strings.UnsupportedWebProtocol, url.Scheme));
+    if (exception) {
+      if (soapFault !== null) {
+        soapFault.Exception = exception;
+        if (StringHelper.IsNullOrEmpty(soapFault.message) && !StringHelper.IsNullOrEmpty(exception.message)) {
+          soapFault.message = exception.message;
         }
-        var request: IXHROptions = { url: url.ToString() };
-        request.headers = {};
-
-
-        //request.PreAuthenticate = this.PreAuthenticate;
-        //request.Timeout = this.Timeout; //todo: implement this within IPromise
-
-        this.SetContentType(request);
-
-        request.type = "POST";
-
-        //request.headers["User-Agent"] = this.UserAgent || ExchangeServiceBase.defaultUserAgent; //todo:fix -> Noje.js is refusing to set this unsafe header -//
-        //request.AllowAutoRedirect = allowAutoRedirect;
-
-        //todo: figure out next 3 lines
-        //request.CookieContainer = this.CookieContainer;
-        //request.KeepAlive = this.keepAlive;
-        //request.ConnectionGroupName = this.connectionGroupName;
-
-        if (acceptGzipEncoding) {
-            request.headers["Accept-Encoding"] = "gzip,deflate";
-        }
-
-        if (!StringHelper.IsNullOrEmpty(this.clientRequestId)) {
-            request.headers["client-request-id"] = this.clientRequestId;
-            if (this.returnClientRequestId) {
-                request.headers["return-client-request-id"] = "true";
-            }
-        }
-
-        //if (this.webProxy != null) {
-        //    request.Proxy = this.webProxy;
-        //}
-
-        if (this.HttpHeaders) {
-            for (var kv in this.HttpHeaders) {
-                request.headers[kv] = this.HttpHeaders[kv];
-            }
-        }
-
-        //request.UseDefaultCredentials = this.UseDefaultCredentials;
-        if (!this.UseDefaultCredentials) {
-            var serviceCredentials = this.Credentials;
-            if (serviceCredentials == null) {
-                throw new ServiceLocalException(Strings.CredentialsRequired);
-            }
-
-            // Make sure that credentials have been authenticated if required
-            //serviceCredentials.PreAuthenticate(); //todo: fix preauthenticate if possible
-
-            // Apply credentials to the request
-            serviceCredentials.PrepareWebRequest(request);
-        }
-        // else
-        //     debugger;
-
-        this.httpResponseHeaders = {};
-
-        return request;
+      }
+      else {
+        throw exception;
+      }
     }
-    ProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest/*IEwsHttpWebResponse*/, webException: any): any { throw new Error("ExchangeServiceBase.ts - ProcessHttpErrorResponse : Not implemented."); }
-    ProcessHttpResponseHeaders(traceType: TraceFlags, response: any): void {
-        return;
-        //todo: implement tracing
-        this.TraceHttpResponseHeaders(traceType, response);
+  }
 
-        this.SaveHttpResponseHeaders(response.Headers);
-    }
-    SaveHttpResponseHeaders(headers: IXHROptions/* System.Net.WebHeaderCollection*/): any {
-        //debug:
-        this.httpResponseHeaders = {};
+  /**
+   * @internal Determines whether tracing is enabled for specified trace flag(s).
+   *
+   * @param   {TraceFlags}  traceFlags   The trace flags.
+   * @return  {boolean}     True if tracing is enabled for specified trace flag(s).
+   */
+  IsTraceEnabledFor(traceFlags: TraceFlags): boolean {
+    return this.TraceEnabled && ((this.TraceFlags & traceFlags) != 0);
+  }
 
-        for (var key in headers.headers) {
-            this.httpResponseHeaders[key] = headers.headers[key];
-        }
+  /**
+  * @internal Creates an HttpWebRequest instance and initializes it with the appropriate parameters, based on the configuration of this service object.
+  *
+  * @param   {Uri}          url                  The URL that the HttpWebRequest should target.
+  * @param   {boolean}      acceptGzipEncoding   If true, ask server for GZip compressed content.
+  * @param   {boolean}      allowAutoRedirect    If true, redirection responses will be automatically followed.
+  * @return  {IXHROptions}  A initialized instance of IXHROptions.
+  */
+  PrepareHttpWebRequestForUrl(url: Uri, acceptGzipEncoding: boolean, allowAutoRedirect: boolean): IXHROptions /*IEwsHttpWebRequest*/ {
+    // Verify that the protocol is something that we can handle
+    if ((url.Scheme != Uri.UriSchemeHttp) && (url.Scheme != Uri.UriSchemeHttps)) {
+      throw new ServiceLocalException("unsupported web protocol" + url);//string.Format(Strings.UnsupportedWebProtocol, url.Scheme));
+    }
+    var request: IXHROptions = { url: url.ToString() };
+    request.headers = {};
 
-        if (this.OnResponseHeadersCaptured != null) {
-            this.OnResponseHeadersCaptured(headers);
-        }
+
+    //request.PreAuthenticate = this.PreAuthenticate;
+    //request.Timeout = this.Timeout; //todo: implement this within IPromise
+
+    this.SetContentType(request);
+
+    request.type = "POST";
+
+    //request.headers["User-Agent"] = this.UserAgent || ExchangeServiceBase.defaultUserAgent; //todo:fix -> Noje.js is refusing to set this unsafe header -//
+    //request.AllowAutoRedirect = allowAutoRedirect;
+
+    //todo: figure out next 3 lines
+    //request.CookieContainer = this.CookieContainer;
+    //request.KeepAlive = this.keepAlive;
+    //request.ConnectionGroupName = this.connectionGroupName;
+
+    if (acceptGzipEncoding) {
+      request.headers["Accept-Encoding"] = "gzip,deflate";
     }
-    SetContentType(request: IXHROptions /*IEwsHttpWebRequest*/): void {
-        request.headers["Content-Type"] = "text/xml; charset=utf-8";
-        request.headers["Accept"] = "text/xml";
+
+    if (!StringHelper.IsNullOrEmpty(this.clientRequestId)) {
+      request.headers["client-request-id"] = this.clientRequestId;
+      if (this.returnClientRequestId) {
+        request.headers["return-client-request-id"] = "true";
+      }
     }
-    SetCustomUserAgent(userAgent: string): any { /*this.userAgent = userAgent;*/ }
-    TraceHttpRequestHeaders(traceType: TraceFlags, request: any): any { throw new Error("ExchangeServiceBase.ts - TraceHttpRequestHeaders : Not implemented."); }
-    TraceHttpResponseHeaders(traceType: TraceFlags, response: any): any { throw new Error("ExchangeServiceBase.ts - TraceHttpResponseHeaders : Not implemented."); }
-    TraceMessage(traceType: TraceFlags, logEntry: string): any { EwsLogging.Log(logEntry); /*throw new Error("Not implemented."); */ }
-    TraceXml(traceType: TraceFlags, stream: any): any { throw new Error("ExchangeServiceBase.ts - TraceXml : Not implemented."); }
-    Validate(): any { }
+
+    //if (this.webProxy != null) {
+    //    request.Proxy = this.webProxy;
+    //}
+
+    if (this.HttpHeaders) {
+      for (var key of this.HttpHeaders.Keys) {
+        request.headers[key] = this.HttpHeaders.get(key);
+      }
+    }
+
+    // REF: no default credential in NodeJs
+    // request.UseDefaultCredentials = this.UseDefaultCredentials;
+    // if (!this.UseDefaultCredentials) {
+    var serviceCredentials = this.Credentials;
+    if (serviceCredentials === null) {
+      throw new ServiceLocalException(Strings.CredentialsRequired);
+    }
+
+    // Make sure that credentials have been authenticated if required
+    //serviceCredentials.PreAuthenticate(); //todo: fix preauthenticate if possible
+
+    // Apply credentials to the request
+    serviceCredentials.PrepareWebRequest(request);
+    // }
+    // else
+    //     debugger;
+
+    this.httpResponseHeaders.clear();
+
+    return request;
+  }
+
+  /**
+   * @internal Processes an HTTP error response.
+   *
+   * @param   {XMLHttpRequest}  httpWebResponse   The HTTP web response.
+   * @param   {Exception}       webException      The web exception.
+   */
+  abstract ProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest/*IEwsHttpWebResponse*/, webException: Exception): void;
+
+  /**
+   * @internal Traces the HTTP response headers.
+   *
+   * @param   {TraceFlags}   traceType   Kind of trace entry.
+   * @param   {XMLHttpRequest}   response    The response.
+   */
+  ProcessHttpResponseHeaders(traceType: TraceFlags, response: XMLHttpRequest): void {
+    //TODO: implement tracing properly
+    this.TraceHttpResponseHeaders(traceType, response);
+
+    this.SaveHttpResponseHeaders(response);
+  }
+
+  /**
+   * Save the HTTP response headers.
+   *
+   * @param   {Object}   response   The response headers
+   */
+  private SaveHttpResponseHeaders(response: any/* System.Net.WebHeaderCollection*/): any {
+    //debug:
+    this.httpResponseHeaders.clear();
+
+    for (var key in response.headers || {}) {
+      this.httpResponseHeaders.Add(key, response.headers[key]);
+    }
+
+    if (this.OnResponseHeadersCaptured != null) {
+      this.OnResponseHeadersCaptured(this.httpResponseHeaders);
+    }
+  }
+
+  /**
+   * @internal
+   * @virtual
+   */
+  SetContentType(request: IXHROptions /*IEwsHttpWebRequest*/): void {
+    request.headers["Content-Type"] = "text/xml; charset=utf-8";
+    request.headers["Accept"] = "text/xml";
+  }
+
+  /**
+   * @internal Sets the user agent to a custom value
+   *
+   * @param   {string}   userAgent   User agent string to set on the service
+   */
+  SetCustomUserAgent(userAgent: string): void {
+    this.userAgent = userAgent;
+  }
+
+  /**
+   * @internal Traces the HTTP request headers.
+   *
+   * @param   {TraceFlags}  traceType   Kind of trace entry.
+   * @param   {IXHROptions} request     The request.
+   */
+  TraceHttpRequestHeaders(traceType: TraceFlags, request: IXHROptions): void {
+    if (this.IsTraceEnabledFor(traceType)) {
+      const traceTypeStr: string = TraceFlags[traceType];
+      const headersAsString: string = EwsUtilities.FormatHttpRequestHeaders(request.headers);
+      const logMessage: string = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
+      this.TraceListener.Trace(traceTypeStr, logMessage);
+    }
+  }
+
+  /**
+   * Traces the HTTP response headers.
+   *
+   * @param   {TraceFlags}   traceType   Kind of trace entry.
+   * @param   {XMLHttpRequest}   response    The response.
+   */
+  private TraceHttpResponseHeaders(traceType: TraceFlags, response: XMLHttpRequest): void {
+    if (this.IsTraceEnabledFor(traceType)) {
+      const traceTypeStr: string = TraceFlags[traceType];
+      const headersAsString: string = EwsUtilities.FormatHttpResponseHeaders(response);
+      const logMessage: string = EwsUtilities.FormatLogMessage(traceTypeStr, headersAsString);
+      this.TraceListener.Trace(traceTypeStr, logMessage);
+    }
+  }
+
+  /**
+   * @internal Logs the specified string to the TraceListener if tracing is enabled.
+   *
+   * @param   {TraceFlags}  traceType   Kind of trace entry.
+   * @param   {string}      logEntry    The entry to log.
+   */
+  TraceMessage(traceType: TraceFlags, logEntry: string): void { EwsLogging.Log(logEntry); /*throw new Error("Not implemented."); */ }
+
+  /**
+   * @internal Logs the specified XML to the TraceListener if tracing is enabled.
+   *
+   * @param   {TraceFlags}  traceType   Kind of trace entry.
+   * @param   {XMLHttpRequest}         stream      The XMLHttpRequest containing XML.
+   */
+  TraceXml(traceType: TraceFlags, stream: XMLHttpRequest): void {
+    if (this.IsTraceEnabledFor(traceType)) {
+      const traceTypeStr: string = TraceFlags[traceType];
+      const logMessage: string = EwsUtilities.FormatLogMessageWithXmlContent(traceTypeStr, stream);
+      this.TraceListener.Trace(traceTypeStr, logMessage);
+    }
+  }
+
+  /**
+   * @internal Validates this instance.
+   * @virtual
+   */
+  Validate(): void { }
 }
-
 
 /**
  * Represents a binding to the **Exchange Web Services**.
@@ -34938,4092 +35221,4203 @@ export class ExchangeServiceBase {
  */
 export class ExchangeService extends ExchangeServiceBase {
 
-    /* #region Constants */
-    private static TargetServerVersionHeaderName: string = "X-EWS-TargetVersion";
-    /* #endregion Constants */
+  //#region Constants
+  private static TargetServerVersionHeaderName: string = "X-EWS-TargetVersion";
+  //#endregion
 
 
-    /* #region Fields */
-    private url: Uri = null;
-    //private preferredCulture: any = null;// System.Globalization.CultureInfo;
-    //private dateTimePrecision: DateTimePrecision = DateTimePrecision.Default;
-    //private impersonatedUserId: ImpersonatedUserId = null;
-    //private privilegedUserId: PrivilegedUserId = null;
-    //private managementRoles: ManagementRoles = null;
-    //private fileAttachmentContentHandler: IFileAttachmentContentHandler = null;
-    private unifiedMessaging: UnifiedMessaging = null;
-    //private enableScpLookup: boolean = false; //false for javascript, AD Lookup not implemented
-    private renderingMode: RenderingMode = RenderingMode.Xml;
-    //private traceEnablePrettyPrinting: boolean = true;
-    private targetServerVersion: string = null;
-    //private exchange2007CompatibilityMode: boolean = false;
-    /* #endregion Fields */
+  //#region Fields
+  private url: Uri = null;
+  //private preferredCulture: any = null;// System.Globalization.CultureInfo;
+  private dateTimePrecision: DateTimePrecision = DateTimePrecision.Default;
+  private impersonatedUserId: ImpersonatedUserId = null;
+  private privilegedUserId: PrivilegedUserId = null;
+  private managementRoles: ManagementRoles = null;
+  private fileAttachmentContentHandler: IFileAttachmentContentHandler = null;
+  private unifiedMessaging: UnifiedMessaging = null;
+  private enableScpLookup: boolean = false; //false for javascript, AD Lookup not implemented
+  private renderingMode: RenderingMode = RenderingMode.Xml;
+  private traceEnablePrettyPrinting: boolean = true;
+  private targetServerVersion: string = null;
+  private exchange2007CompatibilityMode: boolean = false;
+  //#endregion
 
 
-    /* #region Properties */
-    Url: Uri;
-    ImpersonatedUserId: ImpersonatedUserId = null;
-    /**@internal */
-    PrivilegedUserId: PrivilegedUserId = null;
-    ManagementRoles: ManagementRoles = null;
-    PreferredCulture: any = null;//System.Globalization.CultureInfo;
-    DateTimePrecision: DateTimePrecision = DateTimePrecision.Default;
-    FileAttachmentContentHandler: IFileAttachmentContentHandler = null;
-    get TimeZone(): TimeZoneInfo {
-        return this.timeZone;
+  //#region Properties
+
+  /**
+   * Gets or sets the URL of the Exchange Web Services.
+   */
+  get Url(): Uri {
+    return this.url;
+  }
+  set Url(value: Uri) {
+    this.url = value;
+  }
+
+  /**
+   * Gets or sets the Id of the user that EWS should impersonate.
+   */
+  get ImpersonatedUserId(): ImpersonatedUserId {
+    return this.impersonatedUserId;
+  }
+  set ImpersonatedUserId(value: ImpersonatedUserId) {
+    this.impersonatedUserId = value;
+  }
+
+  /**
+   * @internal Gets or sets the Id of the user that EWS should open his/her mailbox with privileged logon type.
+   */
+  get PrivilegedUserId(): PrivilegedUserId {
+    return this.privilegedUserId;
+  }
+  set PrivilegedUserId(value: PrivilegedUserId) {
+    this.privilegedUserId = value;
+  }
+
+  /**
+   * [summary]
+   */
+  get ManagementRoles(): ManagementRoles {
+    return this.managementRoles;
+  }
+  set ManagementRoles(value: ManagementRoles) {
+    this.managementRoles = value;
+  }
+
+  // /**
+  //  * Gets or sets the preferred culture for messages returned by the Exchange Web Services.
+  //  */
+  // get PreferredCulture(): CultureInfo {
+  //   return this.preferredCulture;
+  // }
+  // set PreferredCulture(value: CultureInfo) {
+  //   this.preferredCulture = value;
+  // }
+
+  /**
+   * Gets or sets the DateTime precision for DateTime values returned from Exchange Web Services.
+   */
+  get DateTimePrecision(): DateTimePrecision {
+    return this.dateTimePrecision;
+  }
+  set DateTimePrecision(value: DateTimePrecision) {
+    this.dateTimePrecision = value;
+  }
+
+  /**
+   * Gets or sets a file attachment content handler.
+   */
+  get FileAttachmentContentHandler(): IFileAttachmentContentHandler {
+    return this.fileAttachmentContentHandler;
+  }
+  set FileAttachmentContentHandler(value: IFileAttachmentContentHandler) {
+    this.fileAttachmentContentHandler = value;
+  }
+
+  /**
+   * Gets the time zone this service is scoped to.
+   */
+  get TimeZone(): TimeZoneInfo {
+    return this.timeZone;
+  }
+
+  /**
+   * Provides access to the Unified Messaging functionalities.
+   */
+  get UnifiedMessaging(): UnifiedMessaging {
+    if (this.unifiedMessaging === null) {
+      this.unifiedMessaging = new UnifiedMessaging(this);
     }
-    get UnifiedMessaging(): UnifiedMessaging {
-        if (this.unifiedMessaging === null) {
-            this.unifiedMessaging = new UnifiedMessaging(this);
-        }
-        return this.unifiedMessaging;
-    }
-    get EnableScpLookup(): boolean { return false; } //false for javascript, AD Lookup not implemented
-    Exchange2007CompatibilityMode: boolean = false;
-    get RenderingMethod(): RenderingMode { return this.renderingMode; }
-    TraceEnablePrettyPrinting: boolean = true;
-    get TargetServerVersion(): string {
-        return this.targetServerVersion;
-    }
-    set TargetServerVersion(value: string) {
-        ExchangeService.ValidateTargetVersion(value);
-        this.targetServerVersion = value;
-    }
-    /* #region Properties */
+    return this.unifiedMessaging;
+  }
+
+  /**
+   * Gets or sets a value indicating whether the AutodiscoverUrl method should perform SCP (Service Connection Point) record lookup when determining the Autodiscover service URL.
+   */
+  get EnableScpLookup(): boolean {
+    return this.enableScpLookup;
+  }
+  set EnableScpLookup(value: boolean) {
+    this.enableScpLookup = value;
+  }
+
+  /**
+   * @internal Gets or sets a value indicating whether Exchange2007 compatibility mode is enabled.
+   * @remarks In order to support E12 servers, the Exchange2007CompatibilityMode property can be used to indicate that we should use "Exchange2007" as the server version string rather than Exchange2007_SP1.
+   */
+  get Exchange2007CompatibilityMode(): boolean {
+    return this.exchange2007CompatibilityMode;
+  }
+  set Exchange2007CompatibilityMode(value: boolean) {
+    this.exchange2007CompatibilityMode = value;
+  }
+
+  /**
+   * @internal Gets or sets the method by which the service will serialize the request.
+   */
+  get RenderingMethod(): RenderingMode {
+    return this.renderingMode;
+  }
+  set RenderingMethod(value: RenderingMode) {
+    throw new Error("Rendering mode not used");
+    this.renderingMode = value;
+  }
+
+  /**
+   * Gets or sets a value indicating whether trace output is pretty printed.
+   */
+  get TraceEnablePrettyPrinting(): boolean {
+    return this.traceEnablePrettyPrinting;
+  }
+  set TraceEnablePrettyPrinting(value: boolean) {
+    this.traceEnablePrettyPrinting = value;
+  }
+
+  /**
+   * @internal Gets or sets the target server version string (newer than Exchange2013).
+   */
+  get TargetServerVersion(): string {
+    return this.targetServerVersion;
+  }
+  set TargetServerVersion(value: string) {
+    ExchangeService.ValidateTargetVersion(value);
+    this.targetServerVersion = value;
+  }
+
+  //#endregion
+
+  //#region Response object operations
+  /**
+   * @internal Create response object.
+   *
+   * @param   {ServiceObject}          responseObject       The response object.
+   * @param   {FolderId}               parentFolderId       The parent folder id.
+   * @param   {MessageDisposition}     messageDisposition   The message disposition.
+   * @return  {Promise<Item[]>}        The list of items created or modified as a result of the "creation" of the response object :Promise.
+   */
+  InternalCreateResponseObject(responseObject: ServiceObject, parentFolderId: FolderId, messageDisposition: MessageDisposition): Promise<Item[]> {
+    var request: CreateResponseObjectRequest = new CreateResponseObjectRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.ParentFolderId = parentFolderId;
+    request.Items = [responseObject];
+    request.MessageDisposition = messageDisposition;
+    return request.Execute().then((responses) => {
+      return responses.__thisIndexer(0).Items;
+    });
+  }
+  //#endregion
 
 
+  //#region Folder operations
 
-    /* #region Response object operations */
-    /**
-     * @internal Create response object.
-     *
-     * @param   {ServiceObject}          responseObject       The response object.
-     * @param   {FolderId}               parentFolderId       The parent folder id.
-     * @param   {MessageDisposition}     messageDisposition   The message disposition.
-     * @return  {Promise<Item[]>}        The list of items created or modified as a result of the "creation" of the response object :Promise.
-     */
-    InternalCreateResponseObject(responseObject: ServiceObject, parentFolderId: FolderId, messageDisposition: MessageDisposition): Promise<Item[]> {
-        var request: CreateResponseObjectRequest = new CreateResponseObjectRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.ParentFolderId = parentFolderId;
-        request.Items = [responseObject];
-        request.MessageDisposition = messageDisposition;
-        return request.Execute().then((responses) => {
-            return responses.__thisIndexer(0).Items;
-        });
-    }
-    /* #endregion Response object operations */
+  /**
+   * @internal Binds to folder.
+   *
+   * @param   {FolderId}           folderId      The folder id.
+   * @param   {PropertySet}        propertySet   The property set.
+   * @return  {Promise<TFolder>}   Folder object :Promise.
+   */
+  BindToFolder(folderId: FolderId, propertySet: PropertySet): Promise<Folder>;
+  /**
+   * @internal Binds to folder.
+   *
+   * @param   {FolderId}           folderId      The folder id.
+   * @param   {PropertySet}        propertySet   The property set.
+   * @param   {folderType}         propertySet   Type to Cast - pass Folder or subclass itself, not an instance
+   * @return  {Promise<TFolder>}   Folder object :Promise.
+   */
+  BindToFolder<TFolder extends Folder>(folderId: FolderId, propertySet: PropertySet,/** pass Folder or subclass itself, not an instance */ folderType: any): Promise<TFolder>;
+  BindToFolder(folderId: FolderId, propertySet: PropertySet, /** pass Folder or subclass itself, not an instance */ folderType: any = null): Promise<Folder> {
+    EwsUtilities.ValidateParam(folderId, "folderId");
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
 
+    var request: GetFolderRequest = new GetFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
-    /* #region Folder operations */
+    request.FolderIds.Add(folderId);
+    request.PropertySet = propertySet;
 
-    /**
-     * @internal Binds to folder.
-     *
-     * @param   {FolderId}           folderId      The folder id.
-     * @param   {PropertySet}        propertySet   The property set.
-     * @return  {Promise<TFolder>}   Folder object :Promise.
-     */
-    BindToFolder(folderId: FolderId, propertySet: PropertySet): Promise<Folder>;
-    /**
-     * @internal Binds to folder.
-     *
-     * @param   {FolderId}           folderId      The folder id.
-     * @param   {PropertySet}        propertySet   The property set.
-     * @param   {folderType}         propertySet   Type to Cast - pass Folder or subclass itself, not an instance
-     * @return  {Promise<TFolder>}   Folder object :Promise.
-     */
-    BindToFolder<TFolder extends Folder>(folderId: FolderId, propertySet: PropertySet,/** pass Folder or subclass itself, not an instance */ folderType: any): Promise<TFolder>;
-    BindToFolder(folderId: FolderId, propertySet: PropertySet, /** pass Folder or subclass itself, not an instance */ folderType: any = null): Promise<Folder> {
-        EwsUtilities.ValidateParam(folderId, "folderId");
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
-
-        var request: GetFolderRequest = new GetFolderRequest(this, ServiceErrorHandling.ThrowOnError);
-
-        request.FolderIds.Add(folderId);
-        request.PropertySet = propertySet;
-
-        return request.Execute().then((responses) => {
-            var result = responses.__thisIndexer(0).Folder;
-            if (folderType != null && !(result instanceof folderType)) { //todo: validate folderType to be not a constructor
-                throw new ServiceLocalException(
-                    StringHelper.Format(
-                        Strings.FolderTypeNotCompatible,
-                        "Type detection not implemented - ExchangeService.ts - BindToFolder<TFolder>",
-                        "Type detection not implemented"));
-            }
-            return result;
-        });
+    return request.Execute().then((responses) => {
+      var result = responses.__thisIndexer(0).Folder;
+      if (folderType != null && !(result instanceof folderType)) { //todo: validate folderType to be not a constructor
+        throw new ServiceLocalException(
+          StringHelper.Format(
+            Strings.FolderTypeNotCompatible,
+            "Type detection not implemented - ExchangeService.ts - BindToFolder<TFolder>",
+            "Type detection not implemented"));
+      }
+      return result;
+    });
 
 
-    }
-    /**
-     * @internal Copies a folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}           folderId              The folder id.
-     * @param   {FolderId}           destinationFolderId   The destination folder id.
-     * @return  {Promise<Folder>}    Copy of folder :Promise.
-     */
-    CopyFolder(folderId: FolderId, destinationFolderId: FolderId): Promise<Folder> {
-        var request: CopyFolderRequest = new CopyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+  }
+  /**
+   * @internal Copies a folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}           folderId              The folder id.
+   * @param   {FolderId}           destinationFolderId   The destination folder id.
+   * @return  {Promise<Folder>}    Copy of folder :Promise.
+   */
+  CopyFolder(folderId: FolderId, destinationFolderId: FolderId): Promise<Folder> {
+    var request: CopyFolderRequest = new CopyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
 
-        request.DestinationFolderId = destinationFolderId;
-        request.FolderIds.Add(folderId);
+    request.DestinationFolderId = destinationFolderId;
+    request.FolderIds.Add(folderId);
 
-        return request.Execute().then((responses) => {
-            return responses.__thisIndexer(0).Folder;
-        });
-    }
-    /**
-     * @internal Creates a folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}   folder           The folder.
-     * @param   {FolderId}   parentFolderId   The parent folder id.
-     */
-    CreateFolder(folder: Folder, parentFolderId: FolderId): Promise<void> {
-        var request: CreateFolderRequest = new CreateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.Folders = [folder];
-        request.ParentFolderId = parentFolderId;
-        return <any>request.Execute();
-    }
+    return request.Execute().then((responses) => {
+      return responses.__thisIndexer(0).Folder;
+    });
+  }
+  /**
+   * @internal Creates a folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}   folder           The folder.
+   * @param   {FolderId}   parentFolderId   The parent folder id.
+   */
+  CreateFolder(folder: Folder, parentFolderId: FolderId): Promise<void> {
+    var request: CreateFolderRequest = new CreateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.Folders = [folder];
+    request.ParentFolderId = parentFolderId;
+    return <any>request.Execute();
+  }
 
-    /**
-     * @internal Deletes a folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      folderId     The folder id.
-     * @param   {DeleteMode}    deleteMode   The delete mode.
-     */
-    DeleteFolder(folderId: FolderId, deleteMode: DeleteMode): Promise<void> {
-        EwsUtilities.ValidateParam(folderId, "folderId");
-        var request: DeleteFolderRequest = new DeleteFolderRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.FolderIds.Add(folderId);
-        request.DeleteMode = deleteMode;
-        return <any>request.Execute();
-    }
-    /**
-     * @internal Empties a folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      folderId           The folder id.
-     * @param   {DeleteMode}    deleteMode         The delete mode.
-     * @param   {boolean}       deleteSubFolders   if set to true empty folder should also delete sub folders.
-     */
-    EmptyFolder(folderId: FolderId, deleteMode: DeleteMode, deleteSubFolders: boolean): Promise<void> {
-        EwsUtilities.ValidateParam(folderId, "folderId");
-        var request: EmptyFolderRequest = new EmptyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.FolderIds.Add(folderId);
-        request.DeleteMode = deleteMode;
-        request.DeleteSubFolders = deleteSubFolders;
-        return <any>request.Execute();
-    }
+  /**
+   * @internal Deletes a folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      folderId     The folder id.
+   * @param   {DeleteMode}    deleteMode   The delete mode.
+   */
+  DeleteFolder(folderId: FolderId, deleteMode: DeleteMode): Promise<void> {
+    EwsUtilities.ValidateParam(folderId, "folderId");
+    var request: DeleteFolderRequest = new DeleteFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.FolderIds.Add(folderId);
+    request.DeleteMode = deleteMode;
+    return <any>request.Execute();
+  }
+  /**
+   * @internal Empties a folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      folderId           The folder id.
+   * @param   {DeleteMode}    deleteMode         The delete mode.
+   * @param   {boolean}       deleteSubFolders   if set to true empty folder should also delete sub folders.
+   */
+  EmptyFolder(folderId: FolderId, deleteMode: DeleteMode, deleteSubFolders: boolean): Promise<void> {
+    EwsUtilities.ValidateParam(folderId, "folderId");
+    var request: EmptyFolderRequest = new EmptyFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.FolderIds.Add(folderId);
+    request.DeleteMode = deleteMode;
+    request.DeleteSubFolders = deleteSubFolders;
+    return <any>request.Execute();
+  }
 
-    /**
-     * Obtains a list of folders by searching the sub-folders of the specified folder.
-     *
-     * @param   {FolderId}                       parentFolderId   The Id of the folder in which to search for folders.
-     * @param   {FolderView}                     view             The view controlling the number of folders returned.
-     * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
-     */
-    FindFolders(parentFolderId: FolderId, view: FolderView): Promise<FindFoldersResults>;
-    /**
-     * Obtains a list of folders by searching the sub-folders of the specified folder.
-     *
-     * @param   {WellKnownFolderName}            parentFolderName   The name of the folder in which to search for folders.
-     * @param   {FolderView}                     view               The view controlling the number of folders returned.
-     * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
-     */
-    FindFolders(parentFolderName: WellKnownFolderName, view: FolderView): Promise<FindFoldersResults>;
-    /**
-     * Obtains a list of folders by searching the sub-folders of the specified folder.
-     *
-     * @param   {FolderId}                       parentFolderId   The Id of the folder in which to search for folders.
-     * @param   {SearchFilter}                   searchFilter     The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {FolderView}                     view             The view controlling the number of folders returned.
-     * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
-     */
-    FindFolders(parentFolderId: FolderId, searchFilter: SearchFilter, view: FolderView): Promise<FindFoldersResults>;
-    /**
-     * Obtains a list of folders by searching the sub-folders of the specified folder.
-     *
-     * @param   {WellKnownFolderName}            parentFolderName   The name of the folder in which to search for folders.
-     * @param   {SearchFilter}                   searchFilter       The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {FolderView}                     view               The view controlling the number of folders returned.
-     * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
-     */
-    FindFolders(parentFolderName: WellKnownFolderName, searchFilter: SearchFilter, view: FolderView): Promise<FindFoldersResults>;
+  /**
+   * Obtains a list of folders by searching the sub-folders of the specified folder.
+   *
+   * @param   {FolderId}                       parentFolderId   The Id of the folder in which to search for folders.
+   * @param   {FolderView}                     view             The view controlling the number of folders returned.
+   * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
+   */
+  FindFolders(parentFolderId: FolderId, view: FolderView): Promise<FindFoldersResults>;
+  /**
+   * Obtains a list of folders by searching the sub-folders of the specified folder.
+   *
+   * @param   {WellKnownFolderName}            parentFolderName   The name of the folder in which to search for folders.
+   * @param   {FolderView}                     view               The view controlling the number of folders returned.
+   * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
+   */
+  FindFolders(parentFolderName: WellKnownFolderName, view: FolderView): Promise<FindFoldersResults>;
+  /**
+   * Obtains a list of folders by searching the sub-folders of the specified folder.
+   *
+   * @param   {FolderId}                       parentFolderId   The Id of the folder in which to search for folders.
+   * @param   {SearchFilter}                   searchFilter     The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {FolderView}                     view             The view controlling the number of folders returned.
+   * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
+   */
+  FindFolders(parentFolderId: FolderId, searchFilter: SearchFilter, view: FolderView): Promise<FindFoldersResults>;
+  /**
+   * Obtains a list of folders by searching the sub-folders of the specified folder.
+   *
+   * @param   {WellKnownFolderName}            parentFolderName   The name of the folder in which to search for folders.
+   * @param   {SearchFilter}                   searchFilter       The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {FolderView}                     view               The view controlling the number of folders returned.
+   * @return  {Promise<FindFoldersResults>}    An object representing the results of the search operation :Promise.
+   */
+  FindFolders(parentFolderName: WellKnownFolderName, searchFilter: SearchFilter, view: FolderView): Promise<FindFoldersResults>;
 
-    FindFolders(
-        parentFolderIdOrName: FolderId | WellKnownFolderName,
-        viewOrSearchFilter: FolderView | SearchFilter,
-        folderView?: FolderView): Promise<FindFoldersResults> {
-        //todo: better argument check with ewsutilities
-        //EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
-        //EwsUtilities.ValidateParam(view, "view");
-        //EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
-        var argsLength = arguments.length;
-        if (argsLength < 2 && argsLength > 3) {
-            throw new Error("ExchangeService.ts - FindFolders - invalid number of arguments, check documentation and try again.");
-        }
-
-        //position 1 - parentFolderIdOrName
-        var parentFolderIds: FolderId[] = []
-        if (typeof parentFolderIdOrName === 'number') {
-            parentFolderIds.push(new FolderId(parentFolderIdOrName));
-        }
-        else if (parentFolderIdOrName instanceof FolderId) {
-            parentFolderIds.push(parentFolderIdOrName);
-        }
-        else {
-            throw new Error("ExchangeService.ts - FindFolders - incorrect use of parameters, 1st argument must be Folder ID or WellKnownFolderName");
-        }
-
-        var searchFilter: SearchFilter = null;
-        var view: FolderView = null;
-
-        //position 2 - viewOrSearchFilter
-        if (viewOrSearchFilter instanceof SearchFilter) {
-            if (!(folderView instanceof FolderView)) {
-                throw new Error("ExchangeService.ts - FindFolders with " + argsLength + " parameters - incorrect uses of parameter at 3nd position, it must be FolderView when using SearchFilter at 2nd place");
-            }
-            searchFilter = viewOrSearchFilter;
-        }
-        else if (viewOrSearchFilter instanceof FolderView) {
-            view = viewOrSearchFilter;
-        }
-        else {
-            throw new Error("ExchangeService.ts - FindFolders - incorrect uses of parameters at 2nd position, must be FolderView or SearchFilter");
-        }
-
-        //position 3 - folderView
-        if (argsLength == 3) {
-            view = folderView;
-        }
-
-        return this.InternalFindFolders(
-            parentFolderIds,
-            searchFilter, /* searchFilter */
-            view,
-            ServiceErrorHandling.ThrowOnError).then((responses) => {
-                return responses.__thisIndexer(0).Results;
-            });
-    }
-    /**
-     * Finds folders.
-     *
-     * @param   {FolderId[]}             parentFolderIds     The parent folder ids.
-     * @param   {SearchFilter}           searchFilter        The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {FolderView}             view                The view controlling the number of folders returned.
-     * @param   {ServiceErrorHandling}   errorHandlingMode   Indicates the type of error handling should be done.
-     * @return  {Promise<ServiceResponseCollection<FindFolderResponse>>}     Collection of service responses :Promise.
-     */
-    private InternalFindFolders(parentFolderIds: FolderId[], searchFilter: SearchFilter, view: FolderView, errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<FindFolderResponse>> {
-
-        var request: FindFolderRequest = new FindFolderRequest(this, errorHandlingMode);
-
-        request.ParentFolderIds.AddRange(parentFolderIds);
-        request.SearchFilter = searchFilter;
-        request.View = view;
-
-        return request.Execute();
-    }
-    /**
-     * @internal Load specified properties for a folder.
-     *
-     * @param   {Folder}         folder        The folder.
-     * @param   {PropertySet}    propertySet   The property set.
-     */
-    LoadPropertiesForFolder(folder: Folder, propertySet: PropertySet): Promise<void> {
-        EwsUtilities.ValidateParam(folder, "folder");
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
-
-        var request: GetFolderRequestForLoad = new GetFolderRequestForLoad(this, ServiceErrorHandling.ThrowOnError);
-
-        request.FolderIds.Add(folder);
-        request.PropertySet = propertySet;
-
-        return <any>request.Execute();
-    }
-    /**
-     * @internal Marks all items in folder as read/unread. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      folderId               The folder id.
-     * @param   {boolean}       readFlag               If true, items marked as read, otherwise unread.
-     * @param   {boolean}       suppressReadReceipts   If true, suppress read receipts for items.
-     */
-    MarkAllItemsAsRead(folderId: FolderId, readFlag: boolean, suppressReadReceipts: boolean): Promise<void> {
-        EwsUtilities.ValidateParam(folderId, "folderId");
-        EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "MarkAllItemsAsRead");
-        var request: MarkAllItemsAsReadRequest = new MarkAllItemsAsReadRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.FolderIds.Add(folderId);
-        request.ReadFlag = readFlag;
-        request.SuppressReadReceipts = suppressReadReceipts;
-        return <any>request.Execute();
-    }
-    /**
-     * @internal Move a folder.
-     *
-     * @param   {FolderId}           folderId              The folder id.
-     * @param   {FolderId}           destinationFolderId   The destination folder id.
-     * @return  {Promise<Folder>}    Moved folder :Promise.
-     */
-    MoveFolder(folderId: FolderId, destinationFolderId: FolderId): Promise<Folder> {
-        var request: MoveFolderRequest = new MoveFolderRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.DestinationFolderId = destinationFolderId;
-        request.FolderIds.Add(folderId);
-        return request.Execute().then((responses) => {
-            return responses.__thisIndexer(0).Folder;
-        });
-    }
-    /**
-     * @internal Updates a folder.
-     *
-     * @param   {Folder}   folder   The folder.
-     */
-    UpdateFolder(folder: Folder): Promise<void> {
-        var request: UpdateFolderRequest = new UpdateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.Folders.push(folder);
-        return request.Execute().then((value) => {
-            return null;
-        });
-    }
-    /* #endregion Folder operations */
-
-
-    /* #region Item operations */
-
-    /**
-     * Archives multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}   itemIds          The Ids of the items to move.
-     * @param   {FolderId}   sourceFolderId   The Id of the folder in primary corresponding to which items are being archived to.
-     * @return  {Promise<ServiceResponseCollection<ArchiveItemResponse>>}                     A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
-     */
-    ArchiveItems<TResponse extends ServiceResponse>(itemIds: ItemId[], sourceFolderId: FolderId): Promise<ServiceResponseCollection<ArchiveItemResponse>> {
-        var request: ArchiveItemRequest = new ArchiveItemRequest(this, ServiceErrorHandling.ReturnErrors);
-        request.Ids.AddRange(itemIds);
-        request.SourceFolderId = sourceFolderId;
-        return request.Execute();
-    }
-    /* //ref: new method, //todo: implement other newer code from ews managed api repo  */
-    /**
-     * Binds to multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}      itemIds         The Ids of the items to bind to.
-     * @param   {PropertySet}   propertySet     The set of properties to load.
-     * @param   {string}        anchorMailbox   The SmtpAddress of mailbox that hosts all items we need to bind to
-     * @return  {Promise<ServiceResponseCollection<GetItemResponse>>}                    A ServiceResponseCollection providing results for each of the specified item Ids :Promise.
-     */
-    BindToGroupItems(itemIds: ItemId[], propertySet: PropertySet, anchorMailbox: string): Promise<ServiceResponseCollection<GetItemResponse>> {
-        EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
-        EwsUtilities.ValidateParam(propertySet, "anchorMailbox");
-
-        return this.InternalBindToItems(
-            itemIds,
-            propertySet,
-            anchorMailbox,
-            ServiceErrorHandling.ReturnErrors);
-    }
-    /**
-     * @internal Binds to item.
-     *
-     * @param   {ItemId}            itemId        The item id.
-     * @param   {PropertySet}       propertySet   The property set.
-     * @return  {Promise<Item>}     Item :Promise.
-     */
-    BindToItem(itemId: ItemId, propertySet: PropertySet): Promise<Item>;
-    /**
-     * @internal Binds to item.
-     *
-     * @param   {ItemId}            itemId        The item id.
-     * @param   {PropertySet}       propertySet   The property set.
-     * @param   {<TItem>}           itemType      Item type class ex: Item, EmailMessage etc..
-     * @return  {Promise<Item>}     Item :Promise.
-     */
-    BindToItem<TItem extends Item>(itemId: ItemId, propertySet: PropertySet, itemType: typeof Item /* pass Item or subclass itself, not instance */): Promise<TItem>;
-    BindToItem(itemId: ItemId, propertySet: PropertySet,/** pass Item or subclass itself, not an instance */ itemType: typeof Item = null): Promise<Item> {
-
-        EwsUtilities.ValidateParam(itemId, "itemId");
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
-
-        return this.InternalBindToItems(
-            [itemId],
-            propertySet,
-            null, /* anchorMailbox */
-            ServiceErrorHandling.ThrowOnError).then((response) => {
-                var result = response.__thisIndexer(0).Item;
-                if (itemType != null && !(result instanceof itemType)) { //todo: validate itemType to be not a constructor
-                    throw new ServiceLocalException(
-                        StringHelper.Format(
-                            Strings.ItemTypeNotCompatible,
-                            "Type detection not implemented - ExchangeService.ts - BindToItem<TItem>",
-                            "Type detection not implemented"));
-                }
-
-                return result;
-            });
-    }
-    /**
-     * Binds to multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}      itemIds       The Ids of the items to bind to.
-     * @param   {PropertySet}   propertySet   The set of properties to load.
-     * @return  {Promise<ServiceResponseCollection<GetItemResponse>>}                  A ServiceResponseCollection providing results for each of the specified item Ids :Promise.
-     */
-    BindToItems(itemIds: ItemId[], propertySet: PropertySet): Promise<ServiceResponseCollection<GetItemResponse>> {
-        EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
-
-        return this.InternalBindToItems(
-            itemIds,
-            propertySet,
-            null, /* anchorMailbox */
-            ServiceErrorHandling.ReturnErrors);
-    }
-    /**
-     * @internal Copies an item. Calling this method results in a call to EWS.
-     *
-     * @param   {ItemId}        itemId                The Id of the item to copy.
-     * @param   {FolderId}      destinationFolderId   The Id of the folder to copy the item to.
-     * @return  {Promise<Item>}     The copy of the item :Promise.
-     */
-    CopyItem(itemId: ItemId, destinationFolderId: FolderId): Promise<Item> {
-        return this.InternalCopyItems(
-            [itemId],
-            destinationFolderId,
-            null,
-            ServiceErrorHandling.ThrowOnError).then((response) => {
-                return response.__thisIndexer(0).Item;
-            });
-    }
-    /**
-     * Copies multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}      itemIds               The Ids of the items to copy.
-     * @param   {FolderId}      destinationFolderId   The Id of the folder to copy the items to.
-     * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}                          A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
-     */
-    CopyItems(itemIds: ItemId[], destinationFolderId: FolderId): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
-    /**
-     * Copies multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}      itemIds               The Ids of the items to copy.
-     * @param   {FolderId}      destinationFolderId   The Id of the folder to copy the items to.
-     * @param   {boolean}       returnNewItemIds      Flag indicating whether service should return new ItemIds or not.
-     * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}                          A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
-     */
-    CopyItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
-    CopyItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean = null): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010_SP1,
-            "CopyItems");
-
-        return this.InternalCopyItems(
-            itemIds,
-            destinationFolderId,
-            returnNewItemIds,
-            ServiceErrorHandling.ReturnErrors);
-    }
-    /**
-     * @internal Creates an item. Calling this method results in a call to EWS.
-     *
-     * @param   {Item}                  item                  The item to create.
-     * @param   {FolderId}              parentFolderId        The Id of the folder in which to place the newly created item. If null, the item is created in its default folders.
-     * @param   {MessageDisposition}    messageDisposition    Indicates the disposition mode for items of type EmailMessage. Required if item is an EmailMessage instance.
-     * @param   {SendInvitationsMode}   sendInvitationsMode   Indicates if and how invitations should be sent for item of type Appointment. Required if item is an Appointment instance.
-     */
-    CreateItem(item: Item, parentFolderId: FolderId, messageDisposition: MessageDisposition, sendInvitationsMode: SendInvitationsMode): Promise<void> {
-        return <any>this.InternalCreateItems(
-            [item],
-            parentFolderId,
-            messageDisposition,
-            sendInvitationsMode,
-            ServiceErrorHandling.ThrowOnError);
-    }
-    /**
-     * Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact, PostItem, Task and Item. CreateItems does not support items that have unsaved attachments.
-     *
-     * @param   {Item[]}                items                 The items to create.
-     * @param   {FolderId}              parentFolderId        The Id of the folder in which to place the newly created items. If null, items are created in their default folders.
-     * @param   {MessageDisposition}    messageDisposition    Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.
-     * @param   {SendInvitationsMode}   sendInvitationsMode   Indicates if and how invitations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}                          A ServiceResponseCollection providing creation results for each of the specified items :Promise.
-     */
-    CreateItems(items: Item[], parentFolderId: FolderId, messageDisposition: MessageDisposition, sendInvitationsMode: SendInvitationsMode): Promise<ServiceResponseCollection<ServiceResponse>> {
-        // All items have to be new.
-        if (!items.every((item) => item.IsNew)) {
-            throw new ServiceValidationException(Strings.CreateItemsDoesNotHandleExistingItems);
-        }
-
-        // Make sure that all items do *not* have unprocessed attachments.
-        if (!items.every((item) => !item.HasUnprocessedAttachmentChanges())) {
-            throw new ServiceValidationException(Strings.CreateItemsDoesNotAllowAttachments);
-        }
-
-        return this.InternalCreateItems(
-            items,
-            parentFolderId,
-            messageDisposition,
-            sendInvitationsMode,
-            ServiceErrorHandling.ReturnErrors);
-    }
-    /**
-     * @internal Deletes an item. Calling this method results in a call to EWS.
-     *
-     * @param   {ItemId}                    itemId                    The Id of the item to delete.
-     * @param   {DeleteMode}                deleteMode                The deletion mode.
-     * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
-     * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
-     */
-    DeleteItem(itemId: ItemId, deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence): Promise<void>;
-    /**
-     * @internal Deletes an item. Calling this method results in a call to EWS.
-     *
-     * @param   {ItemId}                    itemId                    The Id of the item to delete.
-     * @param   {DeleteMode}                deleteMode                The deletion mode.
-     * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
-     * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
-     * @param   {boolean}                   suppressReadReceipts      Whether to suppress read receipts
-     */
-    DeleteItem(itemId: ItemId, deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipts: boolean): Promise<void>;
-    DeleteItem(itemId: ItemId, deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipts: boolean = false): Promise<void> {
-        EwsUtilities.ValidateParam(itemId, "itemId");
-
-        return <any>this.InternalDeleteItems(
-            [itemId],
-            deleteMode,
-            sendCancellationsMode,
-            affectedTaskOccurrences,
-            ServiceErrorHandling.ThrowOnError,
-            suppressReadReceipts);
-    }
-    /**
-     * Deletes multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}                  itemIds                   The Ids of the items to delete.
-     * @param   {DeleteMode}                deleteMode                The deletion mode.
-     * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
-     * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing deletion results for each of the specified item Ids :Promise.
-     */
-    DeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence): Promise<ServiceResponseCollection<ServiceResponse>>;
-    /**
-     * Deletes multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}                  itemIds                   The Ids of the items to delete.
-     * @param   {DeleteMode}                deleteMode                The deletion mode.
-     * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
-     * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
-     * @param   {boolean}                   suppressReadReceipts      Whether to suppress read receipts
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing deletion results for each of the specified item Ids :Promise.
-     */
-    DeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipt: boolean): Promise<ServiceResponseCollection<ServiceResponse>>;
-    DeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipt: boolean = false): Promise<ServiceResponseCollection<ServiceResponse>> {
-        EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
-        return this.InternalDeleteItems(
-            itemIds,
-            deleteMode,
-            sendCancellationsMode,
-            affectedTaskOccurrences,
-            ServiceErrorHandling.ReturnErrors,
-            suppressReadReceipt);
-    }
-    /**
-     * Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {WellKnownFolderName}   parentFolderName   The name of the calendar folder in which to search for items.
-     * @param   {CalendarView}          calendarView     The calendar view controlling the number of appointments returned.
-     * @return  {Promise<FindItemsResults<Appointment>>}                     A collection of appointments representing the contents of the specified folder :Promise.
-     */
-    FindAppointments(parentFolderName: WellKnownFolderName, calendarView: CalendarView): Promise<FindItemsResults<Appointment>>;
-    /**
-     * Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      parentFolderId   The id of the calendar folder in which to search for items.
-     * @param   {CalendarView}  calendarView     The calendar view controlling the number of appointments returned.
-     * @return  {Promise<FindItemsResults<Appointment>>}                     A collection of appointments representing the contents of the specified folder :Promise.
-     */
-    FindAppointments(parentFolderId: FolderId, calendarView: CalendarView): Promise<FindItemsResults<Appointment>>;
-    FindAppointments(parentFolderIdOrName: FolderId | WellKnownFolderName, calendarView: CalendarView): Promise<FindItemsResults<Appointment>> {
-        var parentFolderId: FolderId = <FolderId>parentFolderIdOrName;
-        if (typeof parentFolderIdOrName === 'number') {
-            parentFolderId = new FolderId(parentFolderIdOrName);
-        }
-        return this.FindItems<Appointment>(
-            [parentFolderId],
-            null, /* searchFilter */
-            null, /* queryString */
-            calendarView,
-            null, /* groupBy */
-            ServiceErrorHandling.ThrowOnError).then((response) => {
-                return response.__thisIndexer(0).Results;
-            });
+  FindFolders(
+    parentFolderIdOrName: FolderId | WellKnownFolderName,
+    viewOrSearchFilter: FolderView | SearchFilter,
+    folderView?: FolderView): Promise<FindFoldersResults> {
+    //todo: better argument check with ewsutilities
+    //EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+    //EwsUtilities.ValidateParam(view, "view");
+    //EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
+    var argsLength = arguments.length;
+    if (argsLength < 2 && argsLength > 3) {
+      throw new Error("ExchangeService.ts - FindFolders - invalid number of arguments, check documentation and try again.");
     }
 
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
-     * @param   {ViewBase}              view                    The view controlling the number of items returned.
-     * @return  {Promise<FindItemsResults<Item>>}               An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderName: WellKnownFolderName, view: ViewBase): Promise<FindItemsResults<Item>>;
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
-     * @param   {ViewBase}  view                   The view controlling the number of items returned.
-     * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderId: FolderId, view: ViewBase): Promise<FindItemsResults<Item>>;
-    /**
-     * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
-     * @param   {ViewBase}      view                    The view controlling the number of items returned.
-     * @param   {Grouping}      groupBy                 The group by clause.
-     * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
-     */
-    FindItems(parentFolderId: FolderId, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
-     * @param   {string}    queryString            The search string to be used for indexed search, if any.
-     * @param   {ViewBase}  view                   The view controlling the number of items returned.
-     * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderId: FolderId, queryString: string, view: ViewBase): Promise<FindItemsResults<Item>>;
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
-     * @param   {string}                queryString             The search string to be used for indexed search, if any.
-     * @param   {ViewBase}              view                    The view controlling the number of items returned.
-     * @return  {Promise<FindItemsResults<Item>>}               An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderName: WellKnownFolderName, queryString: string, view: ViewBase): Promise<FindItemsResults<Item>>;
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
-     * @param   {searchFilter}          searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {ViewBase}              view                    The view controlling the number of items returned.
-     * @return  {Promise<FindItemsResults<Item>>}               An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderName: WellKnownFolderName, searchFilter: SearchFilter, view: ViewBase): Promise<FindItemsResults<Item>>;
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
-     * @param   {searchFilter}  searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {ViewBase}      view                    The view controlling the number of items returned.
-     * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderId: FolderId, searchFilter: SearchFilter, view: ViewBase): Promise<FindItemsResults<Item>>;
-    /**
-     * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
-     * @param   {searchFilter}  searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {ViewBase}      view                    The view controlling the number of items returned.
-     * @param   {Grouping}      groupBy                 The group by clause.
-     * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
-     */
-    FindItems(parentFolderId: FolderId, searchFilter: SearchFilter, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
-    /**
-     * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
-     * @param   {string}        queryString             The search string to be used for indexed search, if any.
-     * @param   {ViewBase}      view                    The view controlling the number of items returned.
-     * @param   {Grouping}      groupBy                 The group by clause.
-     * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
-     */
-    FindItems(parentFolderId: FolderId, queryString: string, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
-    /**
-     * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
-     * @param   {searchFilter}          searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {ViewBase}              view                    The view controlling the number of items returned.
-     * @param   {Grouping}              groupBy                 The group by clause.
-     * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
-     */
-    FindItems(parentFolderName: WellKnownFolderName, searchFilter: SearchFilter, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
-    /**
-     * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
-     * @param   {string}                queryString             The search string to be used for indexed search, if any.
-     * @param   {ViewBase}              view                    The view controlling the number of items returned.
-     * @param   {Grouping}              groupBy                 The group by clause.
-     * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
-     */
-    FindItems(parentFolderName: WellKnownFolderName, queryString: string, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
-     * @param   {string}    queryString            the search string to be used for indexed search, if any.
-     * @param   {boolean}   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
-     * @param   {ViewBase}  view                   The view controlling the number of items returned.
-     * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderId: FolderId, queryString: string, returnHighlightTerms: boolean, view: ViewBase): Promise<FindItemsResults<Item>>;
-    /**
-     * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
-     * @param   {string}    queryString            the search string to be used for indexed search, if any.
-     * @param   {boolean}   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
-     * @param   {ViewBase}  view                   The view controlling the number of items returned.
-     * @param   {Grouping}  groupBy                The group by clause.
-     * @return  {Promise<GroupedFindItemsResults<Item>>}        An object representing the results of the search operation :Promise.
-     */
-    FindItems(parentFolderId: FolderId, queryString: string, returnHighlightTerms: boolean, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
-    /**
-     * @internal Finds items.
-     *
-     * @param   {FolderId[]}                parentFolderIds     The parent folder ids.
-     * @param   {SearchFilter}              searchFilter        The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
-     * @param   {string}                    queryString         query string to be used for indexed search.
-     * @param   {ViewBase}                  view                The view controlling the number of items returned.
-     * @param   {Grouping}                  groupBy             The group by.
-     * @param   {ServiceErrorHandling}      errorHandlingMode   Indicates the type of error handling should be done.
-     * @return  {Promise<ServiceResponseCollection<FindItemResponse<TItem>>>}       Service response collection :Promise.
-     */
-    FindItems<TItem extends Item>(parentFolderIds: FolderId[], searchFilter: SearchFilter, queryString: string, view: ViewBase, groupBy: Grouping, errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<FindItemResponse<TItem>>>;
-    //skipped: not needed, no calls coming in to this internal function in ews managed api, future use possible until them keep it muted   -
-    //FindItems<TItem extends Item>(parentFolderId: FolderId, searchFilter: SearchFilter, view: ViewBase, groupBy: Grouping): Promise<ServiceResponseCollection<FindItemResponse<TItem>>>;
+    //position 1 - parentFolderIdOrName
+    var parentFolderIds: FolderId[] = []
+    if (typeof parentFolderIdOrName === 'number') {
+      parentFolderIds.push(new FolderId(parentFolderIdOrName));
+    }
+    else if (parentFolderIdOrName instanceof FolderId) {
+      parentFolderIds.push(parentFolderIdOrName);
+    }
+    else {
+      throw new Error("ExchangeService.ts - FindFolders - incorrect use of parameters, 1st argument must be Folder ID or WellKnownFolderName");
+    }
 
-    FindItems<TItem extends Item>(
-        nameIdOrIds: WellKnownFolderName | FolderId | FolderId[],
-        viewQueryStringOrSearchFilter: ViewBase | string | SearchFilter,
-        groupByViewRHTOrQueryString?: Grouping | ViewBase | boolean | string,
-        groupByOrView?: Grouping | ViewBase,
-        groupBy?: Grouping,
-        errorHandlingMode: ServiceErrorHandling = ServiceErrorHandling.ThrowOnError
-    ): Promise<FindItemsResults<Item> | GroupedFindItemsResults<Item> | ServiceResponseCollection<FindItemResponse<TItem>>> {
+    var searchFilter: SearchFilter = null;
+    var view: FolderView = null;
 
-        //todo: better argument check with ewsutilities
+    //position 2 - viewOrSearchFilter
+    if (viewOrSearchFilter instanceof SearchFilter) {
+      if (!(folderView instanceof FolderView)) {
+        throw new Error("ExchangeService.ts - FindFolders with " + argsLength + " parameters - incorrect uses of parameter at 3nd position, it must be FolderView when using SearchFilter at 2nd place");
+      }
+      searchFilter = viewOrSearchFilter;
+    }
+    else if (viewOrSearchFilter instanceof FolderView) {
+      view = viewOrSearchFilter;
+    }
+    else {
+      throw new Error("ExchangeService.ts - FindFolders - incorrect uses of parameters at 2nd position, must be FolderView or SearchFilter");
+    }
 
-        //EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
-        //EwsUtilities.ValidateParam(groupBy, "groupBy");
-        //EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
-        //EwsUtilities.ValidateParamCollection(parentFolderIds, "parentFolderIds");
-        //EwsUtilities.ValidateParam(view, "view");
-        //EwsUtilities.ValidateParam(groupBy, "groupBy");
-        //EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
-        //EwsUtilities.ValidateParamAllowNull(returnHighlightTerms, "returnHighlightTerms");
-        //EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "FindItems");
+    //position 3 - folderView
+    if (argsLength == 3) {
+      view = folderView;
+    }
 
-        var argsLength = arguments.length;
-        if (argsLength < 2 && argsLength > 6) {
-            throw new Error("ExchangeService.ts - FindItems - invalid number of arguments, check documentation and try again.");
+    return this.InternalFindFolders(
+      parentFolderIds,
+      searchFilter, /* searchFilter */
+      view,
+      ServiceErrorHandling.ThrowOnError).then((responses) => {
+        return responses.__thisIndexer(0).Results;
+      });
+  }
+  /**
+   * Finds folders.
+   *
+   * @param   {FolderId[]}             parentFolderIds     The parent folder ids.
+   * @param   {SearchFilter}           searchFilter        The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {FolderView}             view                The view controlling the number of folders returned.
+   * @param   {ServiceErrorHandling}   errorHandlingMode   Indicates the type of error handling should be done.
+   * @return  {Promise<ServiceResponseCollection<FindFolderResponse>>}     Collection of service responses :Promise.
+   */
+  private InternalFindFolders(parentFolderIds: FolderId[], searchFilter: SearchFilter, view: FolderView, errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<FindFolderResponse>> {
+
+    var request: FindFolderRequest = new FindFolderRequest(this, errorHandlingMode);
+
+    request.ParentFolderIds.AddRange(parentFolderIds);
+    request.SearchFilter = searchFilter;
+    request.View = view;
+
+    return request.Execute();
+  }
+  /**
+   * @internal Load specified properties for a folder.
+   *
+   * @param   {Folder}         folder        The folder.
+   * @param   {PropertySet}    propertySet   The property set.
+   */
+  LoadPropertiesForFolder(folder: Folder, propertySet: PropertySet): Promise<void> {
+    EwsUtilities.ValidateParam(folder, "folder");
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
+
+    var request: GetFolderRequestForLoad = new GetFolderRequestForLoad(this, ServiceErrorHandling.ThrowOnError);
+
+    request.FolderIds.Add(folder);
+    request.PropertySet = propertySet;
+
+    return <any>request.Execute();
+  }
+  /**
+   * @internal Marks all items in folder as read/unread. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      folderId               The folder id.
+   * @param   {boolean}       readFlag               If true, items marked as read, otherwise unread.
+   * @param   {boolean}       suppressReadReceipts   If true, suppress read receipts for items.
+   */
+  MarkAllItemsAsRead(folderId: FolderId, readFlag: boolean, suppressReadReceipts: boolean): Promise<void> {
+    EwsUtilities.ValidateParam(folderId, "folderId");
+    EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "MarkAllItemsAsRead");
+    var request: MarkAllItemsAsReadRequest = new MarkAllItemsAsReadRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.FolderIds.Add(folderId);
+    request.ReadFlag = readFlag;
+    request.SuppressReadReceipts = suppressReadReceipts;
+    return <any>request.Execute();
+  }
+  /**
+   * @internal Move a folder.
+   *
+   * @param   {FolderId}           folderId              The folder id.
+   * @param   {FolderId}           destinationFolderId   The destination folder id.
+   * @return  {Promise<Folder>}    Moved folder :Promise.
+   */
+  MoveFolder(folderId: FolderId, destinationFolderId: FolderId): Promise<Folder> {
+    var request: MoveFolderRequest = new MoveFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.DestinationFolderId = destinationFolderId;
+    request.FolderIds.Add(folderId);
+    return request.Execute().then((responses) => {
+      return responses.__thisIndexer(0).Folder;
+    });
+  }
+  /**
+   * @internal Updates a folder.
+   *
+   * @param   {Folder}   folder   The folder.
+   */
+  UpdateFolder(folder: Folder): Promise<void> {
+    var request: UpdateFolderRequest = new UpdateFolderRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.Folders.push(folder);
+    return request.Execute().then((value) => {
+      return null;
+    });
+  }
+  //#endregion
+
+
+  //#region Item operations
+
+  /**
+   * Archives multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}   itemIds          The Ids of the items to move.
+   * @param   {FolderId}   sourceFolderId   The Id of the folder in primary corresponding to which items are being archived to.
+   * @return  {Promise<ServiceResponseCollection<ArchiveItemResponse>>}                     A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
+   */
+  ArchiveItems<TResponse extends ServiceResponse>(itemIds: ItemId[], sourceFolderId: FolderId): Promise<ServiceResponseCollection<ArchiveItemResponse>> {
+    var request: ArchiveItemRequest = new ArchiveItemRequest(this, ServiceErrorHandling.ReturnErrors);
+    request.Ids.AddRange(itemIds);
+    request.SourceFolderId = sourceFolderId;
+    return request.Execute();
+  }
+  /* //ref: new method, //todo: implement other newer code from ews managed api repo  */
+  /**
+   * Binds to multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}      itemIds         The Ids of the items to bind to.
+   * @param   {PropertySet}   propertySet     The set of properties to load.
+   * @param   {string}        anchorMailbox   The SmtpAddress of mailbox that hosts all items we need to bind to
+   * @return  {Promise<ServiceResponseCollection<GetItemResponse>>}                    A ServiceResponseCollection providing results for each of the specified item Ids :Promise.
+   */
+  BindToGroupItems(itemIds: ItemId[], propertySet: PropertySet, anchorMailbox: string): Promise<ServiceResponseCollection<GetItemResponse>> {
+    EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
+    EwsUtilities.ValidateParam(propertySet, "anchorMailbox");
+
+    return this.InternalBindToItems(
+      itemIds,
+      propertySet,
+      anchorMailbox,
+      ServiceErrorHandling.ReturnErrors);
+  }
+  /**
+   * @internal Binds to item.
+   *
+   * @param   {ItemId}            itemId        The item id.
+   * @param   {PropertySet}       propertySet   The property set.
+   * @return  {Promise<Item>}     Item :Promise.
+   */
+  BindToItem(itemId: ItemId, propertySet: PropertySet): Promise<Item>;
+  /**
+   * @internal Binds to item.
+   *
+   * @param   {ItemId}            itemId        The item id.
+   * @param   {PropertySet}       propertySet   The property set.
+   * @param   {<TItem>}           itemType      Item type class ex: Item, EmailMessage etc..
+   * @return  {Promise<Item>}     Item :Promise.
+   */
+  BindToItem<TItem extends Item>(itemId: ItemId, propertySet: PropertySet, itemType: typeof Item /* pass Item or subclass itself, not instance */): Promise<TItem>;
+  BindToItem(itemId: ItemId, propertySet: PropertySet,/** pass Item or subclass itself, not an instance */ itemType: typeof Item = null): Promise<Item> {
+
+    EwsUtilities.ValidateParam(itemId, "itemId");
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
+
+    return this.InternalBindToItems(
+      [itemId],
+      propertySet,
+      null, /* anchorMailbox */
+      ServiceErrorHandling.ThrowOnError).then((response) => {
+        var result = response.__thisIndexer(0).Item;
+        if (itemType != null && !(result instanceof itemType)) { //todo: validate itemType to be not a constructor
+          throw new ServiceLocalException(
+            StringHelper.Format(
+              Strings.ItemTypeNotCompatible,
+              "Type detection not implemented - ExchangeService.ts - BindToItem<TItem>",
+              "Type detection not implemented"));
         }
 
-        //position 1 - nameIdOrIds
-        var parentIds: FolderId[] = []
-        if (typeof nameIdOrIds === 'number') {
-            parentIds.push(new FolderId(nameIdOrIds));
+        return result;
+      });
+  }
+  /**
+   * Binds to multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}      itemIds       The Ids of the items to bind to.
+   * @param   {PropertySet}   propertySet   The set of properties to load.
+   * @return  {Promise<ServiceResponseCollection<GetItemResponse>>}                  A ServiceResponseCollection providing results for each of the specified item Ids :Promise.
+   */
+  BindToItems(itemIds: ItemId[], propertySet: PropertySet): Promise<ServiceResponseCollection<GetItemResponse>> {
+    EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
+
+    return this.InternalBindToItems(
+      itemIds,
+      propertySet,
+      null, /* anchorMailbox */
+      ServiceErrorHandling.ReturnErrors);
+  }
+  /**
+   * @internal Copies an item. Calling this method results in a call to EWS.
+   *
+   * @param   {ItemId}        itemId                The Id of the item to copy.
+   * @param   {FolderId}      destinationFolderId   The Id of the folder to copy the item to.
+   * @return  {Promise<Item>}     The copy of the item :Promise.
+   */
+  CopyItem(itemId: ItemId, destinationFolderId: FolderId): Promise<Item> {
+    return this.InternalCopyItems(
+      [itemId],
+      destinationFolderId,
+      null,
+      ServiceErrorHandling.ThrowOnError).then((response) => {
+        return response.__thisIndexer(0).Item;
+      });
+  }
+  /**
+   * Copies multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}      itemIds               The Ids of the items to copy.
+   * @param   {FolderId}      destinationFolderId   The Id of the folder to copy the items to.
+   * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}                          A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
+   */
+  CopyItems(itemIds: ItemId[], destinationFolderId: FolderId): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
+  /**
+   * Copies multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}      itemIds               The Ids of the items to copy.
+   * @param   {FolderId}      destinationFolderId   The Id of the folder to copy the items to.
+   * @param   {boolean}       returnNewItemIds      Flag indicating whether service should return new ItemIds or not.
+   * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}                          A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
+   */
+  CopyItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
+  CopyItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean = null): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010_SP1,
+      "CopyItems");
+
+    return this.InternalCopyItems(
+      itemIds,
+      destinationFolderId,
+      returnNewItemIds,
+      ServiceErrorHandling.ReturnErrors);
+  }
+  /**
+   * @internal Creates an item. Calling this method results in a call to EWS.
+   *
+   * @param   {Item}                  item                  The item to create.
+   * @param   {FolderId}              parentFolderId        The Id of the folder in which to place the newly created item. If null, the item is created in its default folders.
+   * @param   {MessageDisposition}    messageDisposition    Indicates the disposition mode for items of type EmailMessage. Required if item is an EmailMessage instance.
+   * @param   {SendInvitationsMode}   sendInvitationsMode   Indicates if and how invitations should be sent for item of type Appointment. Required if item is an Appointment instance.
+   */
+  CreateItem(item: Item, parentFolderId: FolderId, messageDisposition: MessageDisposition, sendInvitationsMode: SendInvitationsMode): Promise<void> {
+    return <any>this.InternalCreateItems(
+      [item],
+      parentFolderId,
+      messageDisposition,
+      sendInvitationsMode,
+      ServiceErrorHandling.ThrowOnError);
+  }
+  /**
+   * Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact, PostItem, Task and Item. CreateItems does not support items that have unsaved attachments.
+   *
+   * @param   {Item[]}                items                 The items to create.
+   * @param   {FolderId}              parentFolderId        The Id of the folder in which to place the newly created items. If null, items are created in their default folders.
+   * @param   {MessageDisposition}    messageDisposition    Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.
+   * @param   {SendInvitationsMode}   sendInvitationsMode   Indicates if and how invitations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}                          A ServiceResponseCollection providing creation results for each of the specified items :Promise.
+   */
+  CreateItems(items: Item[], parentFolderId: FolderId, messageDisposition: MessageDisposition, sendInvitationsMode: SendInvitationsMode): Promise<ServiceResponseCollection<ServiceResponse>> {
+    // All items have to be new.
+    if (!items.every((item) => item.IsNew)) {
+      throw new ServiceValidationException(Strings.CreateItemsDoesNotHandleExistingItems);
+    }
+
+    // Make sure that all items do *not* have unprocessed attachments.
+    if (!items.every((item) => !item.HasUnprocessedAttachmentChanges())) {
+      throw new ServiceValidationException(Strings.CreateItemsDoesNotAllowAttachments);
+    }
+
+    return this.InternalCreateItems(
+      items,
+      parentFolderId,
+      messageDisposition,
+      sendInvitationsMode,
+      ServiceErrorHandling.ReturnErrors);
+  }
+  /**
+   * @internal Deletes an item. Calling this method results in a call to EWS.
+   *
+   * @param   {ItemId}                    itemId                    The Id of the item to delete.
+   * @param   {DeleteMode}                deleteMode                The deletion mode.
+   * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
+   * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
+   */
+  DeleteItem(itemId: ItemId, deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence): Promise<void>;
+  /**
+   * @internal Deletes an item. Calling this method results in a call to EWS.
+   *
+   * @param   {ItemId}                    itemId                    The Id of the item to delete.
+   * @param   {DeleteMode}                deleteMode                The deletion mode.
+   * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
+   * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
+   * @param   {boolean}                   suppressReadReceipts      Whether to suppress read receipts
+   */
+  DeleteItem(itemId: ItemId, deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipts: boolean): Promise<void>;
+  DeleteItem(itemId: ItemId, deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipts: boolean = false): Promise<void> {
+    EwsUtilities.ValidateParam(itemId, "itemId");
+
+    return <any>this.InternalDeleteItems(
+      [itemId],
+      deleteMode,
+      sendCancellationsMode,
+      affectedTaskOccurrences,
+      ServiceErrorHandling.ThrowOnError,
+      suppressReadReceipts);
+  }
+  /**
+   * Deletes multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}                  itemIds                   The Ids of the items to delete.
+   * @param   {DeleteMode}                deleteMode                The deletion mode.
+   * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
+   * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing deletion results for each of the specified item Ids :Promise.
+   */
+  DeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence): Promise<ServiceResponseCollection<ServiceResponse>>;
+  /**
+   * Deletes multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}                  itemIds                   The Ids of the items to delete.
+   * @param   {DeleteMode}                deleteMode                The deletion mode.
+   * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if the item Id represents an Appointment.
+   * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if item Id represents a Task.
+   * @param   {boolean}                   suppressReadReceipts      Whether to suppress read receipts
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing deletion results for each of the specified item Ids :Promise.
+   */
+  DeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipt: boolean): Promise<ServiceResponseCollection<ServiceResponse>>;
+  DeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, suppressReadReceipt: boolean = false): Promise<ServiceResponseCollection<ServiceResponse>> {
+    EwsUtilities.ValidateParamCollection(itemIds, "itemIds");
+    return this.InternalDeleteItems(
+      itemIds,
+      deleteMode,
+      sendCancellationsMode,
+      affectedTaskOccurrences,
+      ServiceErrorHandling.ReturnErrors,
+      suppressReadReceipt);
+  }
+  /**
+   * Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {WellKnownFolderName}   parentFolderName   The name of the calendar folder in which to search for items.
+   * @param   {CalendarView}          calendarView     The calendar view controlling the number of appointments returned.
+   * @return  {Promise<FindItemsResults<Appointment>>}                     A collection of appointments representing the contents of the specified folder :Promise.
+   */
+  FindAppointments(parentFolderName: WellKnownFolderName, calendarView: CalendarView): Promise<FindItemsResults<Appointment>>;
+  /**
+   * Obtains a list of appointments by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      parentFolderId   The id of the calendar folder in which to search for items.
+   * @param   {CalendarView}  calendarView     The calendar view controlling the number of appointments returned.
+   * @return  {Promise<FindItemsResults<Appointment>>}                     A collection of appointments representing the contents of the specified folder :Promise.
+   */
+  FindAppointments(parentFolderId: FolderId, calendarView: CalendarView): Promise<FindItemsResults<Appointment>>;
+  FindAppointments(parentFolderIdOrName: FolderId | WellKnownFolderName, calendarView: CalendarView): Promise<FindItemsResults<Appointment>> {
+    var parentFolderId: FolderId = <FolderId>parentFolderIdOrName;
+    if (typeof parentFolderIdOrName === 'number') {
+      parentFolderId = new FolderId(parentFolderIdOrName);
+    }
+    return this.FindItems<Appointment>(
+      [parentFolderId],
+      null, /* searchFilter */
+      null, /* queryString */
+      calendarView,
+      null, /* groupBy */
+      ServiceErrorHandling.ThrowOnError).then((response) => {
+        return response.__thisIndexer(0).Results;
+      });
+  }
+
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
+   * @param   {ViewBase}              view                    The view controlling the number of items returned.
+   * @return  {Promise<FindItemsResults<Item>>}               An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderName: WellKnownFolderName, view: ViewBase): Promise<FindItemsResults<Item>>;
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
+   * @param   {ViewBase}  view                   The view controlling the number of items returned.
+   * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderId: FolderId, view: ViewBase): Promise<FindItemsResults<Item>>;
+  /**
+   * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
+   * @param   {ViewBase}      view                    The view controlling the number of items returned.
+   * @param   {Grouping}      groupBy                 The group by clause.
+   * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
+   */
+  FindItems(parentFolderId: FolderId, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
+   * @param   {string}    queryString            The search string to be used for indexed search, if any.
+   * @param   {ViewBase}  view                   The view controlling the number of items returned.
+   * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderId: FolderId, queryString: string, view: ViewBase): Promise<FindItemsResults<Item>>;
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
+   * @param   {string}                queryString             The search string to be used for indexed search, if any.
+   * @param   {ViewBase}              view                    The view controlling the number of items returned.
+   * @return  {Promise<FindItemsResults<Item>>}               An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderName: WellKnownFolderName, queryString: string, view: ViewBase): Promise<FindItemsResults<Item>>;
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
+   * @param   {searchFilter}          searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {ViewBase}              view                    The view controlling the number of items returned.
+   * @return  {Promise<FindItemsResults<Item>>}               An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderName: WellKnownFolderName, searchFilter: SearchFilter, view: ViewBase): Promise<FindItemsResults<Item>>;
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
+   * @param   {searchFilter}  searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {ViewBase}      view                    The view controlling the number of items returned.
+   * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderId: FolderId, searchFilter: SearchFilter, view: ViewBase): Promise<FindItemsResults<Item>>;
+  /**
+   * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
+   * @param   {searchFilter}  searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {ViewBase}      view                    The view controlling the number of items returned.
+   * @param   {Grouping}      groupBy                 The group by clause.
+   * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
+   */
+  FindItems(parentFolderId: FolderId, searchFilter: SearchFilter, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
+  /**
+   * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      parentFolderId          The Id of the folder in which to search for items.
+   * @param   {string}        queryString             The search string to be used for indexed search, if any.
+   * @param   {ViewBase}      view                    The view controlling the number of items returned.
+   * @param   {Grouping}      groupBy                 The group by clause.
+   * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
+   */
+  FindItems(parentFolderId: FolderId, queryString: string, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
+  /**
+   * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
+   * @param   {searchFilter}          searchFilter            The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {ViewBase}              view                    The view controlling the number of items returned.
+   * @param   {Grouping}              groupBy                 The group by clause.
+   * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
+   */
+  FindItems(parentFolderName: WellKnownFolderName, searchFilter: SearchFilter, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
+  /**
+   * Obtains a grouped list of items by searching the contents of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {WellKnownFolderName}   parentFolderName        The name of the folder in which to search for items.
+   * @param   {string}                queryString             The search string to be used for indexed search, if any.
+   * @param   {ViewBase}              view                    The view controlling the number of items returned.
+   * @param   {Grouping}              groupBy                 The group by clause.
+   * @return  {Promise<GroupedFindItemsResults<Item>>}        A collection of grouped items representing the contents of the specified :Promise.
+   */
+  FindItems(parentFolderName: WellKnownFolderName, queryString: string, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
+   * @param   {string}    queryString            the search string to be used for indexed search, if any.
+   * @param   {boolean}   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
+   * @param   {ViewBase}  view                   The view controlling the number of items returned.
+   * @return  {Promise<FindItemsResults<Item>>}       An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderId: FolderId, queryString: string, returnHighlightTerms: boolean, view: ViewBase): Promise<FindItemsResults<Item>>;
+  /**
+   * Obtains a list of items by searching the contents of a specific folder. Along with conversations, a list of highlight terms are returned. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}  parentFolderId         The Id of the folder in which to search for items.
+   * @param   {string}    queryString            the search string to be used for indexed search, if any.
+   * @param   {boolean}   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
+   * @param   {ViewBase}  view                   The view controlling the number of items returned.
+   * @param   {Grouping}  groupBy                The group by clause.
+   * @return  {Promise<GroupedFindItemsResults<Item>>}        An object representing the results of the search operation :Promise.
+   */
+  FindItems(parentFolderId: FolderId, queryString: string, returnHighlightTerms: boolean, view: ViewBase, groupBy: Grouping): Promise<GroupedFindItemsResults<Item>>;
+  /**
+   * @internal Finds items.
+   *
+   * @param   {FolderId[]}                parentFolderIds     The parent folder ids.
+   * @param   {SearchFilter}              searchFilter        The search filter. Available search filter classes include SearchFilter.IsEqualTo, SearchFilter.ContainsSubstring and SearchFilter.SearchFilterCollection
+   * @param   {string}                    queryString         query string to be used for indexed search.
+   * @param   {ViewBase}                  view                The view controlling the number of items returned.
+   * @param   {Grouping}                  groupBy             The group by.
+   * @param   {ServiceErrorHandling}      errorHandlingMode   Indicates the type of error handling should be done.
+   * @return  {Promise<ServiceResponseCollection<FindItemResponse<TItem>>>}       Service response collection :Promise.
+   */
+  FindItems<TItem extends Item>(parentFolderIds: FolderId[], searchFilter: SearchFilter, queryString: string, view: ViewBase, groupBy: Grouping, errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<FindItemResponse<TItem>>>;
+  //skipped: not needed, no calls coming in to this internal function in ews managed api, future use possible until them keep it muted   -
+  //FindItems<TItem extends Item>(parentFolderId: FolderId, searchFilter: SearchFilter, view: ViewBase, groupBy: Grouping): Promise<ServiceResponseCollection<FindItemResponse<TItem>>>;
+
+  FindItems<TItem extends Item>(
+    nameIdOrIds: WellKnownFolderName | FolderId | FolderId[],
+    viewQueryStringOrSearchFilter: ViewBase | string | SearchFilter,
+    groupByViewRHTOrQueryString?: Grouping | ViewBase | boolean | string,
+    groupByOrView?: Grouping | ViewBase,
+    groupBy?: Grouping,
+    errorHandlingMode: ServiceErrorHandling = ServiceErrorHandling.ThrowOnError
+  ): Promise<FindItemsResults<Item> | GroupedFindItemsResults<Item> | ServiceResponseCollection<FindItemResponse<TItem>>> {
+
+    //todo: better argument check with ewsutilities
+
+    //EwsUtilities.ValidateParamAllowNull(searchFilter, "searchFilter");
+    //EwsUtilities.ValidateParam(groupBy, "groupBy");
+    //EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
+    //EwsUtilities.ValidateParamCollection(parentFolderIds, "parentFolderIds");
+    //EwsUtilities.ValidateParam(view, "view");
+    //EwsUtilities.ValidateParam(groupBy, "groupBy");
+    //EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
+    //EwsUtilities.ValidateParamAllowNull(returnHighlightTerms, "returnHighlightTerms");
+    //EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "FindItems");
+
+    var argsLength = arguments.length;
+    if (argsLength < 2 && argsLength > 6) {
+      throw new Error("ExchangeService.ts - FindItems - invalid number of arguments, check documentation and try again.");
+    }
+
+    //position 1 - nameIdOrIds
+    var parentIds: FolderId[] = []
+    if (typeof nameIdOrIds === 'number') {
+      parentIds.push(new FolderId(nameIdOrIds));
+    }
+    else if (nameIdOrIds instanceof FolderId) {
+      parentIds.push(nameIdOrIds);
+    }
+    else if (Array.isArray(nameIdOrIds)) {
+      parentIds = <FolderId[]>nameIdOrIds;
+    }
+
+    var queryString: string = null;
+    var searchFilter: SearchFilter = null;
+    var view: ViewBase = null;
+
+    //position 2 - viewQueryStringOrSearchFilter
+    if (argsLength >= 2)
+      if (typeof viewQueryStringOrSearchFilter === 'string') {
+        queryString = viewQueryStringOrSearchFilter;
+      }
+      else if (viewQueryStringOrSearchFilter instanceof SearchFilter) {
+        searchFilter = viewQueryStringOrSearchFilter;
+      }
+      else if (viewQueryStringOrSearchFilter instanceof ViewBase) {
+        view = viewQueryStringOrSearchFilter;
+      }
+      else if (viewQueryStringOrSearchFilter) { //error if not null
+        throw new Error("ExchangeService.ts - FindItems - incorrect uses of parameters at 2nd position, must be string, ViewBase or SearchFilter");
+      }
+
+    var groupResultBy: Grouping = null;
+    var returnHighlightTerms: boolean = false;
+    var isGroupped: boolean = false; // to resturn GroupedFindItemsResults<Item>
+
+    //position 3 - groupByViewRHTOrQueryString
+    if (argsLength >= 3) {
+      if (groupByViewRHTOrQueryString instanceof Grouping) {
+        if (!(viewQueryStringOrSearchFilter instanceof ViewBase)) {
+          throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 3nd position, it must be ViewBase when using Grouping at 4th place");
         }
-        else if (nameIdOrIds instanceof FolderId) {
-            parentIds.push(nameIdOrIds);
+        groupResultBy = groupByViewRHTOrQueryString;
+        isGroupped = true;
+      }
+      else if (groupByViewRHTOrQueryString instanceof ViewBase) {
+        view = groupByViewRHTOrQueryString;
+      }
+      else if (typeof groupByViewRHTOrQueryString === 'string') {
+        queryString = groupByViewRHTOrQueryString;
+      }
+      else if (typeof groupByViewRHTOrQueryString === 'boolean') {
+        returnHighlightTerms = groupByViewRHTOrQueryString;
+        EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "FindItems");
+      }
+      else if (groupByViewRHTOrQueryString) {//error if not null
+        throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, must be string, boolean, ViewBase or Grouping");
+      }
+    }
+
+    //position 4 - groupByOrView
+    if (argsLength >= 4) {
+      if (groupByOrView instanceof Grouping) {
+        if (!(groupByViewRHTOrQueryString instanceof ViewBase)) {
+          throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, it must be ViewBase when using Grouping at 3rd place");
         }
-        else if (Array.isArray(nameIdOrIds)) {
-            parentIds = <FolderId[]>nameIdOrIds;
+        groupResultBy = groupByOrView;
+        isGroupped = true;
+      }
+      else if (groupByOrView instanceof ViewBase) {
+        view = groupByOrView;
+      }
+      else if (groupByOrView) {//error if not null
+        throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 4th  position, must be  ViewBase or Grouping");
+      }
+    }
+
+    //position 5 - groupBy
+    if (argsLength >= 5) {
+      if (groupByOrView && !(groupByOrView instanceof ViewBase)) {//error if not null
+        throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 4th position, it must be ViewBase when using Grouping at 5th place");
+      }
+      groupResultBy = groupBy;
+      isGroupped = true;
+    }
+    var isRaw: boolean = false; // to return ServiceResponseCollection<FindItemResponse<TItem>>
+    //position 6 - errorHandlingMode
+    if (argsLength === 6) {
+      isRaw = true;
+    }
+
+    var request: FindItemRequest<TItem> = new FindItemRequest<TItem>(this, errorHandlingMode | ServiceErrorHandling.ThrowOnError);
+
+    request.ParentFolderIds.AddRange(parentIds);
+
+    request.SearchFilter = searchFilter;
+
+    request.QueryString = queryString;
+
+    request.View = view;
+
+    request.GroupBy = groupResultBy;
+
+    return request.Execute().then((responses) => {
+      if (isRaw) {
+        return responses;
+      }
+      if (isGroupped) {
+        return responses.__thisIndexer(0).GroupedFindResults;
+      }
+      return responses.__thisIndexer(0).Results;
+    });
+
+  }
+  /**
+   * Binds to multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}              itemIds         The Ids of the items to bind to.
+   * @param   {PropertySet}           propertySet     The set of properties to load.
+   * @param   {string}                anchorMailbox   The SmtpAddress of mailbox that hosts all items we need to bind to
+   * @param   {ServiceErrorHandling}  errorHandling   Type of error handling to perform.
+   * @return  {Promise<ServiceResponseCollection<GetItemResponse>>}       A ServiceResponseCollection providing results for each of the specified item Ids :Promise.
+   */
+  private InternalBindToItems(itemIds: ItemId[], propertySet: PropertySet, anchorMailbox: string, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<GetItemResponse>> {
+    var request: GetItemRequest = new GetItemRequest(this, errorHandling);
+
+    request.ItemIds.AddRange(itemIds);
+    request.PropertySet = propertySet;
+    request.AnchorMailbox = anchorMailbox;
+
+    return request.Execute();
+  }
+  /**
+   * Copies multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}              itemIds                 The Ids of the items to bind to.
+   * @param   {FolderId}              destinationFolderId     The Id of the folder to copy the items to.
+   * @param   {boolean}               returnNewItemIds        Flag indicating whether service should return new ItemIds or not.
+   * @param   {ServiceErrorHandling}  errorHandling           What type of error handling should be performed.
+   * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
+   */
+  private InternalCopyItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
+    var request: CopyItemRequest = new CopyItemRequest(this, errorHandling);
+    request.ItemIds.AddRange(itemIds);
+    request.DestinationFolderId = destinationFolderId;
+    request.ReturnNewItemIds = returnNewItemIds;
+
+    return request.Execute();
+  }
+  /**
+   * Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact, PostItem, Task and Item. CreateItems does not support items that have unsaved attachments.
+   *
+   * @param   {Item[]}                items                 The items to create.
+   * @param   {FolderId}              parentFolderId        The Id of the folder in which to place the newly created items. If null, items are created in their default folders.
+   * @param   {MessageDisposition}    messageDisposition    Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.
+   * @param   {SendInvitationsMode}   sendInvitationsMode   Indicates if and how invitations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.
+   * @param   {ServiceErrorHandling}  errorHandling         What type of error handling should be performed.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing creation results for each of the specified items :Promise.
+   */
+  private InternalCreateItems(items: Item[], parentFolderId: FolderId, messageDisposition: MessageDisposition, sendInvitationsMode: SendInvitationsMode, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
+    var request: CreateItemRequest = new CreateItemRequest(this, errorHandling);
+
+    request.ParentFolderId = parentFolderId;
+    request.Items = items;
+    request.MessageDisposition = messageDisposition;
+    request.SendInvitationsMode = sendInvitationsMode;
+
+    return request.Execute();
+  }
+  /**
+   * Deletes multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}                  itemIds                   The Ids of the items to delete.
+   * @param   {DeleteMode}                deleteMode                The deletion mode.
+   * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if any of the item Ids represents an Appointment.
+   * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if any of the item Ids represents a Task.
+   * @param   {ServiceErrorHandling}      errorHandling             Type of error handling to perform.
+   * @param   {boolean}                   suppressReadReceipts      Whether to suppress read receipts
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing deletion results for each of the specified item Ids :Promise.
+   */
+  private InternalDeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, errorHandling: ServiceErrorHandling, suppressReadReceipts: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
+    var request: DeleteItemRequest = new DeleteItemRequest(this, errorHandling);
+
+    request.ItemIds.AddRange(itemIds);
+    request.DeleteMode = deleteMode;
+    request.SendCancellationsMode = sendCancellationsMode;
+    request.AffectedTaskOccurrences = affectedTaskOccurrences;
+    request.SuppressReadReceipts = suppressReadReceipts;
+
+    return request.Execute();
+  }
+  /**
+   * @internal Loads the properties of multiple items in a single call to EWS.
+   *
+   * @param   {Item[]}                items           The items to load the properties of.
+   * @param   {PropertySet}           propertySet     The set of properties to load.
+   * @param   {ServiceErrorHandling}  errorHandling   Indicates the type of error handling should be done.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing results for each of the specified items :Promise.
+   */
+  InternalLoadPropertiesForItems(items: Item[], propertySet: PropertySet, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
+    var request: GetItemRequestForLoad = new GetItemRequestForLoad(this, errorHandling);
+    request.ItemIds.AddRange(items);
+    request.PropertySet = propertySet;
+
+    return request.Execute();
+  }
+  /**
+   * Moves multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}              itemIds               The Ids of the items to move.
+   * @param   {FolderId}              destinationFolderId   The Id of the folder to move the items to.
+   * @param   {boolean}               returnNewItemIds      Flag indicating whether service should return new ItemIds or not.
+   * @param   {ServiceErrorHandling}  errorHandling         What type of error handling should be performed.
+   * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
+   */
+  private InternalMoveItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
+    var request: MoveItemRequest = new MoveItemRequest(this, errorHandling);
+
+    request.ItemIds.AddRange(itemIds);
+    request.DestinationFolderId = destinationFolderId;
+    request.ReturnNewItemIds = returnNewItemIds;
+
+    return request.Execute();
+  }
+  /**
+   * Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
+   *
+   * @param   {Item[]}                                items                                The items to update.
+   * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.
+   * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
+   * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.
+   * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.
+   * @param   {ServiceErrorHandling}                  errorHandling                        What type of error handling should be performed.
+   * @param   {boolean}                               suppressReadReceipt                  Whether to suppress read receipts
+   * @return  {Promise<ServiceResponseCollection<UpdateItemResponse>>}                     A ServiceResponseCollection providing update results for each of the specified items :Promise.
+   */
+  private InternalUpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, errorHandling: ServiceErrorHandling, suppressReadReceipt: boolean): Promise<ServiceResponseCollection<UpdateItemResponse>> {
+    var request: UpdateItemRequest = new UpdateItemRequest(this, errorHandling);
+
+
+    //request.Items.AddRange(items);
+    ArrayHelper.AddRange(request.Items, items);
+
+    request.SavedItemsDestinationFolder = savedItemsDestinationFolderId;
+    request.MessageDisposition = messageDisposition;
+    request.ConflictResolutionMode = conflictResolution;
+    request.SendInvitationsOrCancellationsMode = sendInvitationsOrCancellationsMode;
+    request.SuppressReadReceipts = suppressReadReceipt;
+
+    return request.Execute();
+  }
+  /**
+   * Loads the properties of multiple items in a single call to EWS. **Unstable for Extended Properties**
+   *
+   * @param   {Item[]}        items         The items to load the properties of.
+   * @param   {PropertySet}   propertySet   The set of properties to load.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing results for each of the specified items :Promise.
+   */
+  LoadPropertiesForItems(items: Item[], propertySet: PropertySet): Promise<ServiceResponseCollection<ServiceResponse>> {
+    EwsUtilities.ValidateParamCollection(items, "items");
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
+    return this.InternalLoadPropertiesForItems(
+      items,
+      propertySet,
+      ServiceErrorHandling.ReturnErrors);
+  }
+  /**
+   * Mark items as junk.
+   *
+   * @param   {ItemId[]}      itemIds    ItemIds for the items to mark
+   * @param   {boolean}       isJunk     Whether the items are junk.  If true, senders are add to blocked sender list. If false, senders are removed.
+   * @param   {boolean}       moveItem   Whether to move the item.  Items are moved to junk folder if isJunk is true, inbox if isJunk is false.
+   * @return  {Promise<ServiceResponseCollection<MarkAsJunkResponse>>}        A ServiceResponseCollection providing itemIds for each of the moved items :Promise.
+   */
+  MarkAsJunk(itemIds: ItemId[], isJunk: boolean, moveItem: boolean): Promise<ServiceResponseCollection<MarkAsJunkResponse>> {
+    var request: MarkAsJunkRequest = new MarkAsJunkRequest(this, ServiceErrorHandling.ReturnErrors);
+    request.ItemIds.AddRange(itemIds);
+    request.IsJunk = isJunk;
+    request.MoveItem = moveItem;
+    return request.Execute();
+  }
+  /**
+   * @internal Move an item.
+   *
+   * @param   {ItemId}    itemId                The Id of the item to move.
+   * @param   {FolderId}  destinationFolderId   The Id of the folder to move the item to.
+   * @return  {Promise<Item>}                   The moved item :Promise.
+   */
+  MoveItem(itemId: ItemId, destinationFolderId: FolderId): Promise<Item> {
+    return this.InternalMoveItems(
+      [itemId],
+      destinationFolderId,
+      null,
+      ServiceErrorHandling.ThrowOnError).then((responses) => {
+        return responses.__thisIndexer(0).Item;
+      });
+  }
+  /**
+   * Moves multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}   itemIds               The Ids of the items to move.
+   * @param   {FolderId}   destinationFolderId   The Id of the folder to move the items to.
+   * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
+   */
+  MoveItems(itemIds: ItemId[], destinationFolderId: FolderId): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
+  /**
+   * Moves multiple items in a single call to EWS.
+   *
+   * @param   {ItemId[]}   itemIds               The Ids of the items to move.
+   * @param   {FolderId}   destinationFolderId   The Id of the folder to move the items to.
+   * @param   {boolean}    returnNewItemIds      Flag indicating whether service should return new ItemIds or not.
+   * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
+   */
+  MoveItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
+  MoveItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean = null): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010_SP1,
+      "MoveItems");
+
+    return this.InternalMoveItems(
+      itemIds,
+      destinationFolderId,
+      returnNewItemIds,
+      ServiceErrorHandling.ReturnErrors);
+  }
+  /**
+   * @internal Sends an item.
+   *
+   * @param   {Item}      item                           The item.
+   * @param   {FolderId}  savedCopyDestinationFolderId   The saved copy destination folder id.
+   */
+  SendItem(item: Item, savedCopyDestinationFolderId: FolderId): Promise<void> {
+    var request: SendItemRequest = new SendItemRequest(this, ServiceErrorHandling.ThrowOnError);
+    request.Items = [item];
+    request.SavedCopyDestinationFolderId = savedCopyDestinationFolderId;
+    return <any>request.Execute();
+  }
+  /**
+   * @internal Updates an item.
+   *
+   * @param   {Item}                                  item                                 The item to update.
+   * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
+   * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
+   * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
+   * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
+   * @return  {Promise<Item>}                                                              Updated item : Promise.
+   */
+  UpdateItem(item: Item, savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode): Promise<Item>;
+  /**
+   * @internal Updates an item.
+   *
+   * @param   {Item}                                  item                                 The item to update.
+   * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
+   * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
+   * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
+   * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
+   * @param   {boolean}                               suppressReadReceipts                 Whether to suppress read receipts
+   * @return  {Promise<Item>}                                                              Updated item : Promise.
+   */
+  UpdateItem(item: Item, savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean): Promise<Item>;
+  UpdateItem(item: Item, savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean = false): Promise<Item> {
+    return this.InternalUpdateItems(
+      [item],
+      savedItemsDestinationFolderId,
+      conflictResolution,
+      messageDisposition,
+      sendInvitationsOrCancellationsMode,
+      ServiceErrorHandling.ThrowOnError,
+      suppressReadReceipts).then((responses) => {
+
+        return responses.__thisIndexer(0).ReturnedItem;
+
+      });
+  }
+  /**
+   * Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
+   *
+   * @param   {Item[]}                                items                                The items to update.
+   * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
+   * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
+   * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
+   * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
+   * @return  {Promise<Item>}                                                              A ServiceResponseCollection providing update results for each of the specified items : Promise.
+   */
+  UpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode): Promise<ServiceResponseCollection<UpdateItemResponse>>;
+  /**
+   * Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
+   *
+   * @param   {Item[]}                                items                                The items to update.
+   * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
+   * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
+   * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
+   * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
+   * @param   {boolean}                               suppressReadReceipts                 Whether to suppress read receipts
+   * @return  {Promise<Item>}                                                              A ServiceResponseCollection providing update results for each of the specified items : Promise.
+   */
+  UpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean): Promise<ServiceResponseCollection<UpdateItemResponse>>;
+  UpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean = false): Promise<ServiceResponseCollection<UpdateItemResponse>> {
+    // All items have to exist on the server (!new) and modified (dirty)
+    if (!items.every((item) => (!item.IsNew && item.IsDirty))) {
+      throw new ServiceValidationException(Strings.UpdateItemsDoesNotSupportNewOrUnchangedItems);
+    }
+
+    // Make sure that all items do *not* have unprocessed attachments.
+    if (!items.every((item) => !item.HasUnprocessedAttachmentChanges())) {
+      throw new ServiceValidationException(Strings.UpdateItemsDoesNotAllowAttachments);
+    }
+
+    return this.InternalUpdateItems(
+      items,
+      savedItemsDestinationFolderId,
+      conflictResolution,
+      messageDisposition,
+      sendInvitationsOrCancellationsMode,
+      ServiceErrorHandling.ReturnErrors,
+      suppressReadReceipts);
+  }
+  //#endregion Item operations
+
+
+  //#region Attachment operations
+
+  /**
+   * @internal Creates attachments.
+   *
+   * @param   {string}            parentItemId   The parent item id.
+   * @param   {Attachment[]}      attachments            The attachments.
+   * @return  {Promise<ServiceResponseCollection<CreateAttachmentResponse>>}      Service response collection :Promise.
+   */
+  CreateAttachments(parentItemId: string, attachments: Attachment[]): Promise<ServiceResponseCollection<CreateAttachmentResponse>> {
+    let request: CreateAttachmentRequest = new CreateAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
+
+    request.ParentItemId = parentItemId;
+    ArrayHelper.AddRange(request.Attachments, attachments); //request.Attachments.AddRange(attachments);
+
+    return request.Execute();
+  }
+
+  /**
+   * @internal Deletes attachments.
+   *
+   * @param   {Attachment[]}   attachments   The attachments.
+   * @return  {Promise<ServiceResponseCollection<DeleteAttachmentResponse>>}      Service response collection :Promise.
+   */
+  DeleteAttachments(attachments: Attachment[]): Promise<ServiceResponseCollection<DeleteAttachmentResponse>> {
+    let request: DeleteAttachmentRequest = new DeleteAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
+
+    ArrayHelper.AddRange(request.Attachments, attachments); //request.Attachments.AddRange(attachments);
+
+    return request.Execute();
+  }
+
+  /**
+   * @internal Gets an attachment.
+   *
+   * @param   {Attachment}                    attachment             The attachment.
+   * @param   {BodyType}                      bodyType               Type of the body.
+   * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
+   */
+  GetAttachment(attachment: Attachment, bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<void> {
+    return <any>this.InternalGetAttachments(
+      [attachment],
+      bodyType,
+      additionalProperties,
+      ServiceErrorHandling.ThrowOnError);
+  }
+  /**
+   * Gets attachments.
+   *
+   * @param   {Attachment[]}                  attachments            The attachments.
+   * @param   {BodyType}                      bodyType               Type of the body.
+   * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
+   * @return  {Promise<ServiceResponseCollection<GetAttachmentResponse>>}         Service response collection :Promise.
+   */
+  GetAttachments(attachments: Attachment[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<ServiceResponseCollection<GetAttachmentResponse>>;
+  /**
+   * Gets attachments.
+   *
+   * @param   {string[]}                      attachmentIds          The attachment ids.
+   * @param   {BodyType}                      bodyType               Type of the body.
+   * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
+   * @return  {Promise<ServiceResponseCollection<GetAttachmentResponse>>}         Service response collection :Promise.
+   */
+  GetAttachments(attachmentIds: string[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<ServiceResponseCollection<GetAttachmentResponse>>;
+  GetAttachments(attachmentsOrIds: Attachment[] | string[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<ServiceResponseCollection<GetAttachmentResponse>> {
+    var ids = ArrayHelper.OfType<string, any[]>(<any[]>attachmentsOrIds, (attachment: any) => { return typeof attachment === 'string'; });
+    if (ids && ids.length > 0) {
+      var request: GetAttachmentRequest = new GetAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
+      ArrayHelper.AddRange(request.AttachmentIds, <string[]>attachmentsOrIds);
+      request.BodyType = bodyType;
+
+      if (additionalProperties != null) {
+        ArrayHelper.AddRange(request.AdditionalProperties, additionalProperties);
+        //request.AdditionalProperties.AddRange(additionalProperties);
+      }
+      return request.Execute();
+
+    }
+    else {
+      return this.InternalGetAttachments(
+        <Attachment[]>attachmentsOrIds,
+        bodyType,
+        additionalProperties,
+        ServiceErrorHandling.ReturnErrors);
+    }
+  }
+  /**
+   * Gets attachments.
+   *
+   * @param   {string[]}                      attachmentIds          The attachment ids.
+   * @param   {BodyType}                      bodyType               Type of the body.
+   * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
+   * @return  {Promise<ServiceResponseCollection<GetAttachmentResponse>>}         Service response collection :Promise.
+   */
+  private InternalGetAttachments(attachments: Attachment[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[], errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<GetAttachmentResponse>> {
+    var request: GetAttachmentRequest = new GetAttachmentRequest(this, errorHandling);
+    ArrayHelper.AddRange(request.Attachments, attachments);
+    request.BodyType = bodyType;
+
+    if (additionalProperties != null) {
+      ArrayHelper.AddRange(request.AdditionalProperties, additionalProperties);
+      //request.AdditionalProperties.AddRange(additionalProperties);
+    }
+    return request.Execute();
+  }
+
+  //#endregion
+
+
+  //#region AD related operations
+
+  /**
+   * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+   *
+   * @param   {ItemId}   groupId   The Id of the group to expand.
+   * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
+   */
+  ExpandGroup(groupId: ItemId): Promise<ExpandGroupResults>;
+  /**
+   * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+   *
+   * @param   {string}   smtpAddress   The SMTP address of the group to expand.
+   * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
+   */
+  ExpandGroup(smtpAddress: string): Promise<ExpandGroupResults>;
+  /**
+   * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+   *
+   * @param   {EmailAddress}   emailAddress   The e-mail address of the group.
+   * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
+   */
+  ExpandGroup(emailAddress: EmailAddress): Promise<ExpandGroupResults>;
+  /**
+   * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
+   *
+   * @param   {string}   address       The SMTP address of the group to expand.
+   * @param   {string}   routingType   The routing type of the address of the group to expand.
+   * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
+   */
+  ExpandGroup(address: string, routingType: string): Promise<ExpandGroupResults>;
+  ExpandGroup(emailAddressOrsmtpAddressOrGroupId: EmailAddress | string | ItemId, routingType?: string): Promise<ExpandGroupResults> {
+    // EwsUtilities.ValidateParam(emailAddressOrsmtpAddressOrGroupId, "address");
+    // EwsUtilities.ValidateParam(routingType, "routingType");
+    //EwsUtilities.ValidateParam(emailAddress, "emailAddress");
+    var emailAddress: EmailAddress = new EmailAddress();
+
+    if (emailAddressOrsmtpAddressOrGroupId instanceof EmailAddress) {
+      emailAddress = emailAddressOrsmtpAddressOrGroupId;
+    }
+    else if (emailAddressOrsmtpAddressOrGroupId instanceof ItemId) {
+      emailAddress.Id = emailAddressOrsmtpAddressOrGroupId;
+    }
+    else if (typeof emailAddressOrsmtpAddressOrGroupId === 'string') {
+      emailAddress = new EmailAddress(emailAddressOrsmtpAddressOrGroupId);
+    }
+
+    if (routingType) {
+      emailAddress.RoutingType = routingType;
+    }
+
+    var request: ExpandGroupRequest = new ExpandGroupRequest(this);
+
+    request.EmailAddress = emailAddress;
+
+    return request.Execute().then((response) => {
+      return response.__thisIndexer(0).Members;
+    });
+
+  }
+  /**
+   * Get the password expiration date
+   *
+   * @param   {string}   mailboxSmtpAddress   The e-mail address of the user.
+   * @return  {Promise<DateTime>}             The password expiration date :Promise.
+   */
+  GetPasswordExpirationDate(mailboxSmtpAddress: string): Promise<DateTime> {
+    var request: GetPasswordExpirationDateRequest = new GetPasswordExpirationDateRequest(this);
+    request.MailboxSmtpAddress = mailboxSmtpAddress;
+
+    return request.Execute().then((response) => {
+      return response.PasswordExpirationDate;
+    });
+  }
+
+  /**
+   * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
+   *
+   * @param   {string}    nameToResolve               The name to resolve.
+   * @return  {Promise<NameResolutionCollection>}     A collection of name resolutions whose names match the one passed as a parameter :Promise.
+   */
+  ResolveName(nameToResolve: string): Promise<NameResolutionCollection>;
+  /**
+   * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
+   *
+   * @param   {string}                        nameToResolve               The name to resolve.
+   * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
+   * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
+   * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
+   */
+  ResolveName(nameToResolve: string, searchScope: ResolveNameSearchLocation, returnContactDetails: boolean): Promise<NameResolutionCollection>;
+  /**
+   * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
+   *
+   * @param   {string}                        nameToResolve               The name to resolve.
+   * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
+   * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
+   * @param   {PropertySet}                   contactDataPropertySet      The property set for the contct details
+   * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
+   */
+  ResolveName(nameToResolve: string, searchScope: ResolveNameSearchLocation, returnContactDetails: boolean, contactDataPropertySet: PropertySet): Promise<NameResolutionCollection>;
+  /**
+   * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
+   *
+   * @param   {string}                        nameToResolve               The name to resolve.
+   * @param   {FolderId[]}                    parentFolderIds             The Ids of the contact folders in which to look for matching contacts.
+   * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
+   * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
+   * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
+   */
+  ResolveName(nameToResolve: string, parentFolderIds: FolderId[], searchScope: ResolveNameSearchLocation, returnContactDetails: boolean): Promise<NameResolutionCollection>;
+  /**
+   * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
+   *
+   * @param   {string}                        nameToResolve               The name to resolve.
+   * @param   {FolderId[]}                    parentFolderIds             The Ids of the contact folders in which to look for matching contacts.
+   * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
+   * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
+   * @param   {PropertySet}                   contactDataPropertySet      The property set for the contct details
+   * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
+   */
+  ResolveName(nameToResolve: string, parentFolderIds: FolderId[], searchScope: ResolveNameSearchLocation, returnContactDetails: boolean, contactDataPropertySet: PropertySet): Promise<NameResolutionCollection>;
+
+  ResolveName(
+    nameToResolve: string,
+    parentFolderIdsOrSearchScope?: ResolveNameSearchLocation | FolderId[],
+    searchScopeOrReturnContactDetails?: ResolveNameSearchLocation | boolean,
+    returnContactDetailsOrContactDataPropertySet?: boolean | PropertySet,
+    contactDataPropertySet: PropertySet = null
+  ): Promise<NameResolutionCollection> {
+
+
+    var argsLength = arguments.length;
+    if (argsLength < 1 && argsLength > 5) {
+      throw new Error("ExchangeService.ts - ResolveName - invalid number of arguments, check documentation and try again.");
+    }
+
+    //position 1 - nameToResolve - no change, same for all overload
+
+    var searchScope: ResolveNameSearchLocation = null;
+    var parentFolderIds: FolderId[] = null;
+
+    //position 2 - parentFolderIdsOrSearchScope
+    if (argsLength >= 2) {
+      if (typeof parentFolderIdsOrSearchScope === 'number') {
+        searchScope = parentFolderIdsOrSearchScope;
+      }
+      else if (Array.isArray(parentFolderIdsOrSearchScope)) {
+        parentFolderIds = parentFolderIdsOrSearchScope;
+      }
+      //could be null
+      // else {
+      //     throw new Error("ExchangeService.ts - FindItems - incorrect uses of parameters at 2nd position, must be string, ViewBase or SearchFilter");
+      // }
+    }
+
+    var returnContactDetails: boolean = false;
+
+    //position 3 - searchScopeOrReturnContactDetails
+    if (argsLength >= 3) {
+      if (typeof searchScopeOrReturnContactDetails === 'boolean') {
+        if (typeof parentFolderIdsOrSearchScope !== 'number') {
+          throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 2nd position, it must be ResolveNameSearchLocation when using boolean at 3rd place");
         }
-
-        var queryString: string = null;
-        var searchFilter: SearchFilter = null;
-        var view: ViewBase = null;
-
-        //position 2 - viewQueryStringOrSearchFilter
-        if (argsLength >= 2)
-            if (typeof viewQueryStringOrSearchFilter === 'string') {
-                queryString = viewQueryStringOrSearchFilter;
-            }
-            else if (viewQueryStringOrSearchFilter instanceof SearchFilter) {
-                searchFilter = viewQueryStringOrSearchFilter;
-            }
-            else if (viewQueryStringOrSearchFilter instanceof ViewBase) {
-                view = viewQueryStringOrSearchFilter;
-            }
-            else if (viewQueryStringOrSearchFilter) { //error if not null
-                throw new Error("ExchangeService.ts - FindItems - incorrect uses of parameters at 2nd position, must be string, ViewBase or SearchFilter");
-            }
-
-        var groupResultBy: Grouping = null;
-        var returnHighlightTerms: boolean = false;
-        var isGroupped: boolean = false; // to resturn GroupedFindItemsResults<Item>
-
-        //position 3 - groupByViewRHTOrQueryString
-        if (argsLength >= 3) {
-            if (groupByViewRHTOrQueryString instanceof Grouping) {
-                if (!(viewQueryStringOrSearchFilter instanceof ViewBase)) {
-                    throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 3nd position, it must be ViewBase when using Grouping at 4th place");
-                }
-                groupResultBy = groupByViewRHTOrQueryString;
-                isGroupped = true;
-            }
-            else if (groupByViewRHTOrQueryString instanceof ViewBase) {
-                view = groupByViewRHTOrQueryString;
-            }
-            else if (typeof groupByViewRHTOrQueryString === 'string') {
-                queryString = groupByViewRHTOrQueryString;
-            }
-            else if (typeof groupByViewRHTOrQueryString === 'boolean') {
-                returnHighlightTerms = groupByViewRHTOrQueryString;
-                EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "FindItems");
-            }
-            else if (groupByViewRHTOrQueryString) {//error if not null
-                throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, must be string, boolean, ViewBase or Grouping");
-            }
+        returnContactDetails = searchScopeOrReturnContactDetails;
+      }
+      else if (typeof searchScopeOrReturnContactDetails === 'number') {
+        if (!Array.isArray(parentFolderIdsOrSearchScope)) {
+          throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 2nd position, it must be FolderId[] when using ResolveNameSearchLocation at 3rd place");
         }
+        searchScope = searchScopeOrReturnContactDetails;
+      }
+      else {
+        throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, must be boolean, or ResolveNameSearchLocation");
+      }
+    }
 
-        //position 4 - groupByOrView
-        if (argsLength >= 4) {
-            if (groupByOrView instanceof Grouping) {
-                if (!(groupByViewRHTOrQueryString instanceof ViewBase)) {
-                    throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, it must be ViewBase when using Grouping at 3rd place");
-                }
-                groupResultBy = groupByOrView;
-                isGroupped = true;
-            }
-            else if (groupByOrView instanceof ViewBase) {
-                view = groupByOrView;
-            }
-            else if (groupByOrView) {//error if not null
-                throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 4th  position, must be  ViewBase or Grouping");
-            }
+    //position 4 - returnContactDetailsOrContactDataPropertySet
+    if (argsLength >= 4) {
+      if (returnContactDetailsOrContactDataPropertySet instanceof PropertySet) {
+        if (typeof searchScopeOrReturnContactDetails !== 'boolean') {
+          throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, it must be boolean when using PropertySet at 4th place");
         }
-
-        //position 5 - groupBy
-        if (argsLength >= 5) {
-            if (groupByOrView && !(groupByOrView instanceof ViewBase)) {//error if not null
-                throw new Error("ExchangeService.ts - FindItems with " + argsLength + " parameters - incorrect uses of parameter at 4th position, it must be ViewBase when using Grouping at 5th place");
-            }
-            groupResultBy = groupBy;
-            isGroupped = true;
+        contactDataPropertySet = returnContactDetailsOrContactDataPropertySet;
+      }
+      else if (typeof returnContactDetailsOrContactDataPropertySet === 'boolean') {
+        if (typeof searchScopeOrReturnContactDetails !== 'number') {
+          throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, it must be ResolveNameSearchLocation when using boolean at 4th place");
         }
-        var isRaw: boolean = false; // to return ServiceResponseCollection<FindItemResponse<TItem>>
-        //position 6 - errorHandlingMode
-        if (argsLength === 6) {
-            isRaw = true;
-        }
-
-        var request: FindItemRequest<TItem> = new FindItemRequest<TItem>(this, errorHandlingMode | ServiceErrorHandling.ThrowOnError);
-
-        request.ParentFolderIds.AddRange(parentIds);
-
-        request.SearchFilter = searchFilter;
-
-        request.QueryString = queryString;
-
-        request.View = view;
-
-        request.GroupBy = groupResultBy;
-
-        return request.Execute().then((responses) => {
-            if (isRaw) {
-                return responses;
-            }
-            if (isGroupped) {
-                return responses.__thisIndexer(0).GroupedFindResults;
-            }
-            return responses.__thisIndexer(0).Results;
-        });
-
-    }
-    /**
-     * Binds to multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}              itemIds         The Ids of the items to bind to.
-     * @param   {PropertySet}           propertySet     The set of properties to load.
-     * @param   {string}                anchorMailbox   The SmtpAddress of mailbox that hosts all items we need to bind to
-     * @param   {ServiceErrorHandling}  errorHandling   Type of error handling to perform.
-     * @return  {Promise<ServiceResponseCollection<GetItemResponse>>}       A ServiceResponseCollection providing results for each of the specified item Ids :Promise.
-     */
-    private InternalBindToItems(itemIds: ItemId[], propertySet: PropertySet, anchorMailbox: string, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<GetItemResponse>> {
-        var request: GetItemRequest = new GetItemRequest(this, errorHandling);
-
-        request.ItemIds.AddRange(itemIds);
-        request.PropertySet = propertySet;
-        request.AnchorMailbox = anchorMailbox;
-
-        return request.Execute();
-    }
-    /**
-     * Copies multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}              itemIds                 The Ids of the items to bind to.
-     * @param   {FolderId}              destinationFolderId     The Id of the folder to copy the items to.
-     * @param   {boolean}               returnNewItemIds        Flag indicating whether service should return new ItemIds or not.
-     * @param   {ServiceErrorHandling}  errorHandling           What type of error handling should be performed.
-     * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
-     */
-    private InternalCopyItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
-        var request: CopyItemRequest = new CopyItemRequest(this, errorHandling);
-        request.ItemIds.AddRange(itemIds);
-        request.DestinationFolderId = destinationFolderId;
-        request.ReturnNewItemIds = returnNewItemIds;
-
-        return request.Execute();
-    }
-    /**
-     * Creates multiple items in a single EWS call. Supported item classes are EmailMessage, Appointment, Contact, PostItem, Task and Item. CreateItems does not support items that have unsaved attachments.
-     *
-     * @param   {Item[]}                items                 The items to create.
-     * @param   {FolderId}              parentFolderId        The Id of the folder in which to place the newly created items. If null, items are created in their default folders.
-     * @param   {MessageDisposition}    messageDisposition    Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.
-     * @param   {SendInvitationsMode}   sendInvitationsMode   Indicates if and how invitations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.
-     * @param   {ServiceErrorHandling}  errorHandling         What type of error handling should be performed.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing creation results for each of the specified items :Promise.
-     */
-    private InternalCreateItems(items: Item[], parentFolderId: FolderId, messageDisposition: MessageDisposition, sendInvitationsMode: SendInvitationsMode, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
-        var request: CreateItemRequest = new CreateItemRequest(this, errorHandling);
-
-        request.ParentFolderId = parentFolderId;
-        request.Items = items;
-        request.MessageDisposition = messageDisposition;
-        request.SendInvitationsMode = sendInvitationsMode;
-
-        return request.Execute();
-    }
-    /**
-     * Deletes multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}                  itemIds                   The Ids of the items to delete.
-     * @param   {DeleteMode}                deleteMode                The deletion mode.
-     * @param   {SendCancellationsMode}     sendCancellationsMode     Indicates whether cancellation messages should be sent. Required if any of the item Ids represents an Appointment.
-     * @param   {AffectedTaskOccurrence}    affectedTaskOccurrences   Indicates which instance of a recurring task should be deleted. Required if any of the item Ids represents a Task.
-     * @param   {ServiceErrorHandling}      errorHandling             Type of error handling to perform.
-     * @param   {boolean}                   suppressReadReceipts      Whether to suppress read receipts
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing deletion results for each of the specified item Ids :Promise.
-     */
-    private InternalDeleteItems(itemIds: ItemId[], deleteMode: DeleteMode, sendCancellationsMode: SendCancellationsMode, affectedTaskOccurrences: AffectedTaskOccurrence, errorHandling: ServiceErrorHandling, suppressReadReceipts: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
-        var request: DeleteItemRequest = new DeleteItemRequest(this, errorHandling);
-
-        request.ItemIds.AddRange(itemIds);
-        request.DeleteMode = deleteMode;
-        request.SendCancellationsMode = sendCancellationsMode;
-        request.AffectedTaskOccurrences = affectedTaskOccurrences;
-        request.SuppressReadReceipts = suppressReadReceipts;
-
-        return request.Execute();
-    }
-    /**
-     * @internal Loads the properties of multiple items in a single call to EWS.
-     *
-     * @param   {Item[]}                items           The items to load the properties of.
-     * @param   {PropertySet}           propertySet     The set of properties to load.
-     * @param   {ServiceErrorHandling}  errorHandling   Indicates the type of error handling should be done.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing results for each of the specified items :Promise.
-     */
-    InternalLoadPropertiesForItems(items: Item[], propertySet: PropertySet, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
-        var request: GetItemRequestForLoad = new GetItemRequestForLoad(this, errorHandling);
-        request.ItemIds.AddRange(items);
-        request.PropertySet = propertySet;
-
-        return request.Execute();
-    }
-    /**
-     * Moves multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}              itemIds               The Ids of the items to move.
-     * @param   {FolderId}              destinationFolderId   The Id of the folder to move the items to.
-     * @param   {boolean}               returnNewItemIds      Flag indicating whether service should return new ItemIds or not.
-     * @param   {ServiceErrorHandling}  errorHandling         What type of error handling should be performed.
-     * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
-     */
-    private InternalMoveItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
-        var request: MoveItemRequest = new MoveItemRequest(this, errorHandling);
-
-        request.ItemIds.AddRange(itemIds);
-        request.DestinationFolderId = destinationFolderId;
-        request.ReturnNewItemIds = returnNewItemIds;
-
-        return request.Execute();
-    }
-    /**
-     * Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
-     *
-     * @param   {Item[]}                                items                                The items to update.
-     * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the messages, meeting invitation or cancellations are saved in the Sent Items folder.
-     * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
-     * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for items of type EmailMessage. Required if items contains at least one EmailMessage instance.
-     * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for items of type Appointment. Required if items contains at least one Appointment instance.
-     * @param   {ServiceErrorHandling}                  errorHandling                        What type of error handling should be performed.
-     * @param   {boolean}                               suppressReadReceipt                  Whether to suppress read receipts
-     * @return  {Promise<ServiceResponseCollection<UpdateItemResponse>>}                     A ServiceResponseCollection providing update results for each of the specified items :Promise.
-     */
-    private InternalUpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, errorHandling: ServiceErrorHandling, suppressReadReceipt: boolean): Promise<ServiceResponseCollection<UpdateItemResponse>> {
-        var request: UpdateItemRequest = new UpdateItemRequest(this, errorHandling);
-
-
-        //request.Items.AddRange(items);
-        ArrayHelper.AddRange(request.Items, items);
-
-        request.SavedItemsDestinationFolder = savedItemsDestinationFolderId;
-        request.MessageDisposition = messageDisposition;
-        request.ConflictResolutionMode = conflictResolution;
-        request.SendInvitationsOrCancellationsMode = sendInvitationsOrCancellationsMode;
-        request.SuppressReadReceipts = suppressReadReceipt;
-
-        return request.Execute();
-    }
-    /**
-     * Loads the properties of multiple items in a single call to EWS. **Unstable for Extended Properties**
-     *
-     * @param   {Item[]}        items         The items to load the properties of.
-     * @param   {PropertySet}   propertySet   The set of properties to load.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       A ServiceResponseCollection providing results for each of the specified items :Promise.
-     */
-    LoadPropertiesForItems(items: Item[], propertySet: PropertySet): Promise<ServiceResponseCollection<ServiceResponse>> {
-        EwsUtilities.ValidateParamCollection(items, "items");
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
-        return this.InternalLoadPropertiesForItems(
-            items,
-            propertySet,
-            ServiceErrorHandling.ReturnErrors);
-    }
-    /**
-     * Mark items as junk.
-     *
-     * @param   {ItemId[]}      itemIds    ItemIds for the items to mark
-     * @param   {boolean}       isJunk     Whether the items are junk.  If true, senders are add to blocked sender list. If false, senders are removed.
-     * @param   {boolean}       moveItem   Whether to move the item.  Items are moved to junk folder if isJunk is true, inbox if isJunk is false.
-     * @return  {Promise<ServiceResponseCollection<MarkAsJunkResponse>>}        A ServiceResponseCollection providing itemIds for each of the moved items :Promise.
-     */
-    MarkAsJunk(itemIds: ItemId[], isJunk: boolean, moveItem: boolean): Promise<ServiceResponseCollection<MarkAsJunkResponse>> {
-        var request: MarkAsJunkRequest = new MarkAsJunkRequest(this, ServiceErrorHandling.ReturnErrors);
-        request.ItemIds.AddRange(itemIds);
-        request.IsJunk = isJunk;
-        request.MoveItem = moveItem;
-        return request.Execute();
-    }
-    /**
-     * @internal Move an item.
-     *
-     * @param   {ItemId}    itemId                The Id of the item to move.
-     * @param   {FolderId}  destinationFolderId   The Id of the folder to move the item to.
-     * @return  {Promise<Item>}                   The moved item :Promise.
-     */
-    MoveItem(itemId: ItemId, destinationFolderId: FolderId): Promise<Item> {
-        return this.InternalMoveItems(
-            [itemId],
-            destinationFolderId,
-            null,
-            ServiceErrorHandling.ThrowOnError).then((responses) => {
-                return responses.__thisIndexer(0).Item;
-            });
-    }
-    /**
-     * Moves multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}   itemIds               The Ids of the items to move.
-     * @param   {FolderId}   destinationFolderId   The Id of the folder to move the items to.
-     * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
-     */
-    MoveItems(itemIds: ItemId[], destinationFolderId: FolderId): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
-    /**
-     * Moves multiple items in a single call to EWS.
-     *
-     * @param   {ItemId[]}   itemIds               The Ids of the items to move.
-     * @param   {FolderId}   destinationFolderId   The Id of the folder to move the items to.
-     * @param   {boolean}    returnNewItemIds      Flag indicating whether service should return new ItemIds or not.
-     * @return  {Promise<ServiceResponseCollection<MoveCopyItemResponse>>}      A ServiceResponseCollection providing copy results for each of the specified item Ids :Promise.
-     */
-    MoveItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean): Promise<ServiceResponseCollection<MoveCopyItemResponse>>;
-    MoveItems(itemIds: ItemId[], destinationFolderId: FolderId, returnNewItemIds: boolean = null): Promise<ServiceResponseCollection<MoveCopyItemResponse>> {
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010_SP1,
-            "MoveItems");
-
-        return this.InternalMoveItems(
-            itemIds,
-            destinationFolderId,
-            returnNewItemIds,
-            ServiceErrorHandling.ReturnErrors);
-    }
-    /**
-     * @internal Sends an item.
-     *
-     * @param   {Item}      item                           The item.
-     * @param   {FolderId}  savedCopyDestinationFolderId   The saved copy destination folder id.
-     */
-    SendItem(item: Item, savedCopyDestinationFolderId: FolderId): Promise<void> {
-        var request: SendItemRequest = new SendItemRequest(this, ServiceErrorHandling.ThrowOnError);
-        request.Items = [item];
-        request.SavedCopyDestinationFolderId = savedCopyDestinationFolderId;
-        return <any>request.Execute();
-    }
-    /**
-     * @internal Updates an item.
-     *
-     * @param   {Item}                                  item                                 The item to update.
-     * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
-     * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
-     * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
-     * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
-     * @return  {Promise<Item>}                                                              Updated item : Promise.
-     */
-    UpdateItem(item: Item, savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode): Promise<Item>;
-    /**
-     * @internal Updates an item.
-     *
-     * @param   {Item}                                  item                                 The item to update.
-     * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
-     * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
-     * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
-     * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
-     * @param   {boolean}                               suppressReadReceipts                 Whether to suppress read receipts
-     * @return  {Promise<Item>}                                                              Updated item : Promise.
-     */
-    UpdateItem(item: Item, savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean): Promise<Item>;
-    UpdateItem(item: Item, savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean = false): Promise<Item> {
-        return this.InternalUpdateItems(
-            [item],
-            savedItemsDestinationFolderId,
-            conflictResolution,
-            messageDisposition,
-            sendInvitationsOrCancellationsMode,
-            ServiceErrorHandling.ThrowOnError,
-            suppressReadReceipts).then((responses) => {
-
-                return responses.__thisIndexer(0).ReturnedItem;
-
-            });
-    }
-    /**
-     * Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
-     *
-     * @param   {Item[]}                                items                                The items to update.
-     * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
-     * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
-     * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
-     * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
-     * @return  {Promise<Item>}                                                              A ServiceResponseCollection providing update results for each of the specified items : Promise.
-     */
-    UpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode): Promise<ServiceResponseCollection<UpdateItemResponse>>;
-    /**
-     * Updates multiple items in a single EWS call. UpdateItems does not support items that have unsaved attachments.
-     *
-     * @param   {Item[]}                                items                                The items to update.
-     * @param   {FolderId}                              savedItemsDestinationFolderId        The folder in which to save sent messages, meeting invitations or cancellations. If null, the message, meeting invitation or cancellation is saved in the Sent Items folder.
-     * @param   {ConflictResolutionMode}                conflictResolution                   The conflict resolution mode.
-     * @param   {MessageDisposition}                    messageDisposition                   Indicates the disposition mode for an item of type EmailMessage. Required if item is an EmailMessage instance.
-     * @param   {SendInvitationsOrCancellationsMode}    sendInvitationsOrCancellationsMode   Indicates if and how invitations and/or cancellations should be sent for ian tem of type Appointment. Required if item is an Appointment instance.
-     * @param   {boolean}                               suppressReadReceipts                 Whether to suppress read receipts
-     * @return  {Promise<Item>}                                                              A ServiceResponseCollection providing update results for each of the specified items : Promise.
-     */
-    UpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean): Promise<ServiceResponseCollection<UpdateItemResponse>>;
-    UpdateItems(items: Item[], savedItemsDestinationFolderId: FolderId, conflictResolution: ConflictResolutionMode, messageDisposition: MessageDisposition, sendInvitationsOrCancellationsMode: SendInvitationsOrCancellationsMode, suppressReadReceipts: boolean = false): Promise<ServiceResponseCollection<UpdateItemResponse>> {
-        // All items have to exist on the server (!new) and modified (dirty)
-        if (!items.every((item) => (!item.IsNew && item.IsDirty))) {
-            throw new ServiceValidationException(Strings.UpdateItemsDoesNotSupportNewOrUnchangedItems);
-        }
-
-        // Make sure that all items do *not* have unprocessed attachments.
-        if (!items.every((item) => !item.HasUnprocessedAttachmentChanges())) {
-            throw new ServiceValidationException(Strings.UpdateItemsDoesNotAllowAttachments);
-        }
-
-        return this.InternalUpdateItems(
-            items,
-            savedItemsDestinationFolderId,
-            conflictResolution,
-            messageDisposition,
-            sendInvitationsOrCancellationsMode,
-            ServiceErrorHandling.ReturnErrors,
-            suppressReadReceipts);
-    }
-    /* #endregion Item operations 47*/
-
-
-    /* #region Attachment operations */
-
-    /**
-     * @internal Creates attachments.
-     *
-     * @param   {string}            parentItemId   The parent item id.
-     * @param   {Attachment[]}      attachments            The attachments.
-     * @return  {Promise<ServiceResponseCollection<CreateAttachmentResponse>>}      Service response collection :Promise.
-     */
-    CreateAttachments(parentItemId: string, attachments: Attachment[]): Promise<ServiceResponseCollection<CreateAttachmentResponse>> {
-        let request: CreateAttachmentRequest = new CreateAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
-
-        request.ParentItemId = parentItemId;
-        ArrayHelper.AddRange(request.Attachments, attachments); //request.Attachments.AddRange(attachments);
-
-        return request.Execute();
+        returnContactDetails = returnContactDetailsOrContactDataPropertySet;
+      }
+      else {
+        throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 4th  position, must be  PropertySet or boolean");
+      }
     }
 
-    /**
-     * @internal Deletes attachments.
-     *
-     * @param   {Attachment[]}   attachments   The attachments.
-     * @return  {Promise<ServiceResponseCollection<DeleteAttachmentResponse>>}      Service response collection :Promise.
-     */
-    DeleteAttachments(attachments: Attachment[]): Promise<ServiceResponseCollection<DeleteAttachmentResponse>> {
-        let request: DeleteAttachmentRequest = new DeleteAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
-
-        ArrayHelper.AddRange(request.Attachments, attachments); //request.Attachments.AddRange(attachments);
-
-        return request.Execute();
+    //position 5 - contactDataPropertySet
+    if (argsLength >= 5) {
+      if (typeof returnContactDetailsOrContactDataPropertySet !== 'boolean') {
+        throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 4th position, it must be boolean when using PropertySet at 5th place");
+      }
     }
 
-    /**
-     * @internal Gets an attachment.
-     *
-     * @param   {Attachment}                    attachment             The attachment.
-     * @param   {BodyType}                      bodyType               Type of the body.
-     * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
-     */
-    GetAttachment(attachment: Attachment, bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<void> {
-        return <any>this.InternalGetAttachments(
-            [attachment],
-            bodyType,
-            additionalProperties,
-            ServiceErrorHandling.ThrowOnError);
-    }
-    /**
-     * Gets attachments.
-     *
-     * @param   {Attachment[]}                  attachments            The attachments.
-     * @param   {BodyType}                      bodyType               Type of the body.
-     * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
-     * @return  {Promise<ServiceResponseCollection<GetAttachmentResponse>>}         Service response collection :Promise.
-     */
-    GetAttachments(attachments: Attachment[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<ServiceResponseCollection<GetAttachmentResponse>>;
-    /**
-     * Gets attachments.
-     *
-     * @param   {string[]}                      attachmentIds          The attachment ids.
-     * @param   {BodyType}                      bodyType               Type of the body.
-     * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
-     * @return  {Promise<ServiceResponseCollection<GetAttachmentResponse>>}         Service response collection :Promise.
-     */
-    GetAttachments(attachmentIds: string[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<ServiceResponseCollection<GetAttachmentResponse>>;
-    GetAttachments(attachmentsOrIds: Attachment[] | string[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[]): Promise<ServiceResponseCollection<GetAttachmentResponse>> {
-        var ids = ArrayHelper.OfType<string, any[]>(<any[]>attachmentsOrIds, (attachment: any) => { return typeof attachment === 'string'; });
-        if (ids && ids.length > 0) {
-            var request: GetAttachmentRequest = new GetAttachmentRequest(this, ServiceErrorHandling.ReturnErrors);
-            ArrayHelper.AddRange(request.AttachmentIds, <string[]>attachmentsOrIds);
-            request.BodyType = bodyType;
+    var request: ResolveNamesRequest = new ResolveNamesRequest(this);
 
-            if (additionalProperties != null) {
-                ArrayHelper.AddRange(request.AdditionalProperties, additionalProperties);
-                //request.AdditionalProperties.AddRange(additionalProperties);
-            }
-            return request.Execute();
+    request.NameToResolve = nameToResolve;
+    request.ReturnFullContactData = returnContactDetails;
+    request.ParentFolderIds.AddRange(parentFolderIds);
+    request.SearchLocation = searchScope;
+    request.ContactDataPropertySet = contactDataPropertySet;
 
-        }
-        else {
-            return this.InternalGetAttachments(
-                <Attachment[]>attachmentsOrIds,
-                bodyType,
-                additionalProperties,
-                ServiceErrorHandling.ReturnErrors);
-        }
-    }
-    /**
-     * Gets attachments.
-     *
-     * @param   {string[]}                      attachmentIds          The attachment ids.
-     * @param   {BodyType}                      bodyType               Type of the body.
-     * @param   {PropertyDefinitionBase[]}      additionalProperties   The additional properties.
-     * @return  {Promise<ServiceResponseCollection<GetAttachmentResponse>>}         Service response collection :Promise.
-     */
-    private InternalGetAttachments(attachments: Attachment[], bodyType: BodyType, additionalProperties: PropertyDefinitionBase[], errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<GetAttachmentResponse>> {
-        var request: GetAttachmentRequest = new GetAttachmentRequest(this, errorHandling);
-        ArrayHelper.AddRange(request.Attachments, attachments);
-        request.BodyType = bodyType;
+    return request.Execute().then((response) => {
+      return response.__thisIndexer(0).Resolutions;
+    });
+  }
 
-        if (additionalProperties != null) {
-            ArrayHelper.AddRange(request.AdditionalProperties, additionalProperties);
-            //request.AdditionalProperties.AddRange(additionalProperties);
-        }
-        return request.Execute();
+  //#endregion
+
+
+  //#region Notification operations
+
+  // BeginGetEvents(callback: Function /*System.AsyncCallback*/, state: any, subscriptionId: string, watermark: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginGetEvents : Not implemented."); }
+  // BeginSubscribeToPullNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, timeout: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPullNotifications : Not implemented."); }
+  // BeginSubscribeToPullNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, timeout: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPullNotificationsOnAllFolders : Not implemented."); }
+  // BeginSubscribeToPushNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, url: Uri, frequency: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotifications : Not implemented."); }
+  // //BeginSubscribeToPushNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, url: Uri, frequency: number, watermark: string, callerData: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotifications : Not implemented."); }
+  // BeginSubscribeToPushNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, url: Uri, frequency: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotificationsOnAllFolders : Not implemented."); }
+  // //BeginSubscribeToPushNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, url: Uri, frequency: number, watermark: string, callerData: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotificationsOnAllFolders : Not implemented."); }
+  // BeginSubscribeToStreamingNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToStreamingNotifications : Not implemented."); }
+  // BeginSubscribeToStreamingNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToStreamingNotificationsOnAllFolders : Not implemented."); }
+  // BeginUnsubscribe(callback: Function /*System.AsyncCallback*/, state: any, subscriptionId: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginUnsubscribe : Not implemented."); }
+
+  /**
+   * Builds an request to retrieve the latests events associated with a pull subscription.
+   *
+   * @param   {string}   subscriptionId   The Id of the pull subscription for which to get the events.
+   * @param   {string}   watermark        The watermark representing the point in time where to start receiving events.
+   * @return  {GetEventsRequest}          An request to retrieve the latests events associated with a pull subscription.
+   */
+  private BuildGetEventsRequest(subscriptionId: string, watermark: string): GetEventsRequest {
+    EwsUtilities.ValidateParam(subscriptionId, "subscriptionId");
+    EwsUtilities.ValidateParam(watermark, "watermark");
+
+    let request: GetEventsRequest = new GetEventsRequest(this);
+
+    request.SubscriptionId = subscriptionId;
+    request.Watermark = watermark;
+
+    return request;
+  }
+
+  /**
+   * Builds a request to subscribe to pull notifications in the authenticated user's mailbox.
+   *
+   * @param   {FolderId[]}    folderIds    The Ids of the folder to subscribe to.
+   * @param   {number}        timeout      The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.
+   * @param   {string}        watermark    An optional watermark representing a previously opened subscription.
+   * @param   {EventType[]}   eventTypes   The event types to subscribe to.
+   * @return  {SubscribeToPullNotificationsRequest}   A request to subscribe to pull notifications in the authenticated user's mailbox.
+   */
+  private BuildSubscribeToPullNotificationsRequest(folderIds: FolderId[], timeout: number, watermark: string, eventTypes: EventType[]): SubscribeToPullNotificationsRequest {
+    if (timeout < 1 || timeout > 1440) {
+      throw new ArgumentOutOfRangeException("timeout", Strings.TimeoutMustBeBetween1And1440);
     }
 
-    /* #endregion Attachment operations */
+    EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
 
+    let request: SubscribeToPullNotificationsRequest = new SubscribeToPullNotificationsRequest(this);
 
-    /* #region AD related operations */
-
-    /**
-     * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
-     *
-     * @param   {ItemId}   groupId   The Id of the group to expand.
-     * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
-     */
-    ExpandGroup(groupId: ItemId): Promise<ExpandGroupResults>;
-    /**
-     * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
-     *
-     * @param   {string}   smtpAddress   The SMTP address of the group to expand.
-     * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
-     */
-    ExpandGroup(smtpAddress: string): Promise<ExpandGroupResults>;
-    /**
-     * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
-     *
-     * @param   {EmailAddress}   emailAddress   The e-mail address of the group.
-     * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
-     */
-    ExpandGroup(emailAddress: EmailAddress): Promise<ExpandGroupResults>;
-    /**
-     * Expands a group by retrieving a list of its members. Calling this method results in a call to EWS.
-     *
-     * @param   {string}   address       The SMTP address of the group to expand.
-     * @param   {string}   routingType   The routing type of the address of the group to expand.
-     * @return  {Promise<ExpandGroupResults>}       An ExpandGroupResults containing the members of the group :Promise.
-     */
-    ExpandGroup(address: string, routingType: string): Promise<ExpandGroupResults>;
-    ExpandGroup(emailAddressOrsmtpAddressOrGroupId: EmailAddress | string | ItemId, routingType?: string): Promise<ExpandGroupResults> {
-        // EwsUtilities.ValidateParam(emailAddressOrsmtpAddressOrGroupId, "address");
-        // EwsUtilities.ValidateParam(routingType, "routingType");
-        //EwsUtilities.ValidateParam(emailAddress, "emailAddress");
-        var emailAddress: EmailAddress = new EmailAddress();
-
-        if (emailAddressOrsmtpAddressOrGroupId instanceof EmailAddress) {
-            emailAddress = emailAddressOrsmtpAddressOrGroupId;
-        }
-        else if (emailAddressOrsmtpAddressOrGroupId instanceof ItemId) {
-            emailAddress.Id = emailAddressOrsmtpAddressOrGroupId;
-        }
-        else if (typeof emailAddressOrsmtpAddressOrGroupId === 'string') {
-            emailAddress = new EmailAddress(emailAddressOrsmtpAddressOrGroupId);
-        }
-
-        if (routingType) {
-            emailAddress.RoutingType = routingType;
-        }
-
-        var request: ExpandGroupRequest = new ExpandGroupRequest(this);
-
-        request.EmailAddress = emailAddress;
-
-        return request.Execute().then((response) => {
-            return response.__thisIndexer(0).Members;
-        });
-
-    }
-    /**
-     * Get the password expiration date
-     *
-     * @param   {string}   mailboxSmtpAddress   The e-mail address of the user.
-     * @return  {Promise<DateTime>}             The password expiration date :Promise.
-     */
-    GetPasswordExpirationDate(mailboxSmtpAddress: string): Promise<DateTime> {
-        var request: GetPasswordExpirationDateRequest = new GetPasswordExpirationDateRequest(this);
-        request.MailboxSmtpAddress = mailboxSmtpAddress;
-
-        return request.Execute().then((response) => {
-            return response.PasswordExpirationDate;
-        });
+    if (folderIds != null) {
+      request.FolderIds.AddRange(folderIds);
     }
 
-    /**
-     * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
-     *
-     * @param   {string}    nameToResolve               The name to resolve.
-     * @return  {Promise<NameResolutionCollection>}     A collection of name resolutions whose names match the one passed as a parameter :Promise.
-     */
-    ResolveName(nameToResolve: string): Promise<NameResolutionCollection>;
-    /**
-     * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
-     *
-     * @param   {string}                        nameToResolve               The name to resolve.
-     * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
-     * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
-     * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
-     */
-    ResolveName(nameToResolve: string, searchScope: ResolveNameSearchLocation, returnContactDetails: boolean): Promise<NameResolutionCollection>;
-    /**
-     * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
-     *
-     * @param   {string}                        nameToResolve               The name to resolve.
-     * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
-     * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
-     * @param   {PropertySet}                   contactDataPropertySet      The property set for the contct details
-     * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
-     */
-    ResolveName(nameToResolve: string, searchScope: ResolveNameSearchLocation, returnContactDetails: boolean, contactDataPropertySet: PropertySet): Promise<NameResolutionCollection>;
-    /**
-     * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
-     *
-     * @param   {string}                        nameToResolve               The name to resolve.
-     * @param   {FolderId[]}                    parentFolderIds             The Ids of the contact folders in which to look for matching contacts.
-     * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
-     * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
-     * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
-     */
-    ResolveName(nameToResolve: string, parentFolderIds: FolderId[], searchScope: ResolveNameSearchLocation, returnContactDetails: boolean): Promise<NameResolutionCollection>;
-    /**
-     * Finds contacts in the Global Address List and/or in specific contact folders that have names that match the one passed as a parameter. Calling this method results in a call to EWS.
-     *
-     * @param   {string}                        nameToResolve               The name to resolve.
-     * @param   {FolderId[]}                    parentFolderIds             The Ids of the contact folders in which to look for matching contacts.
-     * @param   {ResolveNameSearchLocation}     searchScope                 The scope of the search.
-     * @param   {boolean}                       returnContactDetails        Indicates whether full contact information should be returned for each of the found contacts.
-     * @param   {PropertySet}                   contactDataPropertySet      The property set for the contct details
-     * @return  {Promise<NameResolutionCollection>}                         A collection of name resolutions whose names match the one passed as a parameter :Promise.
-     */
-    ResolveName(nameToResolve: string, parentFolderIds: FolderId[], searchScope: ResolveNameSearchLocation, returnContactDetails: boolean, contactDataPropertySet: PropertySet): Promise<NameResolutionCollection>;
+    request.Timeout = timeout;
+    ArrayHelper.AddRange(request.EventTypes, eventTypes); //request.EventTypes.AddRange(eventTypes);
+    request.Watermark = watermark;
 
-    ResolveName(
-        nameToResolve: string,
-        parentFolderIdsOrSearchScope?: ResolveNameSearchLocation | FolderId[],
-        searchScopeOrReturnContactDetails?: ResolveNameSearchLocation | boolean,
-        returnContactDetailsOrContactDataPropertySet?: boolean | PropertySet,
-        contactDataPropertySet: PropertySet = null
-    ): Promise<NameResolutionCollection> {
+    return request;
+  }
 
+  /**
+   * Builds an request to request to subscribe to push notifications in the authenticated user's mailbox.
+   *
+   * @param   {FolderId[]}    folderIds    The Ids of the folder to subscribe to.
+   * @param   {Uri}           url          The URL of the Web Service endpoint the Exchange server should push events to.
+   * @param   {number}        frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
+   * @param   {string}        watermark    An optional watermark representing a previously opened subscription.
+   * @param   {string}        callerData   Optional caller data that will be returned the call back.
+   * @param   {EventType[]}   eventTypes   The event types to subscribe to.
+   * @return  {SubscribeToPushNotificationsRequest}       A request to request to subscribe to push notifications in the authenticated user's mailbox.
+   */
+  private BuildSubscribeToPushNotificationsRequest(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, callerData: string, eventTypes: EventType[]): SubscribeToPushNotificationsRequest {
+    EwsUtilities.ValidateParam(url, "url");
 
-        var argsLength = arguments.length;
-        if (argsLength < 1 && argsLength > 5) {
-            throw new Error("ExchangeService.ts - ResolveName - invalid number of arguments, check documentation and try again.");
-        }
-
-        //position 1 - nameToResolve - no change, same for all overload
-
-        var searchScope: ResolveNameSearchLocation = null;
-        var parentFolderIds: FolderId[] = null;
-
-        //position 2 - parentFolderIdsOrSearchScope
-        if (argsLength >= 2) {
-            if (typeof parentFolderIdsOrSearchScope === 'number') {
-                searchScope = parentFolderIdsOrSearchScope;
-            }
-            else if (Array.isArray(parentFolderIdsOrSearchScope)) {
-                parentFolderIds = parentFolderIdsOrSearchScope;
-            }
-            //could be null
-            // else {
-            //     throw new Error("ExchangeService.ts - FindItems - incorrect uses of parameters at 2nd position, must be string, ViewBase or SearchFilter");
-            // }
-        }
-
-        var returnContactDetails: boolean = false;
-
-        //position 3 - searchScopeOrReturnContactDetails
-        if (argsLength >= 3) {
-            if (typeof searchScopeOrReturnContactDetails === 'boolean') {
-                if (typeof parentFolderIdsOrSearchScope !== 'number') {
-                    throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 2nd position, it must be ResolveNameSearchLocation when using boolean at 3rd place");
-                }
-                returnContactDetails = searchScopeOrReturnContactDetails;
-            }
-            else if (typeof searchScopeOrReturnContactDetails === 'number') {
-                if (!Array.isArray(parentFolderIdsOrSearchScope)) {
-                    throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 2nd position, it must be FolderId[] when using ResolveNameSearchLocation at 3rd place");
-                }
-                searchScope = searchScopeOrReturnContactDetails;
-            }
-            else {
-                throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, must be boolean, or ResolveNameSearchLocation");
-            }
-        }
-
-        //position 4 - returnContactDetailsOrContactDataPropertySet
-        if (argsLength >= 4) {
-            if (returnContactDetailsOrContactDataPropertySet instanceof PropertySet) {
-                if (typeof searchScopeOrReturnContactDetails !== 'boolean') {
-                    throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, it must be boolean when using PropertySet at 4th place");
-                }
-                contactDataPropertySet = returnContactDetailsOrContactDataPropertySet;
-            }
-            else if (typeof returnContactDetailsOrContactDataPropertySet === 'boolean') {
-                if (typeof searchScopeOrReturnContactDetails !== 'number') {
-                    throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 3rd position, it must be ResolveNameSearchLocation when using boolean at 4th place");
-                }
-                returnContactDetails = returnContactDetailsOrContactDataPropertySet;
-            }
-            else {
-                throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 4th  position, must be  PropertySet or boolean");
-            }
-        }
-
-        //position 5 - contactDataPropertySet
-        if (argsLength >= 5) {
-            if (typeof returnContactDetailsOrContactDataPropertySet !== 'boolean') {
-                throw new Error("ExchangeService.ts - ResolveName with " + argsLength + " parameters - incorrect uses of parameter at 4th position, it must be boolean when using PropertySet at 5th place");
-            }
-        }
-
-        var request: ResolveNamesRequest = new ResolveNamesRequest(this);
-
-        request.NameToResolve = nameToResolve;
-        request.ReturnFullContactData = returnContactDetails;
-        request.ParentFolderIds.AddRange(parentFolderIds);
-        request.SearchLocation = searchScope;
-        request.ContactDataPropertySet = contactDataPropertySet;
-
-        return request.Execute().then((response) => {
-            return response.__thisIndexer(0).Resolutions;
-        });
+    if (frequency < 1 || frequency > 1440) {
+      throw new ArgumentOutOfRangeException("frequency", Strings.FrequencyMustBeBetween1And1440);
     }
 
-    /* #endregion AD related operations */
+    EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
 
+    let request: SubscribeToPushNotificationsRequest = new SubscribeToPushNotificationsRequest(this);
 
-    /* #region Notification operations */
-
-    // BeginGetEvents(callback: Function /*System.AsyncCallback*/, state: any, subscriptionId: string, watermark: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginGetEvents : Not implemented."); }
-    // BeginSubscribeToPullNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, timeout: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPullNotifications : Not implemented."); }
-    // BeginSubscribeToPullNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, timeout: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPullNotificationsOnAllFolders : Not implemented."); }
-    // BeginSubscribeToPushNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, url: Uri, frequency: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotifications : Not implemented."); }
-    // //BeginSubscribeToPushNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, url: Uri, frequency: number, watermark: string, callerData: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotifications : Not implemented."); }
-    // BeginSubscribeToPushNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, url: Uri, frequency: number, watermark: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotificationsOnAllFolders : Not implemented."); }
-    // //BeginSubscribeToPushNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, url: Uri, frequency: number, watermark: string, callerData: string, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToPushNotificationsOnAllFolders : Not implemented."); }
-    // BeginSubscribeToStreamingNotifications(callback: Function /*System.AsyncCallback*/, state: any, folderIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToStreamingNotifications : Not implemented."); }
-    // BeginSubscribeToStreamingNotificationsOnAllFolders(callback: Function /*System.AsyncCallback*/, state: any, eventTypes: any): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSubscribeToStreamingNotificationsOnAllFolders : Not implemented."); }
-    // BeginUnsubscribe(callback: Function /*System.AsyncCallback*/, state: any, subscriptionId: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginUnsubscribe : Not implemented."); }
-
-    /**
-     * Builds an request to retrieve the latests events associated with a pull subscription.
-     *
-     * @param   {string}   subscriptionId   The Id of the pull subscription for which to get the events.
-     * @param   {string}   watermark        The watermark representing the point in time where to start receiving events.
-     * @return  {GetEventsRequest}          An request to retrieve the latests events associated with a pull subscription.
-     */
-    private BuildGetEventsRequest(subscriptionId: string, watermark: string): GetEventsRequest {
-        EwsUtilities.ValidateParam(subscriptionId, "subscriptionId");
-        EwsUtilities.ValidateParam(watermark, "watermark");
-
-        let request: GetEventsRequest = new GetEventsRequest(this);
-
-        request.SubscriptionId = subscriptionId;
-        request.Watermark = watermark;
-
-        return request;
+    if (folderIds != null) {
+      request.FolderIds.AddRange(folderIds);
     }
 
-    /**
-     * Builds a request to subscribe to pull notifications in the authenticated user's mailbox.
-     *
-     * @param   {FolderId[]}    folderIds    The Ids of the folder to subscribe to.
-     * @param   {number}        timeout      The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.
-     * @param   {string}        watermark    An optional watermark representing a previously opened subscription.
-     * @param   {EventType[]}   eventTypes   The event types to subscribe to.
-     * @return  {SubscribeToPullNotificationsRequest}   A request to subscribe to pull notifications in the authenticated user's mailbox.
-     */
-    private BuildSubscribeToPullNotificationsRequest(folderIds: FolderId[], timeout: number, watermark: string, eventTypes: EventType[]): SubscribeToPullNotificationsRequest {
-        if (timeout < 1 || timeout > 1440) {
-            throw new ArgumentOutOfRangeException("timeout", Strings.TimeoutMustBeBetween1And1440);
-        }
+    request.Url = url;
+    request.Frequency = frequency;
+    ArrayHelper.AddRange(request.EventTypes, eventTypes);//request.EventTypes.AddRange(eventTypes);
+    request.Watermark = watermark;
+    request.CallerData = callerData;
 
-        EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
+    return request;
+  }
 
-        let request: SubscribeToPullNotificationsRequest = new SubscribeToPullNotificationsRequest(this);
+  /**
+   * Builds request to subscribe to streaming notifications in the authenticated user's mailbox.
+   *
+   * @param   {FolderId[]}    folderIds    The Ids of the folder to subscribe to.
+   * @param   {EventType[]}   eventTypes   The event types to subscribe to.
+   * @return  {SubscribeToStreamingNotificationsRequest}      A request to subscribe to streaming notifications in the authenticated user's mailbox.
+   */
+  private BuildSubscribeToStreamingNotificationsRequest(folderIds: FolderId[], eventTypes: EventType[]): SubscribeToStreamingNotificationsRequest {
+    EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
 
-        if (folderIds != null) {
-            request.FolderIds.AddRange(folderIds);
-        }
+    let request: SubscribeToStreamingNotificationsRequest = new SubscribeToStreamingNotificationsRequest(this);
 
-        request.Timeout = timeout;
-        ArrayHelper.AddRange(request.EventTypes, eventTypes); //request.EventTypes.AddRange(eventTypes);
-        request.Watermark = watermark;
-
-        return request;
+    if (folderIds != null) {
+      request.FolderIds.AddRange(folderIds);
     }
 
-    /**
-     * Builds an request to request to subscribe to push notifications in the authenticated user's mailbox.
-     *
-     * @param   {FolderId[]}    folderIds    The Ids of the folder to subscribe to.
-     * @param   {Uri}           url          The URL of the Web Service endpoint the Exchange server should push events to.
-     * @param   {number}        frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
-     * @param   {string}        watermark    An optional watermark representing a previously opened subscription.
-     * @param   {string}        callerData   Optional caller data that will be returned the call back.
-     * @param   {EventType[]}   eventTypes   The event types to subscribe to.
-     * @return  {SubscribeToPushNotificationsRequest}       A request to request to subscribe to push notifications in the authenticated user's mailbox.
-     */
-    private BuildSubscribeToPushNotificationsRequest(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, callerData: string, eventTypes: EventType[]): SubscribeToPushNotificationsRequest {
-        EwsUtilities.ValidateParam(url, "url");
+    ArrayHelper.AddRange(request.EventTypes, eventTypes); //request.EventTypes.AddRange(eventTypes);
 
-        if (frequency < 1 || frequency > 1440) {
-            throw new ArgumentOutOfRangeException("frequency", Strings.FrequencyMustBeBetween1And1440);
-        }
+    return request;
+  }
 
-        EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
+  /**
+   * Buids a request to unsubscribe from a subscription.
+   *
+   * @param   {string}   subscriptionId   The Id of the subscription for which to get the events.
+   * @return  {UnsubscribeRequest}        A request to unsubscribe from a subscription.
+   */
+  private BuildUnsubscribeRequest(subscriptionId: string): UnsubscribeRequest {
+    EwsUtilities.ValidateParam(subscriptionId, "subscriptionId");
 
-        let request: SubscribeToPushNotificationsRequest = new SubscribeToPushNotificationsRequest(this);
+    let request: UnsubscribeRequest = new UnsubscribeRequest(this);
 
-        if (folderIds != null) {
-            request.FolderIds.AddRange(folderIds);
-        }
+    request.SubscriptionId = subscriptionId;
 
-        request.Url = url;
-        request.Frequency = frequency;
-        ArrayHelper.AddRange(request.EventTypes, eventTypes);//request.EventTypes.AddRange(eventTypes);
-        request.Watermark = watermark;
-        request.CallerData = callerData;
+    return request;
+  }
+  //EndGetEvents(asyncResult: Function /*System.IAsyncResult*/): GetEventsResults { throw new Error("ExchangeService.ts - EndGetEvents : Not implemented."); }
+  //EndSubscribeToPullNotifications(asyncResult: Function /*System.IAsyncResult*/): PullSubscription { throw new Error("ExchangeService.ts - EndSubscribeToPullNotifications : Not implemented."); }
+  //EndSubscribeToPushNotifications(asyncResult: Function /*System.IAsyncResult*/): PushSubscription { throw new Error("ExchangeService.ts - EndSubscribeToPushNotifications : Not implemented."); }
+  //EndSubscribeToStreamingNotifications(asyncResult: Function /*System.IAsyncResult*/): StreamingSubscription { throw new Error("ExchangeService.ts - EndSubscribeToStreamingNotifications : Not implemented."); }
+  //EndUnsubscribe(asyncResult: Function /*System.IAsyncResult*/): any { throw new Error("ExchangeService.ts - EndUnsubscribe : Not implemented."); }
 
-        return request;
+  /**
+   * Retrieves the latests events associated with a pull subscription. Calling this method results in a call to EWS.
+   *
+   * @param   {string}   subscriptionId   The Id of the pull subscription for which to get the events.
+   * @param   {string}   watermark        The watermark representing the point in time where to start receiving events.
+   * @return  {Promise<GetEventsResults>}     A GetEventsResults containing a list of events associated with the subscription.
+   */
+  GetEvents(subscriptionId: string, watermark: string): Promise<GetEventsResults> {
+    return this.BuildGetEventsRequest(subscriptionId, watermark).Execute().then((response) => {
+      return response.__thisIndexer(0).Results;
+    });
+  }
+
+  /**
+   * Set a TeamMailbox
+   *
+   * @param   {EmailAddress}                  emailAddress        TeamMailbox email address
+   * @param   {Uri}                           sharePointSiteUrl   SharePoint site URL
+   * @param   {TeamMailboxLifecycleState}     state               TeamMailbox lifecycle state
+   * @return  {Promise<void>}     Promise.
+   */
+  SetTeamMailbox(emailAddress: EmailAddress, sharePointSiteUrl: Uri, state: TeamMailboxLifecycleState): Promise<void> {
+    EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetTeamMailbox");
+
+    if (emailAddress == null) {
+      throw new ArgumentNullException("emailAddress");
     }
 
-    /**
-     * Builds request to subscribe to streaming notifications in the authenticated user's mailbox.
-     *
-     * @param   {FolderId[]}    folderIds    The Ids of the folder to subscribe to.
-     * @param   {EventType[]}   eventTypes   The event types to subscribe to.
-     * @return  {SubscribeToStreamingNotificationsRequest}      A request to subscribe to streaming notifications in the authenticated user's mailbox.
-     */
-    private BuildSubscribeToStreamingNotificationsRequest(folderIds: FolderId[], eventTypes: EventType[]): SubscribeToStreamingNotificationsRequest {
-        EwsUtilities.ValidateParamCollection(eventTypes, "eventTypes");
-
-        let request: SubscribeToStreamingNotificationsRequest = new SubscribeToStreamingNotificationsRequest(this);
-
-        if (folderIds != null) {
-            request.FolderIds.AddRange(folderIds);
-        }
-
-        ArrayHelper.AddRange(request.EventTypes, eventTypes); //request.EventTypes.AddRange(eventTypes);
-
-        return request;
+    if (sharePointSiteUrl == null) {
+      throw new ArgumentNullException("sharePointSiteUrl");
     }
 
-    /**
-     * Buids a request to unsubscribe from a subscription.
-     *
-     * @param   {string}   subscriptionId   The Id of the subscription for which to get the events.
-     * @return  {UnsubscribeRequest}        A request to unsubscribe from a subscription.
-     */
-    private BuildUnsubscribeRequest(subscriptionId: string): UnsubscribeRequest {
-        EwsUtilities.ValidateParam(subscriptionId, "subscriptionId");
+    let request: SetTeamMailboxRequest = new SetTeamMailboxRequest(this, emailAddress, sharePointSiteUrl, state);
+    return <any>request.Execute();
+  }
 
-        let request: UnsubscribeRequest = new UnsubscribeRequest(this);
+  /**
+   * Subscribes to pull notifications. Calling this method results in a call to EWS   :Promise.
+   *
+   * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
+   * @param   {number}            timeout      The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.
+   * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
+   * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
+   * @return  {Promise<PullSubscription>}      A PullSubscription representing the new subscription.
+   */
+  SubscribeToPullNotifications(folderIds: FolderId[], timeout: number, watermark: string, ...eventTypes: EventType[]): Promise<PullSubscription> {
+    EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
 
-        request.SubscriptionId = subscriptionId;
+    return this.BuildSubscribeToPullNotificationsRequest(
+      folderIds,
+      timeout,
+      watermark,
+      eventTypes).Execute().then((response) => {
+        return response.__thisIndexer(0).Subscription;
+      });
+  }
 
-        return request;
+  /**
+   * Subscribes to pull notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.   :Promise.
+   *
+   * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
+   * @param   {number}            timeout      The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.
+   * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
+   * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
+   * @return  {Promise<PullSubscription>}      A PullSubscription representing the new subscription.
+   */
+  SubscribeToPullNotificationsOnAllFolders(timeout: number, watermark: string, ...eventTypes: EventType[]): Promise<PullSubscription> {
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010,
+      "SubscribeToPullNotificationsOnAllFolders");
+
+    return this.BuildSubscribeToPullNotificationsRequest(
+      null,
+      timeout,
+      watermark,
+      eventTypes).Execute().then((response) => {
+        return response.__thisIndexer(0).Subscription;
+      });
+  }
+
+  /**
+   * Subscribes to push notifications. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
+   * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
+   * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
+   * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
+   * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
+   * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription  :Promise.
+   */
+  SubscribeToPushNotifications(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
+  /**
+   * Subscribes to push notifications. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
+   * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
+   * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
+   * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
+   * @param   {string}            callerData   Optional caller data that will be returned the call back.
+   * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
+   * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription  :Promise.
+   */
+  SubscribeToPushNotifications(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, callerData: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
+  SubscribeToPushNotifications(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, callerDataOrEventTypes: string | EventType, ...eventTypes: EventType[]): Promise<PushSubscription> {
+
+    EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
+
+    let callerData: string = null;
+
+    if (typeof callerDataOrEventTypes === 'string') {
+      callerData = callerDataOrEventTypes;
     }
-    //EndGetEvents(asyncResult: Function /*System.IAsyncResult*/): GetEventsResults { throw new Error("ExchangeService.ts - EndGetEvents : Not implemented."); }
-    //EndSubscribeToPullNotifications(asyncResult: Function /*System.IAsyncResult*/): PullSubscription { throw new Error("ExchangeService.ts - EndSubscribeToPullNotifications : Not implemented."); }
-    //EndSubscribeToPushNotifications(asyncResult: Function /*System.IAsyncResult*/): PushSubscription { throw new Error("ExchangeService.ts - EndSubscribeToPushNotifications : Not implemented."); }
-    //EndSubscribeToStreamingNotifications(asyncResult: Function /*System.IAsyncResult*/): StreamingSubscription { throw new Error("ExchangeService.ts - EndSubscribeToStreamingNotifications : Not implemented."); }
-    //EndUnsubscribe(asyncResult: Function /*System.IAsyncResult*/): any { throw new Error("ExchangeService.ts - EndUnsubscribe : Not implemented."); }
-
-    /**
-     * Retrieves the latests events associated with a pull subscription. Calling this method results in a call to EWS.
-     *
-     * @param   {string}   subscriptionId   The Id of the pull subscription for which to get the events.
-     * @param   {string}   watermark        The watermark representing the point in time where to start receiving events.
-     * @return  {Promise<GetEventsResults>}     A GetEventsResults containing a list of events associated with the subscription.
-     */
-    GetEvents(subscriptionId: string, watermark: string): Promise<GetEventsResults> {
-        return this.BuildGetEventsRequest(subscriptionId, watermark).Execute().then((response) => {
-            return response.__thisIndexer(0).Results;
-        });
-    }
-
-    /**
-     * Set a TeamMailbox
-     *
-     * @param   {EmailAddress}                  emailAddress        TeamMailbox email address
-     * @param   {Uri}                           sharePointSiteUrl   SharePoint site URL
-     * @param   {TeamMailboxLifecycleState}     state               TeamMailbox lifecycle state
-     * @return  {Promise<void>}     Promise.
-     */
-    SetTeamMailbox(emailAddress: EmailAddress, sharePointSiteUrl: Uri, state: TeamMailboxLifecycleState): Promise<void> {
-        EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetTeamMailbox");
-
-        if (emailAddress == null) {
-            throw new ArgumentNullException("emailAddress");
-        }
-
-        if (sharePointSiteUrl == null) {
-            throw new ArgumentNullException("sharePointSiteUrl");
-        }
-
-        let request: SetTeamMailboxRequest = new SetTeamMailboxRequest(this, emailAddress, sharePointSiteUrl, state);
-        return <any>request.Execute();
-    }
-
-    /**
-     * Subscribes to pull notifications. Calling this method results in a call to EWS   :Promise.
-     *
-     * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
-     * @param   {number}            timeout      The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.
-     * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
-     * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
-     * @return  {Promise<PullSubscription>}      A PullSubscription representing the new subscription.
-     */
-    SubscribeToPullNotifications(folderIds: FolderId[], timeout: number, watermark: string, ...eventTypes: EventType[]): Promise<PullSubscription> {
-        EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
-
-        return this.BuildSubscribeToPullNotificationsRequest(
-            folderIds,
-            timeout,
-            watermark,
-            eventTypes).Execute().then((response) => {
-                return response.__thisIndexer(0).Subscription;
-            });
-    }
-
-    /**
-     * Subscribes to pull notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.   :Promise.
-     *
-     * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
-     * @param   {number}            timeout      The timeout, in minutes, after which the subscription expires. Timeout must be between 1 and 1440.
-     * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
-     * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
-     * @return  {Promise<PullSubscription>}      A PullSubscription representing the new subscription.
-     */
-    SubscribeToPullNotificationsOnAllFolders(timeout: number, watermark: string, ...eventTypes: EventType[]): Promise<PullSubscription> {
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010,
-            "SubscribeToPullNotificationsOnAllFolders");
-
-        return this.BuildSubscribeToPullNotificationsRequest(
-            null,
-            timeout,
-            watermark,
-            eventTypes).Execute().then((response) => {
-                return response.__thisIndexer(0).Subscription;
-            });
+    else {
+      eventTypes.push(callerDataOrEventTypes); //info: ref: typescript generates eventTypes from arguments.length, need to push to it.
     }
 
-    /**
-     * Subscribes to push notifications. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
-     * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
-     * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
-     * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
-     * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
-     * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription  :Promise.
-     */
-    SubscribeToPushNotifications(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
-    /**
-     * Subscribes to push notifications. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId[]}        folderIds    The Ids of the folder to subscribe to.
-     * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
-     * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
-     * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
-     * @param   {string}            callerData   Optional caller data that will be returned the call back.
-     * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
-     * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription  :Promise.
-     */
-    SubscribeToPushNotifications(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, callerData: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
-    SubscribeToPushNotifications(folderIds: FolderId[], url: Uri, frequency: number, watermark: string, callerDataOrEventTypes: string | EventType, ...eventTypes: EventType[]): Promise<PushSubscription> {
+    return this.BuildSubscribeToPushNotificationsRequest(
+      folderIds,
+      url,
+      frequency,
+      watermark,
+      callerData,
+      eventTypes).Execute().then((response) => {
+        return response.__thisIndexer(0).Subscription;
+      });
+  }
 
-        EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
+  /**
+   * Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
+   * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
+   * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
+   * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
+   * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription    :Promise.
+   */
+  SubscribeToPushNotificationsOnAllFolders(url: Uri, frequency: number, watermark: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
+  /**
+   * Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
+   * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
+   * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
+   * @param   {string}            callerData   Optional caller data that will be returned the call back.
+   * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
+   * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription    :Promise.
+   */
+  SubscribeToPushNotificationsOnAllFolders(url: Uri, frequency: number, watermark: string, callerData: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
+  SubscribeToPushNotificationsOnAllFolders(url: Uri, frequency: number, watermark: string, callerDataOrEventTypes: string | EventType, ...eventTypes: EventType[]): Promise<PushSubscription> {
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010,
+      "SubscribeToPushNotificationsOnAllFolders");
 
-        let callerData: string = null;
+    let callerData: string = null;
 
-        if (typeof callerDataOrEventTypes === 'string') {
-            callerData = callerDataOrEventTypes;
-        }
-        else {
-            eventTypes.push(callerDataOrEventTypes); //info: ref: typescript generates eventTypes from arguments.length, need to push to it.
-        }
-
-        return this.BuildSubscribeToPushNotificationsRequest(
-            folderIds,
-            url,
-            frequency,
-            watermark,
-            callerData,
-            eventTypes).Execute().then((response) => {
-                return response.__thisIndexer(0).Subscription;
-            });
+    if (typeof callerDataOrEventTypes === 'string') {
+      callerData = callerDataOrEventTypes;
+    }
+    else {
+      eventTypes.push(callerDataOrEventTypes); //info: ref: typescript generates eventTypes from arguments.length, need to push to it.
     }
 
-    /**
-     * Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
-     * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
-     * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
-     * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
-     * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription    :Promise.
-     */
-    SubscribeToPushNotificationsOnAllFolders(url: Uri, frequency: number, watermark: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
-    /**
-     * Subscribes to push notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Uri}               url          The URL of the Web Service endpoint the Exchange server should push events to.
-     * @param   {number}            frequency    The frequency, in minutes, at which the Exchange server should contact the Web Service endpoint. Frequency must be between 1 and 1440.
-     * @param   {string}            watermark    An optional watermark representing a previously opened subscription.
-     * @param   {string}            callerData   Optional caller data that will be returned the call back.
-     * @param   {...EventType[]}    eventTypes   The event types to subscribe to.
-     * @return  {Promise<PushSubscription>}      A PushSubscription representing the new subscription    :Promise.
-     */
-    SubscribeToPushNotificationsOnAllFolders(url: Uri, frequency: number, watermark: string, callerData: string, ...eventTypes: EventType[]): Promise<PushSubscription>;
-    SubscribeToPushNotificationsOnAllFolders(url: Uri, frequency: number, watermark: string, callerDataOrEventTypes: string | EventType, ...eventTypes: EventType[]): Promise<PushSubscription> {
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010,
-            "SubscribeToPushNotificationsOnAllFolders");
+    return this.BuildSubscribeToPushNotificationsRequest(
+      null,
+      url,
+      frequency,
+      watermark,
+      callerData,
+      eventTypes).Execute().then((response) => {
+        return response.__thisIndexer(0).Subscription;
+      });
+  }
 
-        let callerData: string = null;
+  /**
+   * Subscribes to streaming notifications. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId[]}   folderIds    The Ids of the folder to subscribe to.
+   * @param   {EventType[]}   eventTypes   The event types to subscribe to.
+   * @return  {Promise<StreamingSubscription>}        A StreamingSubscription representing the new subscription   :Promise.
+   */
+  SubscribeToStreamingNotifications(folderIds: FolderId[], ...eventTypes: EventType[]): Promise<StreamingSubscription> {
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010_SP1,
+      "SubscribeToStreamingNotifications");
 
-        if (typeof callerDataOrEventTypes === 'string') {
-            callerData = callerDataOrEventTypes;
-        }
-        else {
-            eventTypes.push(callerDataOrEventTypes); //info: ref: typescript generates eventTypes from arguments.length, need to push to it.
-        }
+    EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
 
-        return this.BuildSubscribeToPushNotificationsRequest(
-            null,
-            url,
-            frequency,
-            watermark,
-            callerData,
-            eventTypes).Execute().then((response) => {
-                return response.__thisIndexer(0).Subscription;
-            });
+    return this.BuildSubscribeToStreamingNotificationsRequest(folderIds, eventTypes).Execute().then((responses) => {
+      return responses.__thisIndexer(0).Subscription;
+    });
+
+  }
+
+  /**
+   * Subscribes to streaming notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {EventType[]}   eventTypes   The event types to subscribe to.
+   * @return  {Promise<StreamingSubscription>}        A StreamingSubscription representing the new subscription   :Promise.
+   */
+  SubscribeToStreamingNotificationsOnAllFolders(...eventTypes: EventType[]): Promise<StreamingSubscription> {
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010_SP1,
+      "SubscribeToStreamingNotificationsOnAllFolders");
+
+    return this.BuildSubscribeToStreamingNotificationsRequest(null, eventTypes).Execute().then((responses) => {
+      return responses.__thisIndexer(0).Subscription;
+    });
+  }
+
+  /**
+   * Unpin a TeamMailbox
+   *
+   * @param   {EmailAddress}      emailAddress        TeamMailbox email address
+   * @return  {Promise<void>}     Promise.
+   */
+  UnpinTeamMailbox(emailAddress: EmailAddress): Promise<void> {
+    EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "UnpinTeamMailbox");
+
+    if (emailAddress == null) {
+      throw new ArgumentNullException("emailAddress");
     }
 
-    /**
-     * Subscribes to streaming notifications. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId[]}   folderIds    The Ids of the folder to subscribe to.
-     * @param   {EventType[]}   eventTypes   The event types to subscribe to.
-     * @return  {Promise<StreamingSubscription>}        A StreamingSubscription representing the new subscription   :Promise.
-     */
-    SubscribeToStreamingNotifications(folderIds: FolderId[], ...eventTypes: EventType[]): Promise<StreamingSubscription> {
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010_SP1,
-            "SubscribeToStreamingNotifications");
+    let request: UnpinTeamMailboxRequest = new UnpinTeamMailboxRequest(this, emailAddress);
+    return <any>request.Execute();
+  }
 
-        EwsUtilities.ValidateParamCollection(folderIds, "folderIds");
+  /**
+   * @internal Unsubscribes from a subscription. Calling this method results in a call to EWS.
+   *
+   * @param   {string}   subscriptionId   The Id of the pull subscription to unsubscribe from.
+   */
+  Unsubscribe(subscriptionId: string): Promise<void> {
+    return <any>this.BuildUnsubscribeRequest(subscriptionId).Execute();
+  }
 
-        return this.BuildSubscribeToStreamingNotificationsRequest(folderIds, eventTypes).Execute().then((responses) => {
-            return responses.__thisIndexer(0).Subscription;
-        });
+  //#endregion
 
+
+  //#region Synchronization operations
+
+  // BeginSyncFolderItems(callback: Function /*System.AsyncCallback*/, state: any, syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, maxChangesReturned: number, syncScope: SyncFolderItemsScope, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderItems : Not implemented."); }
+  // BeginSyncFolderItems(callback: Function /*System.AsyncCallback*/, state: any, syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, maxChangesReturned: number, numberOfDays: number, syncScope: SyncFolderItemsScope, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderItems : Not implemented."); }
+
+  /**
+   * Builds a request to synchronize the items of a specific folder.
+   *
+   * @param   {FolderId}              syncFolderId         The Id of the folder containing the items to synchronize with.
+   * @param   {PropertySet}           propertySet          The set of properties to retrieve for synchronized items.
+   * @param   {ItemId[]}              ignoredItemIds       The optional list of item Ids that should be ignored.
+   * @param   {number}                maxChangesReturned   The maximum number of changes that should be returned.
+   * @param   {number}                numberOfDays         Limit the changes returned to this many days ago; 0 means no limit.
+   * @param   {SyncFolderItemsScope}  syncScope            The sync scope identifying items to include in the ChangeCollection.
+   * @param   {string}                syncState            The optional sync state representing the point in time when to start the synchronization.
+   * @return  {SyncFolderItemsRequest}        A request to synchronize the items of a specific folder.
+   */
+  private BuildSyncFolderItemsRequest(syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: ItemId[], maxChangesReturned: number, numberOfDays: number, syncScope: SyncFolderItemsScope, syncState: string): SyncFolderItemsRequest {
+    EwsUtilities.ValidateParam(syncFolderId, "syncFolderId");
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
+
+    let request: SyncFolderItemsRequest = new SyncFolderItemsRequest(this);
+
+    request.SyncFolderId = syncFolderId;
+    request.PropertySet = propertySet;
+    if (ignoredItemIds != null) {
+      request.IgnoredItemIds.AddRange(ignoredItemIds);
+    }
+    request.MaxChangesReturned = maxChangesReturned;
+    request.NumberOfDays = numberOfDays;
+    request.SyncScope = syncScope;
+    request.SyncState = syncState;
+
+    return request;
+  }
+  //EndSyncFolderItems(asyncResult: Function /*System.IAsyncResult*/): ChangeCollection<ItemChange> { throw new Error("ExchangeService.ts - EndSyncFolderItems : Not implemented."); }
+
+  /**
+   * Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}              syncFolderId         The Id of the folder containing the items to synchronize with.
+   * @param   {PropertySet}           propertySet          The set of properties to retrieve for synchronized items.
+   * @param   {ItemId[]}              ignoredItemIds       The optional list of item Ids that should be ignored.
+   * @param   {number}                maxChangesReturned   The maximum number of changes that should be returned.
+   * @param   {number}                numberOfDays         Limit the changes returned to this many days ago; 0 means no limit.
+   * @param   {SyncFolderItemsScope}  syncScope            The sync scope identifying items to include in the ChangeCollection.
+   * @param   {string}                syncState            The optional sync state representing the point in time when to start the synchronization.
+   * @return  {Promise<ChangeCollection<ItemChange>>}      A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
+   */
+  SyncFolderItems(syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: ItemId[], maxChangesReturned: number, syncScope: SyncFolderItemsScope, syncState: string): Promise<ChangeCollection<ItemChange>>;
+  /**
+   * Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}              syncFolderId         The Id of the folder containing the items to synchronize with.
+   * @param   {PropertySet}           propertySet          The set of properties to retrieve for synchronized items.
+   * @param   {ItemId[]}              ignoredItemIds       The optional list of item Ids that should be ignored.
+   * @param   {number}                maxChangesReturned   The maximum number of changes that should be returned.
+   * @param   {number}                numberOfDays         Limit the changes returned to this many days ago; 0 means no limit.
+   * @param   {SyncFolderItemsScope}  syncScope            The sync scope identifying items to include in the ChangeCollection.
+   * @param   {string}                syncState            The optional sync state representing the point in time when to start the synchronization.
+   * @return  {Promise<ChangeCollection<ItemChange>>}      A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
+   */
+  SyncFolderItems(syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: ItemId[], maxChangesReturned: number, numberOfDays: number, syncScope: SyncFolderItemsScope, syncState: string): Promise<ChangeCollection<ItemChange>>;
+  SyncFolderItems(
+    syncFolderId: FolderId,
+    propertySet: PropertySet,
+    ignoredItemIds: ItemId[],
+    maxChangesReturned: number,
+    numberOfDaysOrSyncScope: number | SyncFolderItemsScope,
+    syncScopeOrSyncState: SyncFolderItemsScope | string,
+    syncState: string = null): Promise<ChangeCollection<ItemChange>> {
+
+    let numberOfDays: number = 0;
+    let syncScope: SyncFolderItemsScope;
+
+    if (arguments.length === 6) {
+      syncState = <string>syncScopeOrSyncState;
+      syncScope = numberOfDaysOrSyncScope;
+    }
+    else {
+      numberOfDays = numberOfDaysOrSyncScope;
+      syncScope = <SyncFolderItemsScope>syncScopeOrSyncState;
     }
 
-    /**
-     * Subscribes to streaming notifications on all folders in the authenticated user's mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {EventType[]}   eventTypes   The event types to subscribe to.
-     * @return  {Promise<StreamingSubscription>}        A StreamingSubscription representing the new subscription   :Promise.
-     */
-    SubscribeToStreamingNotificationsOnAllFolders(...eventTypes: EventType[]): Promise<StreamingSubscription> {
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010_SP1,
-            "SubscribeToStreamingNotificationsOnAllFolders");
+    return this.BuildSyncFolderItemsRequest(
+      syncFolderId,
+      propertySet,
+      ignoredItemIds,
+      maxChangesReturned,
+      numberOfDays,
+      syncScope,
+      syncState).Execute().then((responses) => {
+        return responses.__thisIndexer(0).Changes;
+      });
+  }
 
-        return this.BuildSubscribeToStreamingNotificationsRequest(null, eventTypes).Execute().then((responses) => {
-            return responses.__thisIndexer(0).Subscription;
-        });
+  // BeginSyncFolderHierarchy(callback: Function /*System.AsyncCallback*/, state: any, propertySet: PropertySet, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderHierarchy : Not implemented."); }
+  // //BeginSyncFolderHierarchy(callback: Function /*System.AsyncCallback*/, state: any, syncFolderId: FolderId, propertySet: PropertySet, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderHierarchy : Not implemented."); }
+
+  /**
+   * Builds a request to synchronize the specified folder hierarchy of the mailbox this Service is connected to.
+   *
+   * @param   {FolderId}      syncFolderId   The Id of the folder containing the items to synchronize with. A null value indicates the root folder of the mailbox.
+   * @param   {PropertySet}   propertySet    The set of properties to retrieve for synchronized items.
+   * @param   {string}        syncState      The optional sync state representing the point in time when to start the synchronization.
+   * @return  {SyncFolderHierarchyRequest}        A request to synchronize the specified folder hierarchy of the mailbox this Service is connected to.
+   */
+  private BuildSyncFolderHierarchyRequest(syncFolderId: FolderId, propertySet: PropertySet, syncState: string): SyncFolderHierarchyRequest {
+    EwsUtilities.ValidateParamAllowNull(syncFolderId, "syncFolderId");  // Null syncFolderId is allowed
+    EwsUtilities.ValidateParam(propertySet, "propertySet");
+
+    let request: SyncFolderHierarchyRequest = new SyncFolderHierarchyRequest(this);
+
+    request.PropertySet = propertySet;
+    request.SyncFolderId = syncFolderId;
+    request.SyncState = syncState;
+
+    return request;
+  }
+
+  //EndSyncFolderHierarchy(asyncResult: Function /*System.IAsyncResult*/): ChangeCollection<FolderChange> { throw new Error("ExchangeService.ts - EndSyncFolderHierarchy : Not implemented."); }
+
+  /**
+   * Synchronizes the sub-folders of a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {FolderId}      syncFolderId   The Id of the folder containing the items to synchronize with. A null value indicates the root folder of the mailbox.
+   * @param   {PropertySet}   propertySet    The set of properties to retrieve for synchronized items.
+   * @param   {string}        syncState      The optional sync state representing the point in time when to start the synchronization.
+   * @return  {Promise<ChangeCollection<FolderChange>>}       A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
+   */
+  SyncFolderHierarchy(syncFolderId: FolderId, propertySet: PropertySet, syncState: string): Promise<ChangeCollection<FolderChange>>;
+  /**
+   * Synchronizes the entire folder hierarchy of the mailbox this Service is connected to. Calling this method results in a call to EWS.
+   *
+   * @param   {PropertySet}   propertySet    The set of properties to retrieve for synchronized items.
+   * @param   {string}        syncState      The optional sync state representing the point in time when to start the synchronization.
+   * @return  {Promise<ChangeCollection<FolderChange>>}       A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
+   */
+  SyncFolderHierarchy(propertySet: PropertySet, syncState: string): Promise<ChangeCollection<FolderChange>>;
+  SyncFolderHierarchy(
+    syncFolderIdOrPropertySet: FolderId | PropertySet,
+    propertySetOrSyncState: PropertySet | string,
+    syncState: string = null): Promise<ChangeCollection<FolderChange>> {
+
+    let syncFolderId: FolderId = null;
+    let propertySet: PropertySet;
+
+    if (arguments.length === 2) {
+      propertySet = <PropertySet>syncFolderIdOrPropertySet;
+      syncState = <string>propertySetOrSyncState;
+    }
+    else {
+      syncFolderId = <FolderId>syncFolderIdOrPropertySet;
+      propertySet = <PropertySet>propertySetOrSyncState;
     }
 
-    /**
-     * Unpin a TeamMailbox
-     *
-     * @param   {EmailAddress}      emailAddress        TeamMailbox email address
-     * @return  {Promise<void>}     Promise.
-     */
-    UnpinTeamMailbox(emailAddress: EmailAddress): Promise<void> {
-        EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "UnpinTeamMailbox");
+    return this.BuildSyncFolderHierarchyRequest(
+      syncFolderId,
+      propertySet,
+      syncState).Execute().then((responses) => {
+        return responses.__thisIndexer(0).Changes;
+      });
+  }
+  //#endregion
 
-        if (emailAddress == null) {
-            throw new ArgumentNullException("emailAddress");
-        }
 
-        let request: UnpinTeamMailboxRequest = new UnpinTeamMailboxRequest(this, emailAddress);
-        return <any>request.Execute();
+  //#region Availability operations
+
+  /**
+   * Retrieves a collection of all room lists in the organization.
+   *
+   * @return  {Promise<EmailAddressCollection[]>}     A collection of EmailAddress objects representing all the rooms within the specifed room list   :Promise.
+   */
+  GetRoomLists(): Promise<EmailAddressCollection> {
+    let request: GetRoomListsRequest = new GetRoomListsRequest(this);
+
+    return request.Execute().then((response) => {
+      return response.RoomLists;
+    });
+  }
+
+  /**
+   * Retrieves a collection of all rooms in the specified room list in the organization.
+   *
+   * @param   {EmailAddress}   emailAddress   The e-mail address of the room list.
+   * @return  {Promise<EmailAddress[]>}       A collection of EmailAddress objects representing all the rooms within the specifed room list   :Promise.
+   */
+  GetRooms(emailAddress: EmailAddress): Promise<EmailAddress[]> {
+    EwsUtilities.ValidateParam(emailAddress, "emailAddress");
+
+    let request: GetRoomsRequest = new GetRoomsRequest(this);
+
+    request.RoomList = emailAddress;
+
+    return request.Execute().then((response) => {
+      return response.Rooms;
+    });
+  }
+
+  /**
+   * Gets detailed information about the availability of a set of users, rooms, and resources within a specified time window.
+   *
+   * @param   {AttendeeInfo[]}        attendees           The attendees for which to retrieve availability information.
+   * @param   {TimeWindow}            timeWindow          The time window in which to retrieve user availability information.
+   * @param   {AvailabilityData}      requestedData       The requested data (free/busy and/or suggestions).
+   * @return  {Promise<GetUserAvailabilityResults>}       The availability information for each user appears in a unique FreeBusyResponse object. The order of users in the request determines the order of availability data for each user in the response :Promise.
+   */
+  GetUserAvailability(attendees: AttendeeInfo[], timeWindow: TimeWindow, requestedData: AvailabilityData): Promise<GetUserAvailabilityResults>;
+  /**
+   * Gets detailed information about the availability of a set of users, rooms, and resources within a specified time window.
+   *
+   * @param   {AttendeeInfo[]}        attendees           The attendees for which to retrieve availability information.
+   * @param   {TimeWindow}            timeWindow          The time window in which to retrieve user availability information.
+   * @param   {AvailabilityData}      requestedData       The requested data (free/busy and/or suggestions).
+   * @param   {AvailabilityOptions}   options             The options controlling the information returned.
+   * @return  {Promise<GetUserAvailabilityResults>}       The availability information for each user appears in a unique FreeBusyResponse object. The order of users in the request determines the order of availability data for each user in the response :Promise.
+   */
+  GetUserAvailability(attendees: AttendeeInfo[], timeWindow: TimeWindow, requestedData: AvailabilityData, options: AvailabilityOptions): Promise<GetUserAvailabilityResults>;
+  GetUserAvailability(attendees: AttendeeInfo[], timeWindow: TimeWindow, requestedData: AvailabilityData, options: AvailabilityOptions = new AvailabilityOptions()): Promise<GetUserAvailabilityResults> {
+    EwsUtilities.ValidateParamCollection(attendees, "attendees");
+    EwsUtilities.ValidateParam(timeWindow, "timeWindow");
+    EwsUtilities.ValidateParam(options, "options");
+    var request = new GetUserAvailabilityRequest(this);
+
+    request.Attendees = attendees;
+    request.TimeWindow = timeWindow;
+    request.RequestedData = requestedData;
+    request.Options = options;
+
+    return request.Execute().then((responses) => {
+      return responses;
+    });
+
+  }
+
+  /**
+   * Gets Out of Office (OOF) settings for a specific user. Calling this method results in a call to EWS.
+   *
+   * @param   {string}   smtpAddress   The SMTP address of the user for which to retrieve OOF settings.
+   * @return  {Promise<OofSettings>}   An OofSettings instance containing OOF information for the specified user.
+   */
+  GetUserOofSettings(smtpAddress: string): Promise<OofSettings> {
+    EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
+
+    var request: GetUserOofSettingsRequest = new GetUserOofSettingsRequest(this);
+
+    request.SmtpAddress = smtpAddress;
+
+    return request.Execute().then((response) => {
+      return response.OofSettings;
+    });
+  }
+
+  /**
+   * Sets the Out of Office (OOF) settings for a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {string}        smtpAddress   The SMTP address of the user for which to set OOF settings.
+   * @param   {OofSettings}   oofSettings   The OOF settings.
+   * @return  {Promise<void>}      Promise.
+   */
+  SetUserOofSettings(smtpAddress: string, oofSettings: OofSettings): Promise<void> {
+    EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
+    EwsUtilities.ValidateParam(oofSettings, "oofSettings");
+
+    var request: SetUserOofSettingsRequest = new SetUserOofSettingsRequest(this);
+
+    request.SmtpAddress = smtpAddress;
+    request.OofSettings = oofSettings;
+
+    return <any>request.Execute();
+  }
+  //#endregion
+
+
+  //#region Conversation
+
+  /**
+   * Applies ConversationAction on the specified conversation.
+   *
+   * @param   {ConversationActionType}    actionType            ConversationAction
+   * @param   {ConversationId[]}          conversationIds       The conversation ids.
+   * @param   {boolean}                   processRightAway      True to process at once . This is blocking and false to let the Assistant process it in the back ground
+   * @param   {StringList}                categories            Catgories that need to be stamped can be null or empty
+   * @param   {boolean}                   enableAlwaysDelete    True moves every current and future messages in the conversation to deleted items folder. False stops the alwasy delete action. This is applicable only if the action is AlwaysDelete
+   * @param   {FolderId}                  destinationFolderId   Applicable if the action is AlwaysMove. This moves every current message and future  message in the conversation to the specified folder. Can be null if tis is then it stops the always move action
+   * @param   {ServiceErrorHandling}      errorHandlingMode     The error handling mode.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  private ApplyConversationAction(
+    actionType: ConversationActionType,
+    conversationIds: ConversationId[],
+    processRightAway: boolean,
+    categories: StringList,
+    enableAlwaysDelete: boolean,
+    destinationFolderId: FolderId,
+    errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
+    EwsLogging.Assert(
+      actionType == ConversationActionType.AlwaysCategorize ||
+      actionType == ConversationActionType.AlwaysMove ||
+      actionType == ConversationActionType.AlwaysDelete,
+      "ApplyConversationAction",
+      "Invalic actionType");
+
+    EwsUtilities.ValidateParam(conversationIds, "conversationId");
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010_SP1,
+      "ApplyConversationAction");
+
+    let request: ApplyConversationActionRequest = new ApplyConversationActionRequest(this, errorHandlingMode);
+
+    for (let conversationId of conversationIds) {
+      const action: ConversationAction = new ConversationAction();
+      action.Action = actionType;
+      action.ConversationId = conversationId;
+      action.ProcessRightAway = processRightAway;
+      action.Categories = categories;
+      action.EnableAlwaysDelete = enableAlwaysDelete;
+      action.DestinationFolderId = destinationFolderId != null ? new FolderIdWrapper(destinationFolderId) : null;
+      request.ConversationActions.push(action);
     }
 
-    /**
-     * @internal Unsubscribes from a subscription. Calling this method results in a call to EWS.
-     *
-     * @param   {string}   subscriptionId   The Id of the pull subscription to unsubscribe from.
-     */
-    Unsubscribe(subscriptionId: string): Promise<void> {
-        return <any>this.BuildUnsubscribeRequest(subscriptionId).Execute();
+    return request.Execute();
+  }
+
+  /**
+   * Applies one time conversation action on items in specified folder inside the conversation.
+   *
+   * @param   {ConversationActionType}                        actionType             The action.
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idTimePairs            The id time pairs.
+   * @param   {FolderId}                                      contextFolderId        The context folder id.
+   * @param   {FolderId}                                      destinationFolderId    The destination folder id.
+   * @param   {DeleteMode}                                    deleteType             Type of the delete.
+   * @param   {boolean}                                       isRead                 The is read.
+   * @param   {RetentionType}                                 retentionPolicyType    Retention policy type.
+   * @param   {Guid}                                          retentionPolicyTagId   Retention policy tag id.  Null will clear the policy.
+   * @param   {Flag}                                          flag                   Flag status.
+   * @param   {boolean}                                       suppressReadReceipts   Suppress read receipts flag.
+   * @param   {ServiceErrorHandling}                          errorHandlingMode      The error handling mode.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  private ApplyConversationOneTimeAction(
+    actionType: ConversationActionType,
+    idTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs,
+    contextFolderId: FolderId,
+    destinationFolderId: FolderId,
+    deleteType: DeleteMode,
+    isRead: boolean,
+    retentionPolicyType: RetentionType,
+    retentionPolicyTagId: Guid,
+    flag: Flag,
+    suppressReadReceipts: boolean,
+    errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
+    EwsLogging.Assert(
+      actionType == ConversationActionType.Move ||
+      actionType == ConversationActionType.Delete ||
+      actionType == ConversationActionType.SetReadState ||
+      actionType == ConversationActionType.SetRetentionPolicy ||
+      actionType == ConversationActionType.Copy ||
+      actionType == ConversationActionType.Flag,
+      "ApplyConversationOneTimeAction",
+      "Invalid actionType");
+
+    EwsUtilities.ValidateParamCollection(idTimePairs, "idTimePairs");
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2010_SP1,
+      "ApplyConversationAction");
+
+    let request: ApplyConversationActionRequest = new ApplyConversationActionRequest(this, errorHandlingMode);
+
+    for (let idTimePair of idTimePairs) {
+      let action: ConversationAction = new ConversationAction();
+
+      action.Action = actionType;
+      action.ConversationId = idTimePair.key;
+      action.ContextFolderId = contextFolderId != null ? new FolderIdWrapper(contextFolderId) : null;
+      action.DestinationFolderId = destinationFolderId != null ? new FolderIdWrapper(destinationFolderId) : null;
+      action.ConversationLastSyncTime = idTimePair.value;
+      action.IsRead = isRead;
+      action.DeleteType = deleteType;
+      action.RetentionPolicyType = retentionPolicyType;
+      action.RetentionPolicyTagId = retentionPolicyTagId;
+      action.Flag = flag;
+      action.SuppressReadReceipts = suppressReadReceipts;
+
+      request.ConversationActions.push(action);
     }
 
-    /* #endregion Notification operations */
+    return request.Execute();
+  }
 
+  /**
+   * Sets up a conversation so that any item received within that conversation is no longer categorized. Calling this method results in a call to EWS.
+   *
+   * @param   {ConversationId[]}  conversationId         The id of the conversation.
+   * @param   {boolean}           processSynchronously   Indicates whether the method should return only once disabling this rule and removing the categories from existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  DisableAlwaysCategorizeItemsInConversations(conversationId: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
+    return this.ApplyConversationAction(
+      ConversationActionType.AlwaysCategorize,
+      conversationId,
+      processSynchronously,
+      null,
+      false,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
 
-    /* #region Synchronization operations */
+  /**
+   * Sets up a conversation so that any item received within that conversation is no longer moved to Deleted Items folder. Calling this method results in a call to EWS.
+   *
+   * @param   {ConversationId[]}  conversationId         The id of the conversation.
+   * @param   {boolean}           processSynchronously   Indicates whether the method should return only once disabling this rule and restoring the items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  DisableAlwaysDeleteItemsInConversations(conversationId: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
+    return this.ApplyConversationAction(
+      ConversationActionType.AlwaysDelete,
+      conversationId,
+      processSynchronously,
+      null,
+      false,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
 
-    // BeginSyncFolderItems(callback: Function /*System.AsyncCallback*/, state: any, syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, maxChangesReturned: number, syncScope: SyncFolderItemsScope, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderItems : Not implemented."); }
-    // BeginSyncFolderItems(callback: Function /*System.AsyncCallback*/, state: any, syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: any[] /*System.Collections.Generic.IEnumerable<T>*/, maxChangesReturned: number, numberOfDays: number, syncScope: SyncFolderItemsScope, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderItems : Not implemented."); }
+  /**
+   * Sets up a conversation so that any item received within that conversation is no longer moved to a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {ConversationId[]}  conversationIds        The conversation ids.
+   * @param   {boolean}           processSynchronously   Indicates whether the method should return only once disabling this rule is completely done. If processSynchronously is false, the method returns immediately.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  DisableAlwaysMoveItemsInConversations(conversationIds: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
+    return this.ApplyConversationAction(
+      ConversationActionType.AlwaysMove,
+      conversationIds,
+      processSynchronously,
+      null,
+      false,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
 
-    /**
-     * Builds a request to synchronize the items of a specific folder.
-     *
-     * @param   {FolderId}              syncFolderId         The Id of the folder containing the items to synchronize with.
-     * @param   {PropertySet}           propertySet          The set of properties to retrieve for synchronized items.
-     * @param   {ItemId[]}              ignoredItemIds       The optional list of item Ids that should be ignored.
-     * @param   {number}                maxChangesReturned   The maximum number of changes that should be returned.
-     * @param   {number}                numberOfDays         Limit the changes returned to this many days ago; 0 means no limit.
-     * @param   {SyncFolderItemsScope}  syncScope            The sync scope identifying items to include in the ChangeCollection.
-     * @param   {string}                syncState            The optional sync state representing the point in time when to start the synchronization.
-     * @return  {SyncFolderItemsRequest}        A request to synchronize the items of a specific folder.
-     */
-    private BuildSyncFolderItemsRequest(syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: ItemId[], maxChangesReturned: number, numberOfDays: number, syncScope: SyncFolderItemsScope, syncState: string): SyncFolderItemsRequest {
-        EwsUtilities.ValidateParam(syncFolderId, "syncFolderId");
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
+  /**
+   * Sets up a conversation so that any item received within that conversation is always categorized. Calling this method results in a call to EWS.
+   *
+   * @param   {ConversationId[]}  conversationId         The id of the conversation.
+   * @param   {string[]}          categories             The categories that should be stamped on items in the conversation.
+   * @param   {boolean}           processSynchronously   Indicates whether the method should return only once enabling this rule and stamping existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  EnableAlwaysCategorizeItemsInConversations(conversationId: ConversationId[], categories: string[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
+    EwsUtilities.ValidateParamCollection(categories, "categories");
+    return this.ApplyConversationAction(
+      ConversationActionType.AlwaysCategorize,
+      conversationId,
+      processSynchronously,
+      new StringList(categories),
+      false,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
 
-        let request: SyncFolderItemsRequest = new SyncFolderItemsRequest(this);
+  /**
+   * Sets up a conversation so that any item received within that conversation is always moved to Deleted Items folder. Calling this method results in a call to EWS.
+   *
+   * @param   {ConversationId[]}  conversationId         The id of the conversation.
+   * @param   {boolean}           processSynchronously   Indicates whether the method should return only once enabling this rule and deleting existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  EnableAlwaysDeleteItemsInConversations(conversationId: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
+    return this.ApplyConversationAction(
+      ConversationActionType.AlwaysDelete,
+      conversationId,
+      processSynchronously,
+      null,
+      true,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
 
-        request.SyncFolderId = syncFolderId;
-        request.PropertySet = propertySet;
-        if (ignoredItemIds != null) {
-            request.IgnoredItemIds.AddRange(ignoredItemIds);
-        }
-        request.MaxChangesReturned = maxChangesReturned;
-        request.NumberOfDays = numberOfDays;
-        request.SyncScope = syncScope;
-        request.SyncState = syncState;
+  /**
+   * Sets up a conversation so that any item received within that conversation is always moved to a specific folder. Calling this method results in a call to EWS.
+   *
+   * @param   {ConversationId[]}  conversationId         The id of the conversation.
+   * @param   {FolderId}          destinationFolderId    The Id of the folder to which conversation items should be moved.
+   * @param   {boolean}           processSynchronously   Indicates whether the method should return only once enabling this rule and moving existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  EnableAlwaysMoveItemsInConversations(conversationId: ConversationId[], destinationFolderId: FolderId, processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
+    EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+    return this.ApplyConversationAction(
+      ConversationActionType.AlwaysMove,
+      conversationId,
+      processSynchronously,
+      null,
+      false,
+      destinationFolderId,
+      ServiceErrorHandling.ReturnErrors);
+  }
 
-        return request;
-    }
-    //EndSyncFolderItems(asyncResult: Function /*System.IAsyncResult*/): ChangeCollection<ItemChange> { throw new Error("ExchangeService.ts - EndSyncFolderItems : Not implemented."); }
+  /**
+   * Retrieves a collection of all Conversations in the specified Folder.
+   *
+   * @param   {ViewBase}   view       The view controlling the number of conversations returned.
+   * @param   {FolderId}   folderId   The Id of the folder in which to search for conversations.
+   * @return  {Promise<Conversation[]>}       Collection of conversations.
+   */
+  FindConversation(view: ViewBase, folderId: FolderId): Promise<Conversation[]>;
+  /**
+   * Retrieves a collection of all Conversations in the specified Folder.
+   *
+   * @param   {ViewBase}  view                   The view controlling the number of conversations returned.
+   * @param   {FolderId}  folderId               The Id of the folder in which to search for conversations.
+   * @param   {string}    queryString            The query string for which the search is being performed
+   * @return  {Promise<FindConversationResults>}      FindConversation results    :Promise.
+   */
+  FindConversation(view: ViewBase, folderId: FolderId, queryString: string): Promise<Conversation[]>;
+  /**
+   * Searches for and retrieves a collection of Conversations in the specified Folder. Along with conversations, a list of highlight terms are returned.
+   *
+   * @param   {ViewBase}  view                   The view controlling the number of conversations returned.
+   * @param   {FolderId}  folderId               The Id of the folder in which to search for conversations.
+   * @param   {string}    queryString            The query string for which the search is being performed
+   * @param   {boolean}   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
+   * @return  {Promise<FindConversationResults>}      FindConversation results    :Promise.
+   */
+  FindConversation(view: ViewBase, folderId: FolderId, queryString: string, returnHighlightTerms: boolean): Promise<FindConversationResults>;
+  /**
+   * Searches for and retrieves a collection of Conversations in the specified Folder. Along with conversations, a list of highlight terms are returned.
+   *
+   * @param   {ViewBase}                  view                   The view controlling the number of conversations returned.
+   * @param   {FolderId}                  folderId               The Id of the folder in which to search for conversations.
+   * @param   {string}                    queryString            The query string for which the search is being performed
+   * @param   {boolean}                   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
+   * @param   {MailboxSearchLocation?}    mailboxScope           The mailbox scope to reference.
+   * @return  {Promise<FindConversationResults>}      FindConversation results    :Promise.
+   */
+  FindConversation(view: ViewBase, folderId: FolderId, queryString: string, returnHighlightTerms: boolean, mailboxScope: MailboxSearchLocation): Promise<FindConversationResults>;
+  FindConversation(
+    view: ViewBase,
+    folderId: FolderId,
+    queryString: string = null,
+    returnHighlightTerms: boolean = null,
+    mailboxScope: MailboxSearchLocation = null): Promise<FindConversationResults | Conversation[]> {
 
-    /**
-     * Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}              syncFolderId         The Id of the folder containing the items to synchronize with.
-     * @param   {PropertySet}           propertySet          The set of properties to retrieve for synchronized items.
-     * @param   {ItemId[]}              ignoredItemIds       The optional list of item Ids that should be ignored.
-     * @param   {number}                maxChangesReturned   The maximum number of changes that should be returned.
-     * @param   {number}                numberOfDays         Limit the changes returned to this many days ago; 0 means no limit.
-     * @param   {SyncFolderItemsScope}  syncScope            The sync scope identifying items to include in the ChangeCollection.
-     * @param   {string}                syncState            The optional sync state representing the point in time when to start the synchronization.
-     * @return  {Promise<ChangeCollection<ItemChange>>}      A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
-     */
-    SyncFolderItems(syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: ItemId[], maxChangesReturned: number, syncScope: SyncFolderItemsScope, syncState: string): Promise<ChangeCollection<ItemChange>>;
-    /**
-     * Synchronizes the items of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}              syncFolderId         The Id of the folder containing the items to synchronize with.
-     * @param   {PropertySet}           propertySet          The set of properties to retrieve for synchronized items.
-     * @param   {ItemId[]}              ignoredItemIds       The optional list of item Ids that should be ignored.
-     * @param   {number}                maxChangesReturned   The maximum number of changes that should be returned.
-     * @param   {number}                numberOfDays         Limit the changes returned to this many days ago; 0 means no limit.
-     * @param   {SyncFolderItemsScope}  syncScope            The sync scope identifying items to include in the ChangeCollection.
-     * @param   {string}                syncState            The optional sync state representing the point in time when to start the synchronization.
-     * @return  {Promise<ChangeCollection<ItemChange>>}      A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
-     */
-    SyncFolderItems(syncFolderId: FolderId, propertySet: PropertySet, ignoredItemIds: ItemId[], maxChangesReturned: number, numberOfDays: number, syncScope: SyncFolderItemsScope, syncState: string): Promise<ChangeCollection<ItemChange>>;
-    SyncFolderItems(
-        syncFolderId: FolderId,
-        propertySet: PropertySet,
-        ignoredItemIds: ItemId[],
-        maxChangesReturned: number,
-        numberOfDaysOrSyncScope: number | SyncFolderItemsScope,
-        syncScopeOrSyncState: SyncFolderItemsScope | string,
-        syncState: string = null): Promise<ChangeCollection<ItemChange>> {
+    let argsLength = arguments.length;
 
-        let numberOfDays: number = 0;
-        let syncScope: SyncFolderItemsScope;
+    EwsUtilities.ValidateParam(view, "view");
+    EwsUtilities.ValidateParam(folderId, "folderId");
 
-        if (arguments.length === 6) {
-            syncState = <string>syncScopeOrSyncState;
-            syncScope = numberOfDaysOrSyncScope;
-        }
-        else {
-            numberOfDays = numberOfDaysOrSyncScope;
-            syncScope = <SyncFolderItemsScope>syncScopeOrSyncState;
-        }
+    let request: FindConversationRequest = new FindConversationRequest(this);
+    request.View = view;
+    request.FolderId = new FolderIdWrapper(folderId);
 
-        return this.BuildSyncFolderItemsRequest(
-            syncFolderId,
-            propertySet,
-            ignoredItemIds,
-            maxChangesReturned,
-            numberOfDays,
-            syncScope,
-            syncState).Execute().then((responses) => {
-                return responses.__thisIndexer(0).Changes;
-            });
-    }
-
-    // BeginSyncFolderHierarchy(callback: Function /*System.AsyncCallback*/, state: any, propertySet: PropertySet, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderHierarchy : Not implemented."); }
-    // //BeginSyncFolderHierarchy(callback: Function /*System.AsyncCallback*/, state: any, syncFolderId: FolderId, propertySet: PropertySet, syncState: string): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSyncFolderHierarchy : Not implemented."); }
-
-    /**
-     * Builds a request to synchronize the specified folder hierarchy of the mailbox this Service is connected to.
-     *
-     * @param   {FolderId}      syncFolderId   The Id of the folder containing the items to synchronize with. A null value indicates the root folder of the mailbox.
-     * @param   {PropertySet}   propertySet    The set of properties to retrieve for synchronized items.
-     * @param   {string}        syncState      The optional sync state representing the point in time when to start the synchronization.
-     * @return  {SyncFolderHierarchyRequest}        A request to synchronize the specified folder hierarchy of the mailbox this Service is connected to.
-     */
-    private BuildSyncFolderHierarchyRequest(syncFolderId: FolderId, propertySet: PropertySet, syncState: string): SyncFolderHierarchyRequest {
-        EwsUtilities.ValidateParamAllowNull(syncFolderId, "syncFolderId");  // Null syncFolderId is allowed
-        EwsUtilities.ValidateParam(propertySet, "propertySet");
-
-        let request: SyncFolderHierarchyRequest = new SyncFolderHierarchyRequest(this);
-
-        request.PropertySet = propertySet;
-        request.SyncFolderId = syncFolderId;
-        request.SyncState = syncState;
-
-        return request;
-    }
-
-    //EndSyncFolderHierarchy(asyncResult: Function /*System.IAsyncResult*/): ChangeCollection<FolderChange> { throw new Error("ExchangeService.ts - EndSyncFolderHierarchy : Not implemented."); }
-
-    /**
-     * Synchronizes the sub-folders of a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {FolderId}      syncFolderId   The Id of the folder containing the items to synchronize with. A null value indicates the root folder of the mailbox.
-     * @param   {PropertySet}   propertySet    The set of properties to retrieve for synchronized items.
-     * @param   {string}        syncState      The optional sync state representing the point in time when to start the synchronization.
-     * @return  {Promise<ChangeCollection<FolderChange>>}       A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
-     */
-    SyncFolderHierarchy(syncFolderId: FolderId, propertySet: PropertySet, syncState: string): Promise<ChangeCollection<FolderChange>>;
-    /**
-     * Synchronizes the entire folder hierarchy of the mailbox this Service is connected to. Calling this method results in a call to EWS.
-     *
-     * @param   {PropertySet}   propertySet    The set of properties to retrieve for synchronized items.
-     * @param   {string}        syncState      The optional sync state representing the point in time when to start the synchronization.
-     * @return  {Promise<ChangeCollection<FolderChange>>}       A ChangeCollection containing a list of changes that occurred in the specified folder   :Promise.
-     */
-    SyncFolderHierarchy(propertySet: PropertySet, syncState: string): Promise<ChangeCollection<FolderChange>>;
-    SyncFolderHierarchy(
-        syncFolderIdOrPropertySet: FolderId | PropertySet,
-        propertySetOrSyncState: PropertySet | string,
-        syncState: string = null): Promise<ChangeCollection<FolderChange>> {
-
-        let syncFolderId: FolderId = null;
-        let propertySet: PropertySet;
-
-        if (arguments.length === 2) {
-            propertySet = <PropertySet>syncFolderIdOrPropertySet;
-            syncState = <string>propertySetOrSyncState;
-        }
-        else {
-            syncFolderId = <FolderId>syncFolderIdOrPropertySet;
-            propertySet = <PropertySet>propertySetOrSyncState;
-        }
-
-        return this.BuildSyncFolderHierarchyRequest(
-            syncFolderId,
-            propertySet,
-            syncState).Execute().then((responses) => {
-                return responses.__thisIndexer(0).Changes;
-            });
-    }
-    /* #endregion Synchronization operations */
-
-
-    /* #region Availability operations */
-
-    /**
-     * Retrieves a collection of all room lists in the organization.
-     *
-     * @return  {Promise<EmailAddressCollection[]>}     A collection of EmailAddress objects representing all the rooms within the specifed room list   :Promise.
-     */
-    GetRoomLists(): Promise<EmailAddressCollection> {
-        let request: GetRoomListsRequest = new GetRoomListsRequest(this);
-
-        return request.Execute().then((response) => {
-            return response.RoomLists;
-        });
+    if (argsLength > 2) {
+      EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
+      request.QueryString = queryString;
     }
 
-    /**
-     * Retrieves a collection of all rooms in the specified room list in the organization.
-     *
-     * @param   {EmailAddress}   emailAddress   The e-mail address of the room list.
-     * @return  {Promise<EmailAddress[]>}       A collection of EmailAddress objects representing all the rooms within the specifed room list   :Promise.
-     */
-    GetRooms(emailAddress: EmailAddress): Promise<EmailAddress[]> {
-        EwsUtilities.ValidateParam(emailAddress, "emailAddress");
+    if (argsLength > 3) {
+      EwsUtilities.ValidateParam(returnHighlightTerms, "returnHighlightTerms");
+      request.ReturnHighlightTerms = returnHighlightTerms;
 
-        let request: GetRoomsRequest = new GetRoomsRequest(this);
-
-        request.RoomList = emailAddress;
-
-        return request.Execute().then((response) => {
-            return response.Rooms;
-        });
+      EwsUtilities.ValidateMethodVersion(
+        this,
+        ExchangeVersion.Exchange2013, // This method is only applicable for Exchange2013
+        "FindConversation");
     }
 
-    /**
-     * Gets detailed information about the availability of a set of users, rooms, and resources within a specified time window.
-     *
-     * @param   {AttendeeInfo[]}        attendees           The attendees for which to retrieve availability information.
-     * @param   {TimeWindow}            timeWindow          The time window in which to retrieve user availability information.
-     * @param   {AvailabilityData}      requestedData       The requested data (free/busy and/or suggestions).
-     * @return  {Promise<GetUserAvailabilityResults>}       The availability information for each user appears in a unique FreeBusyResponse object. The order of users in the request determines the order of availability data for each user in the response :Promise.
-     */
-    GetUserAvailability(attendees: AttendeeInfo[], timeWindow: TimeWindow, requestedData: AvailabilityData): Promise<GetUserAvailabilityResults>;
-    /**
-     * Gets detailed information about the availability of a set of users, rooms, and resources within a specified time window.
-     *
-     * @param   {AttendeeInfo[]}        attendees           The attendees for which to retrieve availability information.
-     * @param   {TimeWindow}            timeWindow          The time window in which to retrieve user availability information.
-     * @param   {AvailabilityData}      requestedData       The requested data (free/busy and/or suggestions).
-     * @param   {AvailabilityOptions}   options             The options controlling the information returned.
-     * @return  {Promise<GetUserAvailabilityResults>}       The availability information for each user appears in a unique FreeBusyResponse object. The order of users in the request determines the order of availability data for each user in the response :Promise.
-     */
-    GetUserAvailability(attendees: AttendeeInfo[], timeWindow: TimeWindow, requestedData: AvailabilityData, options: AvailabilityOptions): Promise<GetUserAvailabilityResults>;
-    GetUserAvailability(attendees: AttendeeInfo[], timeWindow: TimeWindow, requestedData: AvailabilityData, options: AvailabilityOptions = new AvailabilityOptions()): Promise<GetUserAvailabilityResults> {
-        EwsUtilities.ValidateParamCollection(attendees, "attendees");
-        EwsUtilities.ValidateParam(timeWindow, "timeWindow");
-        EwsUtilities.ValidateParam(options, "options");
-        var request = new GetUserAvailabilityRequest(this);
+    if (argsLength > 4) {
+      request.MailboxScope = mailboxScope;
+    }
+    return request.Execute().then((responses: FindConversationResponse) => {
+      if (argsLength > 3) {
+        return responses.Results; // based on arguments it can return this or either Results.
+      }
+      else {
+        return responses.Conversations;
+      }
+    });
+  }
 
-        request.Attendees = attendees;
-        request.TimeWindow = timeWindow;
-        request.RequestedData = requestedData;
-        request.Options = options;
+  /**
+   * Retrieves a collection of all Conversations in the specified Folder.
+   *
+   * @param   {ViewBase}  view            The view controlling the number of conversations returned.
+   * @param   {FolderId}  folderId        The Id of the folder in which to search for conversations.
+   * @param   {string}    anchorMailbox   The anchorMailbox Smtp address to route the request directly to group mailbox.
+   * @return  {Promise<Conversation[]>}   Collection of conversations :Promise.
+   */
+  FindGroupConversation(view: ViewBase, folderId: FolderId, anchorMailbox: string): Promise<Conversation[]> {
 
-        return request.Execute().then((responses) => {
-            return responses;
-        });
+    EwsUtilities.ValidateParam(view, "view");
+    EwsUtilities.ValidateParam(folderId, "folderId");
+    EwsUtilities.ValidateParam(anchorMailbox, "anchorMailbox");
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2015,
+      "FindConversation");
+
+    let request: FindConversationRequest = new FindConversationRequest(this);
+
+    request.View = view;
+    request.FolderId = new FolderIdWrapper(folderId);
+    request.AnchorMailbox = anchorMailbox;
+
+    return request.Execute().then((responses: FindConversationResponse) => {
+      return responses.Conversations;
+    });
+  }
+
+  /**
+   * Gets the items for a set of conversations.
+   *
+   * @param   {ConversationRequest[]}     conversations     Conversations with items to load.
+   * @param   {PropertySet}               propertySet       The set of properties to load.
+   * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
+   * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
+   * @return  {Promise<ServiceResponseCollection<GetConversationItemsResponse>>}      GetConversationItems response    :Promise.
+   */
+  GetConversationItems(conversations: ConversationRequest[], propertySet: PropertySet, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */): Promise<ServiceResponseCollection<GetConversationItemsResponse>>;
+  /**
+   * Gets the items for a set of conversations.
+   *
+   * @param   {ConversationRequest[]}     conversations     Conversations with items to load.
+   * @param   {PropertySet}               propertySet       The set of properties to load.
+   * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
+   * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
+   * @param   {MailboxSearchLocation}     mailboxScope      The mailbox scope to reference.
+   * @return  {Promise<ServiceResponseCollection<GetConversationItemsResponse>>}      GetConversationItems response    :Promise.
+   */
+  GetConversationItems(conversations: ConversationRequest[], propertySet: PropertySet, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */, mailboxScope: MailboxSearchLocation /* Nullable */): Promise<ServiceResponseCollection<GetConversationItemsResponse>>;
+  /**
+   * Gets the items for a conversation.
+   *
+   * @param   {ConversationId}            conversationId    The conversation id.
+   * @param   {PropertySet}               propertySet       The set of properties to load.
+   * @param   {string}                    syncState         The optional sync state representing the point in time when to start the synchronization.
+   * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
+   * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
+   * @return  {Promise<ConversationResponse>}               GetConversationItems response    :Promise.
+   */
+  GetConversationItems(conversationId: ConversationId, propertySet: PropertySet, syncState: string, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */): Promise<ConversationResponse>;
+  GetConversationItems(
+    conversationsOrConversationId: ConversationRequest[] | ConversationId,
+    propertySet: PropertySet,
+    foldersToIgnoreOrSyncState: FolderId[] | string,
+    sortOrderOrFoldersToIgnore: ConversationSortOrder /* Nullable */ | FolderId[],
+    mailboxScopeOrSortOrder: ConversationSortOrder | MailboxSearchLocation /* Nullable */ = null): Promise<ServiceResponseCollection<GetConversationItemsResponse> | ConversationResponse> {
+
+    let conversations: ConversationRequest[] = [];
+    let foldersToIgnore: FolderId[] = [];
+    let syncState: string = null;
+    let sortOrder: ConversationSortOrder = null;
+    let mailboxScope: MailboxSearchLocation = null;
+    let returnConversationResponse: boolean = false;
+
+    if (conversationsOrConversationId instanceof ConversationId) {
+      conversations.push(new ConversationRequest(conversationsOrConversationId, <string>foldersToIgnoreOrSyncState));
+      foldersToIgnore = <FolderId[]>sortOrderOrFoldersToIgnore;
+      sortOrder = <ConversationSortOrder>mailboxScopeOrSortOrder;
+      returnConversationResponse = true;
+    }
+    else {
+      conversations = conversationsOrConversationId;
+      foldersToIgnore = <FolderId[]>foldersToIgnoreOrSyncState;
+      sortOrder = <ConversationSortOrder>sortOrderOrFoldersToIgnore;
+      mailboxScope = <MailboxSearchLocation>mailboxScopeOrSortOrder;
 
     }
 
-    /**
-     * Gets Out of Office (OOF) settings for a specific user. Calling this method results in a call to EWS.
-     *
-     * @param   {string}   smtpAddress   The SMTP address of the user for which to retrieve OOF settings.
-     * @return  {Promise<OofSettings>}   An OofSettings instance containing OOF information for the specified user.
-     */
-    GetUserOofSettings(smtpAddress: string): Promise<OofSettings> {
-        EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
+    return this.InternalGetConversationItems(
+      conversations,
+      propertySet,
+      foldersToIgnore,
+      sortOrder, //todo: check why official repo has passed sortOrder as nulll when requested with ConversationRequest[] varient
+      mailboxScope,           /* mailboxScope */
+      null,           /* maxItemsToReturn */
+      null, /* anchorMailbox */
+      ServiceErrorHandling.ThrowOnError).then((responses: ServiceResponseCollection<GetConversationItemsResponse>) => {
+        return returnConversationResponse ? responses.__thisIndexer(0).Conversation : responses;
+      });
 
-        var request: GetUserOofSettingsRequest = new GetUserOofSettingsRequest(this);
+  }
 
-        request.SmtpAddress = smtpAddress;
+  /**
+   * Gets the items for a conversation.
+   *
+   * /remarks/    This API designed to be used primarily in groups scenarios where we want to set the anchor mailbox header so that request is routed directly to the group mailbox backend server.
+   * @param   {ConversationId}            conversationId    The conversation id.
+   * @param   {PropertySet}               propertySet       The set of properties to load.
+   * @param   {string}                    syncState         The optional sync state representing the point in time when to start the synchronization.
+   * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
+   * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
+   * @param   {string}                    anchorMailbox     The smtp address of the mailbox hosting the conversations
+   * @return  {Promise<ConversationResponse>}               ConversationResponseType response :Promise.
+   */
+  GetGroupConversationItems(conversationId: ConversationId, propertySet: PropertySet,
+    syncState: string, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */, anchorMailbox: string): Promise<ConversationResponse> {
+    EwsUtilities.ValidateParam(anchorMailbox, "anchorMailbox");
 
-        return request.Execute().then((response) => {
-            return response.OofSettings;
-        });
+    let conversations: ConversationRequest[] = [];
+    conversations.push(new ConversationRequest(conversationId, syncState));
+
+    return this.InternalGetConversationItems(
+      conversations,
+      propertySet,
+      foldersToIgnore,
+      sortOrder,
+      null,           /* mailboxScope */
+      null,           /* maxItemsToReturn */
+      anchorMailbox, /* anchorMailbox */
+      ServiceErrorHandling.ThrowOnError).then((responses: ServiceResponseCollection<GetConversationItemsResponse>) => {
+        return responses.__thisIndexer(0).Conversation;
+      });
+  }
+
+  /**
+   * @internal Gets the items for a set of conversations.
+   *
+   * @param   {ConversationRequest[]}     conversations      Conversations with items to load.
+   * @param   {PropertySet}               propertySet        The set of properties to load.
+   * @param   {FolderId[]}                foldersToIgnore    The folders to ignore.
+   * @param   {ConversationSortOrder?}    sortOrder          Sort order of conversation tree nodes.
+   * @param   {MailboxSearchLocation?}    mailboxScope       The mailbox scope to reference.
+   * @param   {number?}                   maxItemsToReturn   Maximum number of items to return.
+   * @param   {string}                    anchorMailbox      The smtpaddress of the mailbox that hosts the conversations
+   * @param   {ServiceErrorHandling}      errorHandling      What type of error handling should be performed.
+   * @return  {Promise<ServiceResponseCollection<GetConversationItemsResponse>>}      GetConversationItems response.
+   */
+  InternalGetConversationItems(
+    conversations: ConversationRequest[],
+    propertySet: PropertySet,
+    foldersToIgnore: FolderId[],
+    sortOrder: ConversationSortOrder, //Nullable
+    mailboxScope: MailboxSearchLocation, //Nullable
+    maxItemsToReturn: number, //nullable
+    anchorMailbox: string,
+    errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<GetConversationItemsResponse>> {
+
+    EwsUtilities.ValidateParam(conversations, "conversations");
+    EwsUtilities.ValidateParam(propertySet, "itemProperties");
+    EwsUtilities.ValidateParamAllowNull(foldersToIgnore, "foldersToIgnore");
+    EwsUtilities.ValidateMethodVersion(
+      this,
+      ExchangeVersion.Exchange2013,
+      "GetConversationItems");
+
+    let request: GetConversationItemsRequest = new GetConversationItemsRequest(this, errorHandling);
+    request.ItemProperties = propertySet;
+    request.FoldersToIgnore = new FolderIdCollection(foldersToIgnore);
+    request.SortOrder = sortOrder;
+    request.MailboxScope = mailboxScope;
+    request.MaxItemsToReturn = maxItemsToReturn;
+    request.AnchorMailbox = anchorMailbox;
+    request.Conversations = conversations;
+
+    return request.Execute();
+  }
+
+  /**
+   * Copies the items in the specified conversation to the specified destination folder. Calling this method results in a call to EWS.
+   *
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs   The pairs of Id of conversation whose items should be copied and the date and time conversation was last synced (Items received after that date will not be copied).
+   * @param   {FolderId}                                      contextFolderId       The context folder id.
+   * @param   {FolderId}                                      destinationFolderId   The destination folder id.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  CopyItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, destinationFolderId: FolderId): Promise<ServiceResponseCollection<ServiceResponse>> {
+    EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+    return this.ApplyConversationOneTimeAction(
+      ConversationActionType.Copy,
+      idLastSyncTimePairs,
+      contextFolderId,
+      destinationFolderId,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
+
+  /**
+   * Deletes the items in the specified conversation. Calling this method results in a call to EWS.
+   *
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs   The pairs of Id of conversation whose items should be deleted and the date and time conversation was last synced (Items received after that date will not be deleted).
+   * @param   {FolderId}                                      contextFolderId       The Id of the folder that contains the conversation.
+   * @param   {DeleteMode}                                    deleteMode            The deletion mode.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  DeleteItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, deleteMode: DeleteMode): Promise<ServiceResponseCollection<ServiceResponse>> {
+    return this.ApplyConversationOneTimeAction(
+      ConversationActionType.Delete,
+      idLastSyncTimePairs,
+      contextFolderId,
+      null,
+      deleteMode,
+      null,
+      null,
+      null,
+      null,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
+
+  /**
+   * Moves the items in the specified conversation to the specified destination folder. Calling this method results in a call to EWS.
+   *
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs   The pairs of Id of conversation whose items should be moved and the dateTime conversation was last synced (Items received after that dateTime will not be moved).
+   * @param   {FolderId}                                      contextFolderId       The Id of the folder that contains the conversation.
+   * @param   {FolderId}                                      destinationFolderId   The Id of the destination folder.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  MoveItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, destinationFolderId: FolderId): Promise<ServiceResponseCollection<ServiceResponse>> {
+
+    EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
+    return this.ApplyConversationOneTimeAction(
+      ConversationActionType.Move,
+      idLastSyncTimePairs,
+      contextFolderId,
+      destinationFolderId,
+      null,
+      null,
+      null,
+      null,
+      null,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
+
+  /**
+   * Sets flag status for items in conversation. Calling this method would result in call to EWS.
+   *
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}   idLastSyncTimePairs   The pairs of Id of conversation whose items should have their read state set and the date and time conversation was last synced (Items received after that date will not have their read state set).
+   * @param   {FolderId}   contextFolderId       The Id of the folder that contains the conversation.
+   * @param   {Flag}   flagStatus            Flag status to apply to conversation items.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  SetFlagStatusForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, flagStatus: Flag): Promise<ServiceResponseCollection<ServiceResponse>> {
+
+    EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetFlagStatusForItemsInConversations");
+
+    return this.ApplyConversationOneTimeAction(
+      ConversationActionType.Flag,
+      idLastSyncTimePairs,
+      contextFolderId,
+      null,
+      null,
+      null,
+      null,
+      null,
+      flagStatus,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
+
+  /**
+   * Sets the read state for items in conversation. Calling this method would result in call to EWS.
+   *
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs    The pairs of Id of conversation whose items should have their read state set and the date and time conversation was last synced (Items received after that date will not have their read state set).
+   * @param   {FolderId}                                      contextFolderId        The Id of the folder that contains the conversation.
+   * @param   {boolean}                                       isRead                 if set to true, conversation items are marked as read; otherwise they are marked as unread.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  SetReadStateForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, isRead: boolean): Promise<ServiceResponseCollection<ServiceResponse>>;
+  /**
+   * Sets the read state for items in conversation. Calling this method would result in call to EWS.
+   *
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs    The pairs of Id of conversation whose items should have their read state set and the date and time conversation was last synced (Items received after that date will not have their read state set).
+   * @param   {FolderId}                                      contextFolderId        The Id of the folder that contains the conversation.
+   * @param   {boolean}                                       isRead                 if set to true, conversation items are marked as read; otherwise they are marked as unread.
+   * @param   {boolean}                                       suppressReadReceipts   if set to *true* read receipts are suppressed.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  SetReadStateForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, isRead: boolean, suppressReadReceipts: boolean): Promise<ServiceResponseCollection<ServiceResponse>>;
+  SetReadStateForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, isRead: boolean, suppressReadReceipts: boolean = null): Promise<ServiceResponseCollection<ServiceResponse>> {
+
+    if (arguments.length === 4) {
+      EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetReadStateForItemsInConversations");
     }
 
-    /**
-     * Sets the Out of Office (OOF) settings for a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {string}        smtpAddress   The SMTP address of the user for which to set OOF settings.
-     * @param   {OofSettings}   oofSettings   The OOF settings.
-     * @return  {Promise<void>}      Promise.
-     */
-    SetUserOofSettings(smtpAddress: string, oofSettings: OofSettings): Promise<void> {
-        EwsUtilities.ValidateParam(smtpAddress, "smtpAddress");
-        EwsUtilities.ValidateParam(oofSettings, "oofSettings");
+    return this.ApplyConversationOneTimeAction(
+      ConversationActionType.SetReadState,
+      idLastSyncTimePairs,
+      contextFolderId,
+      null,
+      null,
+      isRead,
+      null,
+      null,
+      null,
+      suppressReadReceipts, //null when not included in call
+      ServiceErrorHandling.ReturnErrors);
+  }
 
-        var request: SetUserOofSettingsRequest = new SetUserOofSettingsRequest(this);
+  /**
+   * Sets the retention policy for items in conversation. Calling this method would result in call to EWS.
+   *
+   * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs    The pairs of Id of conversation whose items should have their retention policy set and the date and time conversation was last synced (Items received after that date will not have their retention policy set).
+   * @param   {FolderId}                                      contextFolderId        The Id of the folder that contains the conversation.
+   * @param   {RetentionType}                                 retentionPolicyType    Retention policy type.
+   * @param   {Guid?}                                         retentionPolicyTagId   Retention policy tag id.  Null will clear the policy.
+   * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
+   */
+  SetRetentionPolicyForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
+    contextFolderId: FolderId, retentionPolicyType: RetentionType, retentionPolicyTagId: Guid): Promise<ServiceResponseCollection<ServiceResponse>> {
+    return this.ApplyConversationOneTimeAction(
+      ConversationActionType.SetRetentionPolicy,
+      idLastSyncTimePairs,
+      contextFolderId,
+      null,
+      null,
+      null,
+      retentionPolicyType,
+      retentionPolicyTagId,
+      null,
+      null,
+      ServiceErrorHandling.ReturnErrors);
+  }
+  //#endregion
 
-        request.SmtpAddress = smtpAddress;
-        request.OofSettings = oofSettings;
 
-        return <any>request.Execute();
+  //#region Id conversion operations
+
+  /**
+   * Converts Id from one format to another in a single call to EWS.
+   *
+   * @param   {AlternateIdBase}   id                 The Id to convert.
+   * @param   {IdFormat}          destinationFormat   The destination format.
+   * @return  {Promise<AlternateIdBase>}     The converted Id :Promise.
+   */
+  ConvertId(id: AlternateIdBase, destinationFormat: IdFormat): Promise<AlternateIdBase> {
+    EwsUtilities.ValidateParam(id, "id");
+
+    return this.InternalConvertIds(
+      [id],
+      destinationFormat,
+      ServiceErrorHandling.ThrowOnError).then((responses: ServiceResponseCollection<ConvertIdResponse>) => {
+        return responses.__thisIndexer(0).ConvertedId;
+      })
+
+  }
+
+  /**
+   * Converts multiple Ids from one format to another in a single call to EWS.
+   *
+   * @param   {AlternateIdBase[]}     ids                 The Ids to convert.
+   * @param   {IdFormat}              destinationFormat   The destination format.
+   * @return  {Promise<ServiceResponseCollection<ConvertIdResponse>>}     A ServiceResponseCollection providing conversion results for each specified Ids :Promise.
+   */
+  ConvertIds(ids: AlternateIdBase[], destinationFormat: IdFormat): Promise<ServiceResponseCollection<ConvertIdResponse>> {
+    EwsUtilities.ValidateParamCollection(ids, "ids");
+
+    return this.InternalConvertIds(
+      ids,
+      destinationFormat,
+      ServiceErrorHandling.ReturnErrors);
+  }
+
+  /**
+   * Converts multiple Ids from one format to another in a single call to EWS.
+   *
+   * @param   {AlternateIdBase[]}     ids                 The Ids to convert.
+   * @param   {IdFormat}              destinationFormat   The destination format.
+   * @param   {ServiceErrorHandling}  errorHandling       Type of error handling to perform.
+   * @return  {Promise<ServiceResponseCollection<ConvertIdResponse>>}     A ServiceResponseCollection providing conversion results for each specified Ids :Promise.
+   */
+  private InternalConvertIds(ids: AlternateIdBase[], destinationFormat: IdFormat, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<ConvertIdResponse>> {
+    EwsUtilities.ValidateParamCollection(ids, "ids");
+
+    let request: ConvertIdRequest = new ConvertIdRequest(this, errorHandling);
+    ArrayHelper.AddRange(request.Ids, ids);//request.Ids.AddRange(ids);
+    request.DestinationFormat = destinationFormat;
+
+    return request.Execute();
+  }
+  //#endregion
+
+
+  //#region Delegate management operations
+
+  /**
+   * Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}                       mailbox                        The mailbox to add delegates to.
+   * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
+   * @param   {...DelegateUser[]}             delegateUsers                  The delegate users to add.
+   * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
+   */
+  AddDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
+  /**
+   * Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}                       mailbox                        The mailbox to add delegates to.
+   * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
+   * @param   {DelegateUser[]}                delegateUsers                  The delegate users to add.
+   * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
+   */
+  AddDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
+  AddDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUser: DelegateUser[] | DelegateUser, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]> {
+
+    if (delegateUser) { //info: rest parameters are optional for typescript
+      if (ArrayHelper.isArray(delegateUser)) {
+        ArrayHelper.AddRange(delegateUsers, <DelegateUser[]>delegateUser);
+      }
+      else {
+        delegateUsers.push(<DelegateUser>delegateUser);
+      }
     }
-    /* #endregion Availability operations */
+    EwsUtilities.ValidateParam(mailbox, "mailbox");
+    EwsUtilities.ValidateParamCollection(delegateUsers, "delegateUsers");
+
+    let request: AddDelegateRequest = new AddDelegateRequest(this);
+
+    request.Mailbox = mailbox;
+    ArrayHelper.AddRange(request.DelegateUsers, delegateUsers); //request.DelegateUsers.AddRange(delegateUsers);
+    request.MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
 
 
-    /* #region Conversation */
+    return request.Execute().then((response: DelegateManagementResponse) => {
+      return response.DelegateUserResponses;
+    })
 
-    /**
-     * Applies ConversationAction on the specified conversation.
-     *
-     * @param   {ConversationActionType}    actionType            ConversationAction
-     * @param   {ConversationId[]}          conversationIds       The conversation ids.
-     * @param   {boolean}                   processRightAway      True to process at once . This is blocking and false to let the Assistant process it in the back ground
-     * @param   {StringList}                categories            Catgories that need to be stamped can be null or empty
-     * @param   {boolean}                   enableAlwaysDelete    True moves every current and future messages in the conversation to deleted items folder. False stops the alwasy delete action. This is applicable only if the action is AlwaysDelete
-     * @param   {FolderId}                  destinationFolderId   Applicable if the action is AlwaysMove. This moves every current message and future  message in the conversation to the specified folder. Can be null if tis is then it stops the always move action
-     * @param   {ServiceErrorHandling}      errorHandlingMode     The error handling mode.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    private ApplyConversationAction(
-        actionType: ConversationActionType,
-        conversationIds: ConversationId[],
-        processRightAway: boolean,
-        categories: StringList,
-        enableAlwaysDelete: boolean,
-        destinationFolderId: FolderId,
-        errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
-        EwsLogging.Assert(
-            actionType == ConversationActionType.AlwaysCategorize ||
-            actionType == ConversationActionType.AlwaysMove ||
-            actionType == ConversationActionType.AlwaysDelete,
-            "ApplyConversationAction",
-            "Invalic actionType");
+  }
 
-        EwsUtilities.ValidateParam(conversationIds, "conversationId");
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010_SP1,
-            "ApplyConversationAction");
 
-        let request: ApplyConversationActionRequest = new ApplyConversationActionRequest(this, errorHandlingMode);
-        let action: ConversationAction = new ConversationAction();
+  /**
+   * Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}       mailbox                 The mailbox to retrieve the delegates of.
+   * @param   {boolean}       includePermissions      Indicates whether detailed permissions should be returned fro each delegate.
+   * @param   {...UserId[]}   userIds                 The optional Ids of the delegate users to retrieve.
+   * @return  {Promise<DelegateInformation>}          A GetDelegateResponse providing the results of the operation    :Promise.
+   */
+  GetDelegates(mailbox: Mailbox, includePermissions: boolean, ...userIds: UserId[]): Promise<DelegateInformation>;
+  /**
+   * Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}   mailbox                 The mailbox to retrieve the delegates of.
+   * @param   {boolean}   includePermissions      Indicates whether detailed permissions should be returned fro each delegate.
+   * @param   {UserId[]}  userIds                 The optional Ids of the delegate users to retrieve.
+   * @return  {Promise<DelegateInformation>}      A GetDelegateResponse providing the results of the operation    :Promise.
+   */
+  GetDelegates(mailbox: Mailbox, includePermissions: boolean, userIds: UserId[]): Promise<DelegateInformation>;
+  GetDelegates(mailbox: Mailbox, includePermissions: boolean, userId: UserId | UserId[], ...userIds: UserId[]): Promise<DelegateInformation> {
 
-        for (let conversationId of conversationIds) {
-            action.Action = actionType;
-            action.ConversationId = conversationId;
-            action.ProcessRightAway = processRightAway;
-            action.Categories = categories;
-            action.EnableAlwaysDelete = enableAlwaysDelete;
-            action.DestinationFolderId = destinationFolderId != null ? new FolderIdWrapper(destinationFolderId) : null;
-            request.ConversationActions.push(action);
-        }
-
-        return request.Execute();
-    }
-
-    /**
-     * Applies one time conversation action on items in specified folder inside the conversation.
-     *
-     * @param   {ConversationActionType}                        actionType             The action.
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idTimePairs            The id time pairs.
-     * @param   {FolderId}                                      contextFolderId        The context folder id.
-     * @param   {FolderId}                                      destinationFolderId    The destination folder id.
-     * @param   {DeleteMode}                                    deleteType             Type of the delete.
-     * @param   {boolean}                                       isRead                 The is read.
-     * @param   {RetentionType}                                 retentionPolicyType    Retention policy type.
-     * @param   {Guid}                                          retentionPolicyTagId   Retention policy tag id.  Null will clear the policy.
-     * @param   {Flag}                                          flag                   Flag status.
-     * @param   {boolean}                                       suppressReadReceipts   Suppress read receipts flag.
-     * @param   {ServiceErrorHandling}                          errorHandlingMode      The error handling mode.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    private ApplyConversationOneTimeAction(
-        actionType: ConversationActionType,
-        idTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs,
-        contextFolderId: FolderId,
-        destinationFolderId: FolderId,
-        deleteType: DeleteMode,
-        isRead: boolean,
-        retentionPolicyType: RetentionType,
-        retentionPolicyTagId: Guid,
-        flag: Flag,
-        suppressReadReceipts: boolean,
-        errorHandlingMode: ServiceErrorHandling): Promise<ServiceResponseCollection<ServiceResponse>> {
-        EwsLogging.Assert(
-            actionType == ConversationActionType.Move ||
-            actionType == ConversationActionType.Delete ||
-            actionType == ConversationActionType.SetReadState ||
-            actionType == ConversationActionType.SetRetentionPolicy ||
-            actionType == ConversationActionType.Copy ||
-            actionType == ConversationActionType.Flag,
-            "ApplyConversationOneTimeAction",
-            "Invalid actionType");
-
-        EwsUtilities.ValidateParamCollection(idTimePairs, "idTimePairs");
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2010_SP1,
-            "ApplyConversationAction");
-
-        let request: ApplyConversationActionRequest = new ApplyConversationActionRequest(this, errorHandlingMode);
-
-        for (let idTimePair of idTimePairs) {
-            let action: ConversationAction = new ConversationAction();
-
-            action.Action = actionType;
-            action.ConversationId = idTimePair.key;
-            action.ContextFolderId = contextFolderId != null ? new FolderIdWrapper(contextFolderId) : null;
-            action.DestinationFolderId = destinationFolderId != null ? new FolderIdWrapper(destinationFolderId) : null;
-            action.ConversationLastSyncTime = idTimePair.value;
-            action.IsRead = isRead;
-            action.DeleteType = deleteType;
-            action.RetentionPolicyType = retentionPolicyType;
-            action.RetentionPolicyTagId = retentionPolicyTagId;
-            action.Flag = flag;
-            action.SuppressReadReceipts = suppressReadReceipts;
-
-            request.ConversationActions.push(action);
-        }
-
-        return request.Execute();
-    }
-
-    /**
-     * Sets up a conversation so that any item received within that conversation is no longer categorized. Calling this method results in a call to EWS.
-     *
-     * @param   {ConversationId[]}  conversationId         The id of the conversation.
-     * @param   {boolean}           processSynchronously   Indicates whether the method should return only once disabling this rule and removing the categories from existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    DisableAlwaysCategorizeItemsInConversations(conversationId: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
-        return this.ApplyConversationAction(
-            ConversationActionType.AlwaysCategorize,
-            conversationId,
-            processSynchronously,
-            null,
-            false,
-            null,
-            ServiceErrorHandling.ReturnErrors);
-    }
-
-    /**
-     * Sets up a conversation so that any item received within that conversation is no longer moved to Deleted Items folder. Calling this method results in a call to EWS.
-     *
-     * @param   {ConversationId[]}  conversationId         The id of the conversation.
-     * @param   {boolean}           processSynchronously   Indicates whether the method should return only once disabling this rule and restoring the items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    DisableAlwaysDeleteItemsInConversations(conversationId: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
-        return this.ApplyConversationAction(
-            ConversationActionType.AlwaysDelete,
-            conversationId,
-            processSynchronously,
-            null,
-            false,
-            null,
-            ServiceErrorHandling.ReturnErrors);
-    }
-
-    /**
-     * Sets up a conversation so that any item received within that conversation is no longer moved to a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {ConversationId[]}  conversationIds        The conversation ids.
-     * @param   {boolean}           processSynchronously   Indicates whether the method should return only once disabling this rule is completely done. If processSynchronously is false, the method returns immediately.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    DisableAlwaysMoveItemsInConversations(conversationIds: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
-        return this.ApplyConversationAction(
-            ConversationActionType.AlwaysMove,
-            conversationIds,
-            processSynchronously,
-            null,
-            false,
-            null,
-            ServiceErrorHandling.ReturnErrors);
+    if (userId) { //info: rest parameters are optional for typescript
+      if (ArrayHelper.isArray(userId)) {
+        ArrayHelper.AddRange(userIds, <UserId[]>userId);
+      }
+      else {
+        userIds.push(<UserId>userId);
+      }
     }
 
-    /**
-     * Sets up a conversation so that any item received within that conversation is always categorized. Calling this method results in a call to EWS.
-     *
-     * @param   {ConversationId[]}  conversationId         The id of the conversation.
-     * @param   {string[]}          categories             The categories that should be stamped on items in the conversation.
-     * @param   {boolean}           processSynchronously   Indicates whether the method should return only once enabling this rule and stamping existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    EnableAlwaysCategorizeItemsInConversations(conversationId: ConversationId[], categories: string[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
-        EwsUtilities.ValidateParamCollection(categories, "categories");
-        return this.ApplyConversationAction(
-            ConversationActionType.AlwaysCategorize,
-            conversationId,
-            processSynchronously,
-            new StringList(categories),
-            false,
-            null,
-            ServiceErrorHandling.ReturnErrors);
+    EwsUtilities.ValidateParam(mailbox, "mailbox");
+
+    let request: GetDelegateRequest = new GetDelegateRequest(this);
+
+    request.Mailbox = mailbox;
+    ArrayHelper.AddRange(request.UserIds, userIds); //request.UserIds.AddRange(userIds);
+    request.IncludePermissions = includePermissions;
+
+    return request.Execute().then((response: GetDelegateResponse) => {
+      let delegateInformation: DelegateInformation = new DelegateInformation(
+        response.DelegateUserResponses,
+        response.MeetingRequestsDeliveryScope);
+
+      return delegateInformation;
+    });
+  }
+
+  /**
+   * Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}       mailbox   The mailbox to remove delegates from.
+   * @param   {...UserId[]}   userIds   The Ids of the delegate users to remove.
+   * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
+   */
+  RemoveDelegates(mailbox: Mailbox, ...userIds: UserId[]): Promise<DelegateUserResponse[]>;
+  /**
+   * Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}   mailbox   The mailbox to remove delegates from.
+   * @param   {UserId[]}  userIds   The Ids of the delegate users to remove.
+   * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
+   */
+  RemoveDelegates(mailbox: Mailbox, userIds: UserId[]): Promise<DelegateUserResponse[]>;
+  RemoveDelegates(mailbox: Mailbox, userId: UserId | UserId[], ...userIds: UserId[]): Promise<DelegateUserResponse[]> {
+
+    if (userId) { //info: rest parameters are optional for typescript
+      if (ArrayHelper.isArray(userId)) {
+        ArrayHelper.AddRange(userIds, <UserId[]>userId);
+      }
+      else {
+        userIds.push(<UserId>userId);
+      }
+    }
+    EwsUtilities.ValidateParam(mailbox, "mailbox");
+    EwsUtilities.ValidateParamCollection(userIds, "userIds");
+
+    let request: RemoveDelegateRequest = new RemoveDelegateRequest(this);
+
+    request.Mailbox = mailbox;
+    ArrayHelper.AddRange(request.UserIds, userIds); //request.UserIds.AddRange(userIds);
+
+    return request.Execute().then((response: DelegateManagementResponse) => {
+      return response.DelegateUserResponses;
+    })
+  }
+
+  /**
+   * Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}                       mailbox                        The mailbox to update delegates on.
+   * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
+   * @param   {...DelegateUser[]}             delegateUsers                  The delegate users to update.
+   * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
+   */
+  UpdateDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
+  /**
+   * Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
+   *
+   * @param   {Mailbox}                       mailbox                        The mailbox to update delegates on.
+   * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
+   * @param   {DelegateUser[]}                delegateUsers                  The delegate users to update.
+   * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
+   */
+  UpdateDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
+  UpdateDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUser: DelegateUser[] | DelegateUser, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]> {
+
+    if (delegateUser) { //info: rest parameters are optional for typescript
+      if (ArrayHelper.isArray(delegateUser)) {
+        ArrayHelper.AddRange(delegateUsers, <DelegateUser[]>delegateUser);
+      }
+      else {
+        delegateUsers.push(<DelegateUser>delegateUser);
+      }
+    }
+    EwsUtilities.ValidateParam(mailbox, "mailbox");
+    EwsUtilities.ValidateParamCollection(delegateUsers, "delegateUsers");
+
+    let request: UpdateDelegateRequest = new UpdateDelegateRequest(this);
+
+    request.Mailbox = mailbox;
+    ArrayHelper.AddRange(request.DelegateUsers, delegateUsers); //request.DelegateUsers.AddRange(delegateUsers);
+    request.MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
+
+    return request.Execute().then((response: DelegateManagementResponse) => {
+      return response.DelegateUserResponses;
+    })
+  }
+  //#endregion
+
+
+  //#region UserConfiguration operations
+
+  /**
+   * Creates a UserConfiguration.
+   *
+   * @param   {UserConfiguration}   userConfiguration   The UserConfiguration.
+   * @return  {Promise<void>}       :Promise.
+   */
+  CreateUserConfiguration(userConfiguration: UserConfiguration): Promise<void> {
+    EwsUtilities.ValidateParam(userConfiguration, "userConfiguration");
+
+    let request: CreateUserConfigurationRequest = new CreateUserConfigurationRequest(this);
+
+    request.UserConfiguration = userConfiguration;
+
+    return <any>request.Execute();
+  }
+
+  /**
+   * Deletes a UserConfiguration.
+   *
+   * @param   {string}    name             Name of the UserConfiguration to retrieve.
+   * @param   {FolderId}  parentFolderId   Id of the folder containing the UserConfiguration.
+   * @return  {Promise<void>}     :Promise.
+   */
+  DeleteUserConfiguration(name: string, parentFolderId: FolderId): Promise<void> {
+    EwsUtilities.ValidateParam(name, "name");
+    EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+
+    let request: DeleteUserConfigurationRequest = new DeleteUserConfigurationRequest(this);
+
+    request.Name = name;
+    request.ParentFolderId = parentFolderId;
+
+    return <any>request.Execute();
+  }
+
+  /**
+   * Gets a UserConfiguration.
+   *
+   * @param   {string}                        name             Name of the UserConfiguration to retrieve.
+   * @param   {FolderId}                      parentFolderId   Id of the folder containing the UserConfiguration.
+   * @param   {UserConfigurationProperties}   properties       Properties to retrieve.
+   * @return  {Promise<UserConfiguration>}    A UserConfiguration.
+   */
+  GetUserConfiguration(name: string, parentFolderId: FolderId, properties: UserConfigurationProperties): Promise<UserConfiguration> {
+    EwsUtilities.ValidateParam(name, "name");
+    EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
+
+    let request: GetUserConfigurationRequest = new GetUserConfigurationRequest(this);
+
+    request.Name = name;
+    request.ParentFolderId = parentFolderId;
+    request.Properties = properties;
+
+    return request.Execute().then((response: ServiceResponseCollection<GetUserConfigurationResponse>) => {
+      return response.__thisIndexer(0).UserConfiguration;
+    })
+  }
+
+  /**
+   * Loads the properties of the specified userConfiguration.
+   *
+   * @param   {UserConfiguration}             userConfiguration   The userConfiguration containing properties to load.
+   * @param   {UserConfigurationProperties}   properties          Properties to retrieve.
+   * @return  {Promise<void>}                 :Promise.
+   */
+  LoadPropertiesForUserConfiguration(userConfiguration: UserConfiguration, properties: UserConfigurationProperties): Promise<void> {
+    EwsLogging.Assert(
+      userConfiguration != null,
+      "ExchangeService.LoadPropertiesForUserConfiguration",
+      "userConfiguration is null");
+
+    let request: GetUserConfigurationRequest = new GetUserConfigurationRequest(this);
+
+    request.UserConfiguration = userConfiguration;
+    request.Properties = properties;
+
+    return <any>request.Execute();
+  }
+
+  /**
+   * Updates a UserConfiguration.
+   *
+   * @param   {UserConfiguration}   userConfiguration   The UserConfiguration.
+   * @return  {Promise<void>}       :Promise.
+   */
+  UpdateUserConfiguration(userConfiguration: UserConfiguration): Promise<void> {
+    EwsUtilities.ValidateParam(userConfiguration, "userConfiguration");
+
+    let request: UpdateUserConfigurationRequest = new UpdateUserConfigurationRequest(this);
+
+    request.UserConfiguration = userConfiguration;
+
+    return <any>request.Execute();
+  }
+
+  //#endregion
+
+
+  //#region InboxRule operations
+
+  /**
+   * Retrieves the inbox rules of the specified user.
+   *
+   * @return  {Promise<RuleCollection>}       A RuleCollection object containing the inbox rules of the specified user    :Promise.
+   */
+  GetInboxRules(): Promise<RuleCollection>;
+  /**
+   * Retrieves the inbox rules of the specified user.
+   *
+   * @param   {string}   mailboxSmtpAddress   The SMTP address of the user whose inbox rules should be retrieved.
+   * @return  {Promise<RuleCollection>}       A RuleCollection object containing the inbox rules of the specified user    :Promise.
+   */
+  GetInboxRules(mailboxSmtpAddress: string): Promise<RuleCollection>;
+  GetInboxRules(mailboxSmtpAddress: string = null): Promise<RuleCollection> {
+
+    let request: GetInboxRulesRequest = new GetInboxRulesRequest(this);
+    if (arguments.length > 0) {
+      EwsUtilities.ValidateParam(mailboxSmtpAddress, "MailboxSmtpAddress");
+      request.MailboxSmtpAddress = mailboxSmtpAddress;
+    }
+    return request.Execute().then((response: GetInboxRulesResponse) => {
+      return response.Rules;
+    });
+  }
+
+  /**
+   * Update the specified user's inbox rules by applying the specified operations.
+   *
+   * @param   {RuleOperation[]}   operations              The operations that should be applied to the user's inbox rules.
+   * @param   {boolean}           removeOutlookRuleBlob   Indicate whether or not to remove Outlook Rule Blob.
+   * @param   {boolean}           mailboxSmtpAddress      The SMTP address of the user whose inbox rules should be updated.
+   * @return  {Promise<void>}     :Promise
+   */
+  UpdateInboxRules(operations: RuleOperation[], removeOutlookRuleBlob: boolean, mailboxSmtpAddress: string): Promise<void>;
+  /**
+   * Update the specified user's inbox rules by applying the specified operations.
+   *
+   * @param   {RuleOperation[]}   operations              The operations that should be applied to the user's inbox rules.
+   * @param   {boolean}           removeOutlookRuleBlob   Indicate whether or not to remove Outlook Rule Blob.
+   * @return  {Promise<void>}     :Promise
+   */
+  UpdateInboxRules(operations: RuleOperation[], removeOutlookRuleBlob: boolean): Promise<void>;
+  UpdateInboxRules(operations: RuleOperation[], removeOutlookRuleBlob: boolean, mailboxSmtpAddress?: string): Promise<void> {
+    let request: UpdateInboxRulesRequest = new UpdateInboxRulesRequest(this);
+    request.InboxRuleOperations = operations;
+    request.RemoveOutlookRuleBlob = removeOutlookRuleBlob;
+
+    if (arguments.length > 2) {
+      request.MailboxSmtpAddress = mailboxSmtpAddress;
+    }
+    return <any>request.Execute();
+  }
+
+  //#endregion
+
+
+  //#region eDiscovery/Compliance operations
+
+  //// BeginGetNonIndexableItemDetails(callback: Function /*System.AsyncCallback*/, state: any, parameters: GetNonIndexableItemDetailsParameters): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginGetNonIndexableItemDetails : Not implemented."); }
+  //// BeginGetNonIndexableItemStatistics(callback: Function /*System.AsyncCallback*/, state: any, parameters: GetNonIndexableItemStatisticsParameters): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginGetNonIndexableItemStatistics : Not implemented."); }
+  //// BeginSearchMailboxes(callback: Function /*System.AsyncCallback*/, state: any, searchParameters: SearchMailboxesParameters): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSearchMailboxes : Not implemented."); }
+  //// EndGetNonIndexableItemDetails(asyncResult: Function /*System.IAsyncResult*/): GetNonIndexableItemDetailsResponse { throw new Error("ExchangeService.ts - EndGetNonIndexableItemDetails : Not implemented."); }
+  //// EndGetNonIndexableItemStatistics(asyncResult: Function /*System.IAsyncResult*/): GetNonIndexableItemStatisticsResponse { throw new Error("ExchangeService.ts - EndGetNonIndexableItemStatistics : Not implemented."); }
+  //// EndSearchMailboxes(asyncResult: Function /*System.IAsyncResult*/): ServiceResponseCollection<TResponse> { throw new Error("ExchangeService.ts - EndSearchMailboxes : Not implemented."); }
+
+  /**
+   * Create get non indexable item details request
+   *
+   * @param   {GetNonIndexableItemDetailsParameters}   parameters   Get non indexable item details parameters
+   * @return  {GetNonIndexableItemDetailsRequest}      GetNonIndexableItemDetails request
+   */
+  private CreateGetNonIndexableItemDetailsRequest(parameters: GetNonIndexableItemDetailsParameters): GetNonIndexableItemDetailsRequest {
+    EwsUtilities.ValidateParam(parameters, "parameters");
+    EwsUtilities.ValidateParam(parameters.Mailboxes, "parameters.Mailboxes");
+
+    let request: GetNonIndexableItemDetailsRequest = new GetNonIndexableItemDetailsRequest(this);
+    request.Mailboxes = parameters.Mailboxes;
+    request.PageSize = parameters.PageSize;
+    request.PageItemReference = parameters.PageItemReference;
+    request.PageDirection = parameters.PageDirection;
+    request.SearchArchiveOnly = parameters.SearchArchiveOnly;
+
+    return request;
+  }
+
+  /**
+   * Create get non indexable item statistics request
+   *
+   * @param   {GetNonIndexableItemStatisticsParameters}   parameters   Get non indexable item statistics parameters
+   * @return  {GetNonIndexableItemStatisticsRequest}      Service response object
+   */
+  private CreateGetNonIndexableItemStatisticsRequest(parameters: GetNonIndexableItemStatisticsParameters): GetNonIndexableItemStatisticsRequest {
+    EwsUtilities.ValidateParam(parameters, "parameters");
+    EwsUtilities.ValidateParam(parameters.Mailboxes, "parameters.Mailboxes");
+
+    let request: GetNonIndexableItemStatisticsRequest = new GetNonIndexableItemStatisticsRequest(this);
+    request.Mailboxes = parameters.Mailboxes;
+    request.SearchArchiveOnly = parameters.SearchArchiveOnly;
+
+    return request;
+  }
+
+  /**
+   * Creates SearchMailboxesRequest from SearchMailboxesParameters
+   *
+   * @param   {SearchMailboxesParameters}   searchParameters   search parameters
+   * @return  {SearchMailboxesRequest}      request object
+   */
+  private CreateSearchMailboxesRequest(searchParameters: SearchMailboxesParameters): SearchMailboxesRequest {
+    let request: SearchMailboxesRequest = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
+    ArrayHelper.AddRange(request.SearchQueries, searchParameters.SearchQueries); //request.SearchQueries.AddRange(searchParameters.SearchQueries);
+    request.ResultType = searchParameters.ResultType;
+    request.PreviewItemResponseShape = searchParameters.PreviewItemResponseShape;
+    request.SortByProperty = searchParameters.SortBy;
+    request.SortOrder = searchParameters.SortOrder;
+    request.Language = searchParameters.Language;
+    request.PerformDeduplication = searchParameters.PerformDeduplication;
+    request.PageSize = searchParameters.PageSize;
+    request.PageDirection = searchParameters.PageDirection;
+    request.PageItemReference = searchParameters.PageItemReference;
+
+    return request;
+  }
+
+  /**
+   * Get dicovery search configuration
+   *
+   * @param   {string}    searchId                       Search Id
+   * @param   {boolean}   expandGroupMembership          True if want to expand group membership
+   * @param   {boolean}   inPlaceHoldConfigurationOnly   True if only want the inplacehold configuration
+   * @return  {Promise<GetDiscoverySearchConfigurationResponse>}      Service response object    :Promise.
+   */
+  GetDiscoverySearchConfiguration(searchId: string, expandGroupMembership: boolean, inPlaceHoldConfigurationOnly: boolean): Promise<GetDiscoverySearchConfigurationResponse> {
+    let request: GetDiscoverySearchConfigurationRequest = new GetDiscoverySearchConfigurationRequest(this);
+    request.SearchId = searchId;
+    request.ExpandGroupMembership = expandGroupMembership;
+    request.InPlaceHoldConfigurationOnly = inPlaceHoldConfigurationOnly;
+
+    return request.Execute();
+  }
+
+  /**
+   * Get hold on mailboxes
+   *
+   * @param   {string}   holdId   Hold id
+   * @return  {Promise<GetHoldOnMailboxesResponse>}       Service response object
+   */
+  GetHoldOnMailboxes(holdId: string): Promise<GetHoldOnMailboxesResponse> {
+    let request: GetHoldOnMailboxesRequest = new GetHoldOnMailboxesRequest(this);
+    request.HoldId = holdId;
+
+    return request.Execute();
+  }
+
+  /**
+   * Get non indexable item details
+   *
+   * @param   {string[]}  mailboxes           Array of mailbox legacy DN
+   * @return  {Promise<GetNonIndexableItemDetailsResponse>}       Service response object :Promise.
+   */
+  GetNonIndexableItemDetails(mailboxes: string[]): Promise<GetNonIndexableItemDetailsResponse>;
+  /**
+   * Get non indexable item details
+   *
+   * @param   {string[]}              mailboxes           Array of mailbox legacy DN
+   * @param   {number}                pageSize            The page size
+   * @param   {string}                pageItemReference   Page item reference
+   * @param   {SearchPageDirection}   pageDirection       Page direction
+   * @return  {Promise<GetNonIndexableItemDetailsResponse>}       Service response object :Promise.
+   */
+  GetNonIndexableItemDetails(mailboxes: string[], pageSize: number, pageItemReference: string, pageDirection: SearchPageDirection): Promise<GetNonIndexableItemDetailsResponse>;
+  /**
+   * Get non indexable item details
+   *
+   * @param   {GetNonIndexableItemDetailsParameters}   parameters   Get non indexable item details parameters
+   * @return  {Promise<GetNonIndexableItemDetailsResponse>}         Service response object   :Promise.
+   */
+  GetNonIndexableItemDetails(parameters: GetNonIndexableItemDetailsParameters): Promise<GetNonIndexableItemDetailsResponse>;
+  GetNonIndexableItemDetails(mailboxesOrParameters: string[] | GetNonIndexableItemDetailsParameters, pageSize: number = null, pageItemReference: string = null, pageDirection: SearchPageDirection = null): Promise<GetNonIndexableItemDetailsResponse> {
+    let parameters: GetNonIndexableItemDetailsParameters = null;
+    if (mailboxesOrParameters instanceof GetNonIndexableItemDetailsParameters) {
+      parameters = mailboxesOrParameters;
+    }
+    else {
+      parameters = new GetNonIndexableItemDetailsParameters();
+      parameters.Mailboxes = mailboxesOrParameters;
+      parameters.PageSize = pageSize;
+      parameters.PageItemReference = pageItemReference;
+      parameters.PageDirection = pageDirection;
+      parameters.SearchArchiveOnly = false;
     }
 
-    /**
-     * Sets up a conversation so that any item received within that conversation is always moved to Deleted Items folder. Calling this method results in a call to EWS.
-     *
-     * @param   {ConversationId[]}  conversationId         The id of the conversation.
-     * @param   {boolean}           processSynchronously   Indicates whether the method should return only once enabling this rule and deleting existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    EnableAlwaysDeleteItemsInConversations(conversationId: ConversationId[], processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
-        return this.ApplyConversationAction(
-            ConversationActionType.AlwaysDelete,
-            conversationId,
-            processSynchronously,
-            null,
-            true,
-            null,
-            ServiceErrorHandling.ReturnErrors);
+    let request: GetNonIndexableItemDetailsRequest = this.CreateGetNonIndexableItemDetailsRequest(parameters);
+
+    return request.Execute();
+  }
+
+  /**
+   * Get non indexable item statistics
+   *
+   * @param   {string[]}   mailboxes   Array of mailbox legacy DN
+   * @return  {Promise<GetNonIndexableItemStatisticsResponse>}    Service response object :Promise.
+   */
+  GetNonIndexableItemStatistics(mailboxes: string[]): Promise<GetNonIndexableItemStatisticsResponse>;
+  /**
+   * Get non indexable item statistics
+   *
+   * @param   {GetNonIndexableItemStatisticsParameters}   parameters   Get non indexable item statistics parameters
+   * @return  {Promise<GetNonIndexableItemStatisticsResponse>}         Service response object :Promise.
+   */
+  GetNonIndexableItemStatistics(parameters: GetNonIndexableItemStatisticsParameters): Promise<GetNonIndexableItemStatisticsResponse>;
+  GetNonIndexableItemStatistics(mailboxesOrParameters: string[] | GetNonIndexableItemStatisticsParameters): Promise<GetNonIndexableItemStatisticsResponse> {
+    let parameters: GetNonIndexableItemStatisticsParameters = null;
+    if (mailboxesOrParameters instanceof GetNonIndexableItemStatisticsParameters) {
+      parameters = mailboxesOrParameters;
+    } else {
+      parameters = new GetNonIndexableItemStatisticsParameters();
+      parameters.Mailboxes = mailboxesOrParameters;
+      parameters.SearchArchiveOnly = false;
     }
 
-    /**
-     * Sets up a conversation so that any item received within that conversation is always moved to a specific folder. Calling this method results in a call to EWS.
-     *
-     * @param   {ConversationId[]}  conversationId         The id of the conversation.
-     * @param   {FolderId}          destinationFolderId    The Id of the folder to which conversation items should be moved.
-     * @param   {boolean}           processSynchronously   Indicates whether the method should return only once enabling this rule and moving existing items in the conversation is completely done. If processSynchronously is false, the method returns immediately.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    EnableAlwaysMoveItemsInConversations(conversationId: ConversationId[], destinationFolderId: FolderId, processSynchronously: boolean): Promise<ServiceResponseCollection<ServiceResponse>> {
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
-        return this.ApplyConversationAction(
-            ConversationActionType.AlwaysMove,
-            conversationId,
-            processSynchronously,
-            null,
-            false,
-            destinationFolderId,
-            ServiceErrorHandling.ReturnErrors);
+    let request: GetNonIndexableItemStatisticsRequest = this.CreateGetNonIndexableItemStatisticsRequest(parameters);
+
+    return request.Execute();
+  }
+
+  /**
+   * Get searchable mailboxes
+   *
+   * @param   {string}    searchFilter            Search filter
+   * @param   {boolean}   expandGroupMembership   True if want to expand group membership
+   * @return  {Promise<GetSearchableMailboxesResponse>}       Service response object :Promise
+   */
+  GetSearchableMailboxes(searchFilter: string, expandGroupMembership: boolean): Promise<GetSearchableMailboxesResponse> {
+    let request: GetSearchableMailboxesRequest = new GetSearchableMailboxesRequest(this);
+    request.SearchFilter = searchFilter;
+    request.ExpandGroupMembership = expandGroupMembership;
+
+    return request.Execute();
+  }
+
+  /**
+   * Search mailboxes
+   *
+   * @param   {SearchMailboxesParameters}   searchParameters   Search mailboxes parameters
+   * @return  {Promise<ServiceResponseCollection<SearchMailboxesResponse>>}       Collection of search mailboxes response object  :Promise.
+   */
+  SearchMailboxes(searchParameters: SearchMailboxesParameters): Promise<ServiceResponseCollection<SearchMailboxesResponse>>;
+  /**
+   * Search mailboxes
+   *
+   * @param   {MailboxQuery[]}        mailboxQueries      Collection of query and mailboxes
+   * @param   {SearchResultType}      resultType          Search result type
+   * @return  {Promise<ServiceResponseCollection<SearchMailboxesResponse>>}       Collection of search mailboxes response object  :Promise.
+   */
+  SearchMailboxes(mailboxQueries: MailboxQuery[], resultType: SearchResultType): Promise<ServiceResponseCollection<SearchMailboxesResponse>>;
+  /**
+   * Search mailboxes
+   *
+   * @param   {MailboxQuery[]}        mailboxQueries      Collection of query and mailboxes
+   * @param   {SearchResultType}      resultType          Search result type
+   * @param   {string}                sortByProperty      Sort by property name
+   * @param   {SortDirection}         sortOrder           Sort order
+   * @param   {number}                pageSize            Page size
+   * @param   {SearchPageDirection}   pageDirection       Page navigation direction
+   * @param   {string}                pageItemReference   Item reference used for paging
+   * @return  {Promise<ServiceResponseCollection<SearchMailboxesResponse>>}       Collection of search mailboxes response object  :Promise.
+   */
+  SearchMailboxes(mailboxQueries: MailboxQuery[], resultType: SearchResultType, sortByProperty: string, sortOrder: SortDirection, pageSize: number, pageDirection: SearchPageDirection, pageItemReference: string): Promise<ServiceResponseCollection<SearchMailboxesResponse>>;
+  SearchMailboxes(mailboxQueriesOrSearchParameters: MailboxQuery[] | SearchMailboxesParameters, resultType: SearchResultType = SearchResultType.PreviewOnly, sortByProperty: string = null, sortOrder: SortDirection = SortDirection.Ascending, pageSize: number = 0, pageDirection: SearchPageDirection = SearchPageDirection.Next, pageItemReference: string = null): Promise<ServiceResponseCollection<SearchMailboxesResponse>> {
+    let request: SearchMailboxesRequest = null;
+    if (mailboxQueriesOrSearchParameters instanceof SearchMailboxesParameters) {
+      let searchParameters: SearchMailboxesParameters = null;
+      searchParameters = mailboxQueriesOrSearchParameters;
+      EwsUtilities.ValidateParam(searchParameters, "searchParameters");
+      EwsUtilities.ValidateParam(searchParameters.SearchQueries, "searchParameters.SearchQueries");
+      request = this.CreateSearchMailboxesRequest(searchParameters);
     }
+    else {
+      request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
+      if (mailboxQueriesOrSearchParameters != null) {
+        ArrayHelper.AddRange(request.SearchQueries, mailboxQueriesOrSearchParameters);
+      }
+      request.ResultType = resultType;
 
-    /**
-     * Retrieves a collection of all Conversations in the specified Folder.
-     *
-     * @param   {ViewBase}   view       The view controlling the number of conversations returned.
-     * @param   {FolderId}   folderId   The Id of the folder in which to search for conversations.
-     * @return  {Promise<Conversation[]>}       Collection of conversations.
-     */
-    FindConversation(view: ViewBase, folderId: FolderId): Promise<Conversation[]>;
-    /**
-     * Retrieves a collection of all Conversations in the specified Folder.
-     *
-     * @param   {ViewBase}  view                   The view controlling the number of conversations returned.
-     * @param   {FolderId}  folderId               The Id of the folder in which to search for conversations.
-     * @param   {string}    queryString            The query string for which the search is being performed
-     * @return  {Promise<FindConversationResults>}      FindConversation results    :Promise.
-     */
-    FindConversation(view: ViewBase, folderId: FolderId, queryString: string): Promise<Conversation[]>;
-    /**
-     * Searches for and retrieves a collection of Conversations in the specified Folder. Along with conversations, a list of highlight terms are returned.
-     *
-     * @param   {ViewBase}  view                   The view controlling the number of conversations returned.
-     * @param   {FolderId}  folderId               The Id of the folder in which to search for conversations.
-     * @param   {string}    queryString            The query string for which the search is being performed
-     * @param   {boolean}   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
-     * @return  {Promise<FindConversationResults>}      FindConversation results    :Promise.
-     */
-    FindConversation(view: ViewBase, folderId: FolderId, queryString: string, returnHighlightTerms: boolean): Promise<FindConversationResults>;
-    /**
-     * Searches for and retrieves a collection of Conversations in the specified Folder. Along with conversations, a list of highlight terms are returned.
-     *
-     * @param   {ViewBase}                  view                   The view controlling the number of conversations returned.
-     * @param   {FolderId}                  folderId               The Id of the folder in which to search for conversations.
-     * @param   {string}                    queryString            The query string for which the search is being performed
-     * @param   {boolean}                   returnHighlightTerms   Flag indicating if highlight terms should be returned in the response
-     * @param   {MailboxSearchLocation?}    mailboxScope           The mailbox scope to reference.
-     * @return  {Promise<FindConversationResults>}      FindConversation results    :Promise.
-     */
-    FindConversation(view: ViewBase, folderId: FolderId, queryString: string, returnHighlightTerms: boolean, mailboxScope: MailboxSearchLocation): Promise<FindConversationResults>;
-    FindConversation(
-        view: ViewBase,
-        folderId: FolderId,
-        queryString: string = null,
-        returnHighlightTerms: boolean = null,
-        mailboxScope: MailboxSearchLocation = null): Promise<FindConversationResults | Conversation[]> {
-
-        let argsLength = arguments.length;
-
-        EwsUtilities.ValidateParam(view, "view");
-        EwsUtilities.ValidateParam(folderId, "folderId");
-
-        let request: FindConversationRequest = new FindConversationRequest(this);
-        request.View = view;
-        request.FolderId = new FolderIdWrapper(folderId);
-
-        if (argsLength > 2) {
-            EwsUtilities.ValidateParamAllowNull(queryString, "queryString");
-            request.QueryString = queryString;
-        }
-
-        if (argsLength > 3) {
-            EwsUtilities.ValidateParam(returnHighlightTerms, "returnHighlightTerms");
-            request.ReturnHighlightTerms = returnHighlightTerms;
-
-            EwsUtilities.ValidateMethodVersion(
-                this,
-                ExchangeVersion.Exchange2013, // This method is only applicable for Exchange2013
-                "FindConversation");
-        }
-
-        if (argsLength > 4) {
-            request.MailboxScope = mailboxScope;
-        }
-        return request.Execute().then((responses: FindConversationResponse) => {
-            if (argsLength > 3) {
-                return responses.Results; // based on arguments it can return this or either Results.
-            }
-            else {
-                return responses.Conversations;
-            }
-        });
-    }
-
-    /**
-     * Retrieves a collection of all Conversations in the specified Folder.
-     *
-     * @param   {ViewBase}  view            The view controlling the number of conversations returned.
-     * @param   {FolderId}  folderId        The Id of the folder in which to search for conversations.
-     * @param   {string}    anchorMailbox   The anchorMailbox Smtp address to route the request directly to group mailbox.
-     * @return  {Promise<Conversation[]>}   Collection of conversations :Promise.
-     */
-    FindGroupConversation(view: ViewBase, folderId: FolderId, anchorMailbox: string): Promise<Conversation[]> {
-
-        EwsUtilities.ValidateParam(view, "view");
-        EwsUtilities.ValidateParam(folderId, "folderId");
-        EwsUtilities.ValidateParam(anchorMailbox, "anchorMailbox");
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2015,
-            "FindConversation");
-
-        let request: FindConversationRequest = new FindConversationRequest(this);
-
-        request.View = view;
-        request.FolderId = new FolderIdWrapper(folderId);
-        request.AnchorMailbox = anchorMailbox;
-
-        return request.Execute().then((responses: FindConversationResponse) => {
-            return responses.Conversations;
-        });
-    }
-
-    /**
-     * Gets the items for a set of conversations.
-     *
-     * @param   {ConversationRequest[]}     conversations     Conversations with items to load.
-     * @param   {PropertySet}               propertySet       The set of properties to load.
-     * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
-     * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
-     * @return  {Promise<ServiceResponseCollection<GetConversationItemsResponse>>}      GetConversationItems response    :Promise.
-     */
-    GetConversationItems(conversations: ConversationRequest[], propertySet: PropertySet, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */): Promise<ServiceResponseCollection<GetConversationItemsResponse>>;
-    /**
-     * Gets the items for a set of conversations.
-     *
-     * @param   {ConversationRequest[]}     conversations     Conversations with items to load.
-     * @param   {PropertySet}               propertySet       The set of properties to load.
-     * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
-     * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
-     * @param   {MailboxSearchLocation}     mailboxScope      The mailbox scope to reference.
-     * @return  {Promise<ServiceResponseCollection<GetConversationItemsResponse>>}      GetConversationItems response    :Promise.
-     */
-    GetConversationItems(conversations: ConversationRequest[], propertySet: PropertySet, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */, mailboxScope: MailboxSearchLocation /* Nullable */): Promise<ServiceResponseCollection<GetConversationItemsResponse>>;
-    /**
-     * Gets the items for a conversation.
-     *
-     * @param   {ConversationId}            conversationId    The conversation id.
-     * @param   {PropertySet}               propertySet       The set of properties to load.
-     * @param   {string}                    syncState         The optional sync state representing the point in time when to start the synchronization.
-     * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
-     * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
-     * @return  {Promise<ConversationResponse>}               GetConversationItems response    :Promise.
-     */
-    GetConversationItems(conversationId: ConversationId, propertySet: PropertySet, syncState: string, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */): Promise<ConversationResponse>;
-    GetConversationItems(
-        conversationsOrConversationId: ConversationRequest[] | ConversationId,
-        propertySet: PropertySet,
-        foldersToIgnoreOrSyncState: FolderId[] | string,
-        sortOrderOrFoldersToIgnore: ConversationSortOrder /* Nullable */ | FolderId[],
-        mailboxScopeOrSortOrder: ConversationSortOrder | MailboxSearchLocation /* Nullable */ = null): Promise<ServiceResponseCollection<GetConversationItemsResponse> | ConversationResponse> {
-
-        let conversations: ConversationRequest[] = [];
-        let foldersToIgnore: FolderId[] = [];
-        let syncState: string = null;
-        let sortOrder: ConversationSortOrder = null;
-        let mailboxScope: MailboxSearchLocation = null;
-        let returnConversationResponse: boolean = false;
-
-        if (conversationsOrConversationId instanceof ConversationId) {
-            conversations.push(new ConversationRequest(conversationsOrConversationId, <string>foldersToIgnoreOrSyncState));
-            foldersToIgnore = <FolderId[]>sortOrderOrFoldersToIgnore;
-            sortOrder = <ConversationSortOrder>mailboxScopeOrSortOrder;
-            returnConversationResponse = true;
-        }
-        else {
-            conversations = conversationsOrConversationId;
-            foldersToIgnore = <FolderId[]>foldersToIgnoreOrSyncState;
-            sortOrder = <ConversationSortOrder>sortOrderOrFoldersToIgnore;
-            mailboxScope = <MailboxSearchLocation>mailboxScopeOrSortOrder;
-
-        }
-
-        return this.InternalGetConversationItems(
-            conversations,
-            propertySet,
-            foldersToIgnore,
-            sortOrder, //todo: check why official repo has passed sortOrder as nulll when requested with ConversationRequest[] varient
-            mailboxScope,           /* mailboxScope */
-            null,           /* maxItemsToReturn */
-            null, /* anchorMailbox */
-            ServiceErrorHandling.ThrowOnError).then((responses: ServiceResponseCollection<GetConversationItemsResponse>) => {
-                return returnConversationResponse ? responses.__thisIndexer(0).Conversation : responses;
-            });
-
-    }
-
-    /**
-     * Gets the items for a conversation.
-     *
-     * /remarks/    This API designed to be used primarily in groups scenarios where we want to set the anchor mailbox header so that request is routed directly to the group mailbox backend server.
-     * @param   {ConversationId}            conversationId    The conversation id.
-     * @param   {PropertySet}               propertySet       The set of properties to load.
-     * @param   {string}                    syncState         The optional sync state representing the point in time when to start the synchronization.
-     * @param   {FolderId[]}                foldersToIgnore   The folders to ignore.
-     * @param   {ConversationSortOrder}     sortOrder         Conversation item sort order.
-     * @param   {string}                    anchorMailbox     The smtp address of the mailbox hosting the conversations
-     * @return  {Promise<ConversationResponse>}               ConversationResponseType response :Promise.
-     */
-    GetGroupConversationItems(conversationId: ConversationId, propertySet: PropertySet,
-        syncState: string, foldersToIgnore: FolderId[], sortOrder: ConversationSortOrder /* Nullable */, anchorMailbox: string): Promise<ConversationResponse> {
-        EwsUtilities.ValidateParam(anchorMailbox, "anchorMailbox");
-
-        let conversations: ConversationRequest[] = [];
-        conversations.push(new ConversationRequest(conversationId, syncState));
-
-        return this.InternalGetConversationItems(
-            conversations,
-            propertySet,
-            foldersToIgnore,
-            sortOrder,
-            null,           /* mailboxScope */
-            null,           /* maxItemsToReturn */
-            anchorMailbox, /* anchorMailbox */
-            ServiceErrorHandling.ThrowOnError).then((responses: ServiceResponseCollection<GetConversationItemsResponse>) => {
-                return responses.__thisIndexer(0).Conversation;
-            });
-    }
-
-    /**
-     * @internal Gets the items for a set of conversations.
-     *
-     * @param   {ConversationRequest[]}     conversations      Conversations with items to load.
-     * @param   {PropertySet}               propertySet        The set of properties to load.
-     * @param   {FolderId[]}                foldersToIgnore    The folders to ignore.
-     * @param   {ConversationSortOrder?}    sortOrder          Sort order of conversation tree nodes.
-     * @param   {MailboxSearchLocation?}    mailboxScope       The mailbox scope to reference.
-     * @param   {number?}                   maxItemsToReturn   Maximum number of items to return.
-     * @param   {string}                    anchorMailbox      The smtpaddress of the mailbox that hosts the conversations
-     * @param   {ServiceErrorHandling}      errorHandling      What type of error handling should be performed.
-     * @return  {Promise<ServiceResponseCollection<GetConversationItemsResponse>>}      GetConversationItems response.
-     */
-    InternalGetConversationItems(
-        conversations: ConversationRequest[],
-        propertySet: PropertySet,
-        foldersToIgnore: FolderId[],
-        sortOrder: ConversationSortOrder, //Nullable
-        mailboxScope: MailboxSearchLocation, //Nullable
-        maxItemsToReturn: number, //nullable
-        anchorMailbox: string,
-        errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<GetConversationItemsResponse>> {
-
-        EwsUtilities.ValidateParam(conversations, "conversations");
-        EwsUtilities.ValidateParam(propertySet, "itemProperties");
-        EwsUtilities.ValidateParamAllowNull(foldersToIgnore, "foldersToIgnore");
-        EwsUtilities.ValidateMethodVersion(
-            this,
-            ExchangeVersion.Exchange2013,
-            "GetConversationItems");
-
-        let request: GetConversationItemsRequest = new GetConversationItemsRequest(this, errorHandling);
-        request.ItemProperties = propertySet;
-        request.FoldersToIgnore = new FolderIdCollection(foldersToIgnore);
+      if (arguments.length > 2) {
+        request.SortByProperty = sortByProperty;
         request.SortOrder = sortOrder;
-        request.MailboxScope = mailboxScope;
-        request.MaxItemsToReturn = maxItemsToReturn;
-        request.AnchorMailbox = anchorMailbox;
-        request.Conversations = conversations;
-
-        return request.Execute();
+        request.PageSize = pageSize;
+        request.PageDirection = pageDirection;
+        request.PageItemReference = pageItemReference;
+      }
     }
+    return request.Execute();
+  }
 
-    /**
-     * Copies the items in the specified conversation to the specified destination folder. Calling this method results in a call to EWS.
-     *
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs   The pairs of Id of conversation whose items should be copied and the date and time conversation was last synced (Items received after that date will not be copied).
-     * @param   {FolderId}                                      contextFolderId       The context folder id.
-     * @param   {FolderId}                                      destinationFolderId   The destination folder id.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    CopyItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, destinationFolderId: FolderId): Promise<ServiceResponseCollection<ServiceResponse>> {
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
-        return this.ApplyConversationOneTimeAction(
-            ConversationActionType.Copy,
-            idLastSyncTimePairs,
-            contextFolderId,
-            destinationFolderId,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            ServiceErrorHandling.ReturnErrors);
-    }
+  /**
+   * Set hold on mailboxes
+   *
+   * @param   {SetHoldOnMailboxesParameters}  parameters      Set hold parameters
+   * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
+   */
+  SetHoldOnMailboxes(parameters: SetHoldOnMailboxesParameters): Promise<SetHoldOnMailboxesResponse>;
+  /**
+   * Set hold on mailboxes
+   *
+   * @param   {string}        holdId          Hold id
+   * @param   {HoldAction}    actionType      Action type
+   * @param   {string}        query           Query string
+   * @param   {string[]}      mailboxes       Collection of mailboxes
+   * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
+   */
+  SetHoldOnMailboxes(holdId: string, actionType: HoldAction, query: string, mailboxes: String[]): Promise<SetHoldOnMailboxesResponse>;
+  /**
+   * Set hold on mailboxes
+   *
+   * @param   {string}        holdId                Hold id
+   * @param   {HoldAction}    actionType            Action type
+   * @param   {string}        query                 Query string
+   * @param   {string}        inPlaceHoldIdentity   in-place hold identity
+   * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
+   */
+  SetHoldOnMailboxes(holdId: string, actionType: HoldAction, query: string, inPlaceHoldIdentity: string): Promise<SetHoldOnMailboxesResponse>;
+  /**
+   * Set hold on mailboxes
+   *
+   * @param   {string}        holdId                Hold id
+   * @param   {HoldAction}    actionType            Action type
+   * @param   {string}        query                 Query string
+   * @param   {string}        inPlaceHoldIdentity   in-place hold identity
+   * @param   {string}        itemHoldPeriod        item hold period
+   * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
+   */
+  SetHoldOnMailboxes(holdId: string, actionType: HoldAction, query: string, inPlaceHoldIdentity: string, itemHoldPeriod: string): Promise<SetHoldOnMailboxesResponse>;
+  SetHoldOnMailboxes(holdIdOrParameters: string | SetHoldOnMailboxesParameters, _actionType: HoldAction = null, _query: string = null, mailboxesOrInPlaceHoldIdentity: String[] | string = null, _itemHoldPeriod: string = null): Promise<SetHoldOnMailboxesResponse> {
 
-    /**
-     * Deletes the items in the specified conversation. Calling this method results in a call to EWS.
-     *
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs   The pairs of Id of conversation whose items should be deleted and the date and time conversation was last synced (Items received after that date will not be deleted).
-     * @param   {FolderId}                                      contextFolderId       The Id of the folder that contains the conversation.
-     * @param   {DeleteMode}                                    deleteMode            The deletion mode.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    DeleteItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, deleteMode: DeleteMode): Promise<ServiceResponseCollection<ServiceResponse>> {
-        return this.ApplyConversationOneTimeAction(
-            ConversationActionType.Delete,
-            idLastSyncTimePairs,
-            contextFolderId,
-            null,
-            deleteMode,
-            null,
-            null,
-            null,
-            null,
-            null,
-            ServiceErrorHandling.ReturnErrors);
-    }
+    let holdId: string = <string>holdIdOrParameters;
+    let actionType: HoldAction = _actionType;
+    let query: string = _query;
+    let mailboxes: string[] = <string[]>mailboxesOrInPlaceHoldIdentity;
+    let inPlaceHoldIdentity: string = <string>mailboxesOrInPlaceHoldIdentity;
+    let itemHoldPeriod: string = _itemHoldPeriod;
 
-    /**
-     * Moves the items in the specified conversation to the specified destination folder. Calling this method results in a call to EWS.
-     *
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs   The pairs of Id of conversation whose items should be moved and the dateTime conversation was last synced (Items received after that dateTime will not be moved).
-     * @param   {FolderId}                                      contextFolderId       The Id of the folder that contains the conversation.
-     * @param   {FolderId}                                      destinationFolderId   The Id of the destination folder.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    MoveItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, destinationFolderId: FolderId): Promise<ServiceResponseCollection<ServiceResponse>> {
+    let request: SetHoldOnMailboxesRequest = new SetHoldOnMailboxesRequest(this);
+    let argsLength = arguments.length;
+    if (argsLength === 1) { //SetHoldOnMailboxesParameters
+      let parameters: SetHoldOnMailboxesParameters = <SetHoldOnMailboxesParameters>holdIdOrParameters;
 
-        EwsUtilities.ValidateParam(destinationFolderId, "destinationFolderId");
-        return this.ApplyConversationOneTimeAction(
-            ConversationActionType.Move,
-            idLastSyncTimePairs,
-            contextFolderId,
-            destinationFolderId,
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            ServiceErrorHandling.ReturnErrors);
-    }
+      EwsUtilities.ValidateParam(parameters, "parameters");
 
-    /**
-     * Sets flag status for items in conversation. Calling this method would result in call to EWS.
-     *
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}   idLastSyncTimePairs   The pairs of Id of conversation whose items should have their read state set and the date and time conversation was last synced (Items received after that date will not have their read state set).
-     * @param   {FolderId}   contextFolderId       The Id of the folder that contains the conversation.
-     * @param   {Flag}   flagStatus            Flag status to apply to conversation items.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    SetFlagStatusForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, flagStatus: Flag): Promise<ServiceResponseCollection<ServiceResponse>> {
+      holdId = parameters.HoldId;
+      actionType = parameters.ActionType;
+      query = parameters.Query;
+      mailboxes = parameters.Mailboxes;
+      request.Language = parameters.Language;
+      inPlaceHoldIdentity = parameters.InPlaceHoldIdentity;
 
-        EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetFlagStatusForItemsInConversations");
-
-        return this.ApplyConversationOneTimeAction(
-            ConversationActionType.Flag,
-            idLastSyncTimePairs,
-            contextFolderId,
-            null,
-            null,
-            null,
-            null,
-            null,
-            flagStatus,
-            null,
-            ServiceErrorHandling.ReturnErrors);
-    }
-
-    /**
-     * Sets the read state for items in conversation. Calling this method would result in call to EWS.
-     *
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs    The pairs of Id of conversation whose items should have their read state set and the date and time conversation was last synced (Items received after that date will not have their read state set).
-     * @param   {FolderId}                                      contextFolderId        The Id of the folder that contains the conversation.
-     * @param   {boolean}                                       isRead                 if set to true, conversation items are marked as read; otherwise they are marked as unread.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    SetReadStateForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, isRead: boolean): Promise<ServiceResponseCollection<ServiceResponse>>;
-    /**
-     * Sets the read state for items in conversation. Calling this method would result in call to EWS.
-     *
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs    The pairs of Id of conversation whose items should have their read state set and the date and time conversation was last synced (Items received after that date will not have their read state set).
-     * @param   {FolderId}                                      contextFolderId        The Id of the folder that contains the conversation.
-     * @param   {boolean}                                       isRead                 if set to true, conversation items are marked as read; otherwise they are marked as unread.
-     * @param   {boolean}                                       suppressReadReceipts   if set to *true* read receipts are suppressed.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    SetReadStateForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, isRead: boolean, suppressReadReceipts: boolean): Promise<ServiceResponseCollection<ServiceResponse>>;
-    SetReadStateForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, isRead: boolean, suppressReadReceipts: boolean = null): Promise<ServiceResponseCollection<ServiceResponse>> {
-
-        if (arguments.length === 4) {
-            EwsUtilities.ValidateMethodVersion(this, ExchangeVersion.Exchange2013, "SetReadStateForItemsInConversations");
-        }
-
-        return this.ApplyConversationOneTimeAction(
-            ConversationActionType.SetReadState,
-            idLastSyncTimePairs,
-            contextFolderId,
-            null,
-            null,
-            isRead,
-            null,
-            null,
-            null,
-            suppressReadReceipts, //null when not included in call
-            ServiceErrorHandling.ReturnErrors);
-    }
-
-    /**
-     * Sets the retention policy for items in conversation. Calling this method would result in call to EWS.
-     *
-     * @param   {KeyValuePair<ConversationId, DateTime?>[]}     idLastSyncTimePairs    The pairs of Id of conversation whose items should have their retention policy set and the date and time conversation was last synced (Items received after that date will not have their retention policy set).
-     * @param   {FolderId}                                      contextFolderId        The Id of the folder that contains the conversation.
-     * @param   {RetentionType}                                 retentionPolicyType    Retention policy type.
-     * @param   {Guid?}                                         retentionPolicyTagId   Retention policy tag id.  Null will clear the policy.
-     * @return  {Promise<ServiceResponseCollection<ServiceResponse>>}       :Promise
-     */
-    SetRetentionPolicyForItemsInConversations(idLastSyncTimePairs: KeyValuePair<ConversationId, DateTime>[], // IEnumerable<KeyValuePair<ConversationId, DateTime?>> idTimePairs, - DateTime is Nullable
-        contextFolderId: FolderId, retentionPolicyType: RetentionType, retentionPolicyTagId: Guid): Promise<ServiceResponseCollection<ServiceResponse>> {
-        return this.ApplyConversationOneTimeAction(
-            ConversationActionType.SetRetentionPolicy,
-            idLastSyncTimePairs,
-            contextFolderId,
-            null,
-            null,
-            null,
-            retentionPolicyType,
-            retentionPolicyTagId,
-            null,
-            null,
-            ServiceErrorHandling.ReturnErrors);
-    }
-    /* #end region Conversation */
-
-
-    /* #region Id conversion operations */
-
-    /**
-     * Converts Id from one format to another in a single call to EWS.
-     *
-     * @param   {AlternateIdBase}   id                 The Id to convert.
-     * @param   {IdFormat}          destinationFormat   The destination format.
-     * @return  {Promise<AlternateIdBase>}     The converted Id :Promise.
-     */
-    ConvertId(id: AlternateIdBase, destinationFormat: IdFormat): Promise<AlternateIdBase> {
-        EwsUtilities.ValidateParam(id, "id");
-
-        return this.InternalConvertIds(
-            [id],
-            destinationFormat,
-            ServiceErrorHandling.ThrowOnError).then((responses: ServiceResponseCollection<ConvertIdResponse>) => {
-                return responses.__thisIndexer(0).ConvertedId;
-            })
+      /** per #120 */
+      itemHoldPeriod = request.ItemHoldPeriod;
+      request.PerformDeduplication = parameters.PerformDeduplication;
+      request.IncludeNonIndexableItems = parameters.IncludeNonIndexableItems;
 
     }
-
-    /**
-     * Converts multiple Ids from one format to another in a single call to EWS.
-     *
-     * @param   {AlternateIdBase[]}     ids                 The Ids to convert.
-     * @param   {IdFormat}              destinationFormat   The destination format.
-     * @return  {Promise<ServiceResponseCollection<ConvertIdResponse>>}     A ServiceResponseCollection providing conversion results for each specified Ids :Promise.
-     */
-    ConvertIds(ids: AlternateIdBase[], destinationFormat: IdFormat): Promise<ServiceResponseCollection<ConvertIdResponse>> {
-        EwsUtilities.ValidateParamCollection(ids, "ids");
-
-        return this.InternalConvertIds(
-            ids,
-            destinationFormat,
-            ServiceErrorHandling.ReturnErrors);
+    else {
+      if (ArrayHelper.isArray(mailboxesOrInPlaceHoldIdentity)) {
+        inPlaceHoldIdentity = null;
+      }
+      else {
+        mailboxes = null;
+      }
     }
 
-    /**
-     * Converts multiple Ids from one format to another in a single call to EWS.
-     *
-     * @param   {AlternateIdBase[]}     ids                 The Ids to convert.
-     * @param   {IdFormat}              destinationFormat   The destination format.
-     * @param   {ServiceErrorHandling}  errorHandling       Type of error handling to perform.
-     * @return  {Promise<ServiceResponseCollection<ConvertIdResponse>>}     A ServiceResponseCollection providing conversion results for each specified Ids :Promise.
-     */
-    private InternalConvertIds(ids: AlternateIdBase[], destinationFormat: IdFormat, errorHandling: ServiceErrorHandling): Promise<ServiceResponseCollection<ConvertIdResponse>> {
-        EwsUtilities.ValidateParamCollection(ids, "ids");
-
-        let request: ConvertIdRequest = new ConvertIdRequest(this, errorHandling);
-        ArrayHelper.AddRange(request.Ids, ids);//request.Ids.AddRange(ids);
-        request.DestinationFormat = destinationFormat;
-
-        return request.Execute();
-    }
-    /* #endregion Id conversion operations */
-
-
-    /* #region Delegate management operations */
-
-    /**
-     * Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}                       mailbox                        The mailbox to add delegates to.
-     * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
-     * @param   {...DelegateUser[]}             delegateUsers                  The delegate users to add.
-     * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
-     */
-    AddDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
-    /**
-     * Adds delegates to a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}                       mailbox                        The mailbox to add delegates to.
-     * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
-     * @param   {DelegateUser[]}                delegateUsers                  The delegate users to add.
-     * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
-     */
-    AddDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
-    AddDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUser: DelegateUser[] | DelegateUser, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]> {
-
-        if (delegateUser) { //info: rest parameters are optional for typescript
-            if (ArrayHelper.isArray(delegateUser)) {
-                ArrayHelper.AddRange(delegateUsers, <DelegateUser[]>delegateUser);
-            }
-            else {
-                delegateUsers.push(<DelegateUser>delegateUser);
-            }
-        }
-        EwsUtilities.ValidateParam(mailbox, "mailbox");
-        EwsUtilities.ValidateParamCollection(delegateUsers, "delegateUsers");
-
-        let request: AddDelegateRequest = new AddDelegateRequest(this);
-
-        request.Mailbox = mailbox;
-        ArrayHelper.AddRange(request.DelegateUsers, delegateUsers); //request.DelegateUsers.AddRange(delegateUsers);
-        request.MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
-
-
-        return request.Execute().then((response: DelegateManagementResponse) => {
-            return response.DelegateUserResponses;
-        })
-
-    }
-
-
-    /**
-     * Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}       mailbox                 The mailbox to retrieve the delegates of.
-     * @param   {boolean}       includePermissions      Indicates whether detailed permissions should be returned fro each delegate.
-     * @param   {...UserId[]}   userIds                 The optional Ids of the delegate users to retrieve.
-     * @return  {Promise<DelegateInformation>}          A GetDelegateResponse providing the results of the operation    :Promise.
-     */
-    GetDelegates(mailbox: Mailbox, includePermissions: boolean, ...userIds: UserId[]): Promise<DelegateInformation>;
-    /**
-     * Retrieves the delegates of a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}   mailbox                 The mailbox to retrieve the delegates of.
-     * @param   {boolean}   includePermissions      Indicates whether detailed permissions should be returned fro each delegate.
-     * @param   {UserId[]}  userIds                 The optional Ids of the delegate users to retrieve.
-     * @return  {Promise<DelegateInformation>}      A GetDelegateResponse providing the results of the operation    :Promise.
-     */
-    GetDelegates(mailbox: Mailbox, includePermissions: boolean, userIds: UserId[]): Promise<DelegateInformation>;
-    GetDelegates(mailbox: Mailbox, includePermissions: boolean, userId: UserId | UserId[], ...userIds: UserId[]): Promise<DelegateInformation> {
-
-        if (userId) { //info: rest parameters are optional for typescript
-            if (ArrayHelper.isArray(userId)) {
-                ArrayHelper.AddRange(userIds, <UserId[]>userId);
-            }
-            else {
-                userIds.push(<UserId>userId);
-            }
-        }
-
-        EwsUtilities.ValidateParam(mailbox, "mailbox");
-
-        let request: GetDelegateRequest = new GetDelegateRequest(this);
-
-        request.Mailbox = mailbox;
-        ArrayHelper.AddRange(request.UserIds, userIds); //request.UserIds.AddRange(userIds);
-        request.IncludePermissions = includePermissions;
-
-        return request.Execute().then((response: GetDelegateResponse) => {
-            let delegateInformation: DelegateInformation = new DelegateInformation(
-                response.DelegateUserResponses,
-                response.MeetingRequestsDeliveryScope);
-
-            return delegateInformation;
-        });
-    }
-
-    /**
-     * Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}       mailbox   The mailbox to remove delegates from.
-     * @param   {...UserId[]}   userIds   The Ids of the delegate users to remove.
-     * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
-     */
-    RemoveDelegates(mailbox: Mailbox, ...userIds: UserId[]): Promise<DelegateUserResponse[]>;
-    /**
-     * Removes delegates on a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}   mailbox   The mailbox to remove delegates from.
-     * @param   {UserId[]}  userIds   The Ids of the delegate users to remove.
-     * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
-     */
-    RemoveDelegates(mailbox: Mailbox, userIds: UserId[]): Promise<DelegateUserResponse[]>;
-    RemoveDelegates(mailbox: Mailbox, userId: UserId | UserId[], ...userIds: UserId[]): Promise<DelegateUserResponse[]> {
-
-        if (userId) { //info: rest parameters are optional for typescript
-            if (ArrayHelper.isArray(userId)) {
-                ArrayHelper.AddRange(userIds, <UserId[]>userId);
-            }
-            else {
-                userIds.push(<UserId>userId);
-            }
-        }
-        EwsUtilities.ValidateParam(mailbox, "mailbox");
-        EwsUtilities.ValidateParamCollection(userIds, "userIds");
-
-        let request: RemoveDelegateRequest = new RemoveDelegateRequest(this);
-
-        request.Mailbox = mailbox;
-        ArrayHelper.AddRange(request.UserIds, userIds); //request.UserIds.AddRange(userIds);
-
-        return request.Execute().then((response: DelegateManagementResponse) => {
-            return response.DelegateUserResponses;
-        })
-    }
-
-    /**
-     * Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}                       mailbox                        The mailbox to update delegates on.
-     * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
-     * @param   {...DelegateUser[]}             delegateUsers                  The delegate users to update.
-     * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
-     */
-    UpdateDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
-    /**
-     * Updates delegates on a specific mailbox. Calling this method results in a call to EWS.
-     *
-     * @param   {Mailbox}                       mailbox                        The mailbox to update delegates on.
-     * @param   {MeetingRequestsDeliveryScope}  meetingRequestsDeliveryScope   Indicates how meeting requests should be sent to delegates.
-     * @param   {DelegateUser[]}                delegateUsers                  The delegate users to update.
-     * @return  {Promise<DelegateUserResponse[]>}       A collection of DelegateUserResponse objects providing the results of the operation :Promise.
-     */
-    UpdateDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]>;
-    UpdateDelegates(mailbox: Mailbox, meetingRequestsDeliveryScope: MeetingRequestsDeliveryScope, delegateUser: DelegateUser[] | DelegateUser, ...delegateUsers: DelegateUser[]): Promise<DelegateUserResponse[]> {
-
-        if (delegateUser) { //info: rest parameters are optional for typescript
-            if (ArrayHelper.isArray(delegateUser)) {
-                ArrayHelper.AddRange(delegateUsers, <DelegateUser[]>delegateUser);
-            }
-            else {
-                delegateUsers.push(<DelegateUser>delegateUser);
-            }
-        }
-        EwsUtilities.ValidateParam(mailbox, "mailbox");
-        EwsUtilities.ValidateParamCollection(delegateUsers, "delegateUsers");
-
-        let request: UpdateDelegateRequest = new UpdateDelegateRequest(this);
-
-        request.Mailbox = mailbox;
-        ArrayHelper.AddRange(request.DelegateUsers, delegateUsers); //request.DelegateUsers.AddRange(delegateUsers);
-        request.MeetingRequestsDeliveryScope = meetingRequestsDeliveryScope;
-
-        return request.Execute().then((response: DelegateManagementResponse) => {
-            return response.DelegateUserResponses;
-        })
-    }
-    /* #endregion Delegate management operations */
-
-
-    /* #region UserConfiguration operations */
-
-    /**
-     * Creates a UserConfiguration.
-     *
-     * @param   {UserConfiguration}   userConfiguration   The UserConfiguration.
-     * @return  {Promise<void>}       :Promise.
-     */
-    CreateUserConfiguration(userConfiguration: UserConfiguration): Promise<void> {
-        EwsUtilities.ValidateParam(userConfiguration, "userConfiguration");
-
-        let request: CreateUserConfigurationRequest = new CreateUserConfigurationRequest(this);
-
-        request.UserConfiguration = userConfiguration;
-
-        return <any>request.Execute();
-    }
-
-    /**
-     * Deletes a UserConfiguration.
-     *
-     * @param   {string}    name             Name of the UserConfiguration to retrieve.
-     * @param   {FolderId}  parentFolderId   Id of the folder containing the UserConfiguration.
-     * @return  {Promise<void>}     :Promise.
-     */
-    DeleteUserConfiguration(name: string, parentFolderId: FolderId): Promise<void> {
-        EwsUtilities.ValidateParam(name, "name");
-        EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
-
-        let request: DeleteUserConfigurationRequest = new DeleteUserConfigurationRequest(this);
-
-        request.Name = name;
-        request.ParentFolderId = parentFolderId;
-
-        return <any>request.Execute();
-    }
-
-    /**
-     * Gets a UserConfiguration.
-     *
-     * @param   {string}                        name             Name of the UserConfiguration to retrieve.
-     * @param   {FolderId}                      parentFolderId   Id of the folder containing the UserConfiguration.
-     * @param   {UserConfigurationProperties}   properties       Properties to retrieve.
-     * @return  {Promise<UserConfiguration>}    A UserConfiguration.
-     */
-    GetUserConfiguration(name: string, parentFolderId: FolderId, properties: UserConfigurationProperties): Promise<UserConfiguration> {
-        EwsUtilities.ValidateParam(name, "name");
-        EwsUtilities.ValidateParam(parentFolderId, "parentFolderId");
-
-        let request: GetUserConfigurationRequest = new GetUserConfigurationRequest(this);
-
-        request.Name = name;
-        request.ParentFolderId = parentFolderId;
-        request.Properties = properties;
-
-        return request.Execute().then((response: ServiceResponseCollection<GetUserConfigurationResponse>) => {
-            return response.__thisIndexer(0).UserConfiguration;
-        })
-    }
-
-    /**
-     * Loads the properties of the specified userConfiguration.
-     *
-     * @param   {UserConfiguration}             userConfiguration   The userConfiguration containing properties to load.
-     * @param   {UserConfigurationProperties}   properties          Properties to retrieve.
-     * @return  {Promise<void>}                 :Promise.
-     */
-    LoadPropertiesForUserConfiguration(userConfiguration: UserConfiguration, properties: UserConfigurationProperties): Promise<void> {
-        EwsLogging.Assert(
-            userConfiguration != null,
-            "ExchangeService.LoadPropertiesForUserConfiguration",
-            "userConfiguration is null");
-
-        let request: GetUserConfigurationRequest = new GetUserConfigurationRequest(this);
-
-        request.UserConfiguration = userConfiguration;
-        request.Properties = properties;
-
-        return <any>request.Execute();
-    }
-
-    /**
-     * Updates a UserConfiguration.
-     *
-     * @param   {UserConfiguration}   userConfiguration   The UserConfiguration.
-     * @return  {Promise<void>}       :Promise.
-     */
-    UpdateUserConfiguration(userConfiguration: UserConfiguration): Promise<void> {
-        EwsUtilities.ValidateParam(userConfiguration, "userConfiguration");
-
-        let request: UpdateUserConfigurationRequest = new UpdateUserConfigurationRequest(this);
-
-        request.UserConfiguration = userConfiguration;
-
-        return <any>request.Execute();
-    }
-
-    /* #endregion UserConfiguration operations */
-
-
-    /* #region InboxRule operations */
-
-    /**
-     * Retrieves the inbox rules of the specified user.
-     *
-     * @return  {Promise<RuleCollection>}       A RuleCollection object containing the inbox rules of the specified user    :Promise.
-     */
-    GetInboxRules(): Promise<RuleCollection>;
-    /**
-     * Retrieves the inbox rules of the specified user.
-     *
-     * @param   {string}   mailboxSmtpAddress   The SMTP address of the user whose inbox rules should be retrieved.
-     * @return  {Promise<RuleCollection>}       A RuleCollection object containing the inbox rules of the specified user    :Promise.
-     */
-    GetInboxRules(mailboxSmtpAddress: string): Promise<RuleCollection>;
-    GetInboxRules(mailboxSmtpAddress: string = null): Promise<RuleCollection> {
-
-        let request: GetInboxRulesRequest = new GetInboxRulesRequest(this);
-        if (arguments.length > 0) {
-            EwsUtilities.ValidateParam(mailboxSmtpAddress, "MailboxSmtpAddress");
-            request.MailboxSmtpAddress = mailboxSmtpAddress;
-        }
-        return request.Execute().then((response: GetInboxRulesResponse) => {
-            return response.Rules;
-        });
-    }
-
-    /**
-     * Update the specified user's inbox rules by applying the specified operations.
-     *
-     * @param   {RuleOperation[]}   operations              The operations that should be applied to the user's inbox rules.
-     * @param   {boolean}           removeOutlookRuleBlob   Indicate whether or not to remove Outlook Rule Blob.
-     * @param   {boolean}           mailboxSmtpAddress      The SMTP address of the user whose inbox rules should be updated.
-     * @return  {Promise<void>}     :Promise
-     */
-    UpdateInboxRules(operations: RuleOperation[], removeOutlookRuleBlob: boolean, mailboxSmtpAddress: string): Promise<void>;
-    /**
-     * Update the specified user's inbox rules by applying the specified operations.
-     *
-     * @param   {RuleOperation[]}   operations              The operations that should be applied to the user's inbox rules.
-     * @param   {boolean}           removeOutlookRuleBlob   Indicate whether or not to remove Outlook Rule Blob.
-     * @return  {Promise<void>}     :Promise
-     */
-    UpdateInboxRules(operations: RuleOperation[], removeOutlookRuleBlob: boolean): Promise<void>;
-    UpdateInboxRules(operations: RuleOperation[], removeOutlookRuleBlob: boolean, mailboxSmtpAddress?: string): Promise<void> {
-        let request: UpdateInboxRulesRequest = new UpdateInboxRulesRequest(this);
-        request.InboxRuleOperations = operations;
-        request.RemoveOutlookRuleBlob = removeOutlookRuleBlob;
-
-        if (arguments.length > 2) {
-            request.MailboxSmtpAddress = mailboxSmtpAddress;
-        }
-        return <any>request.Execute();
-    }
-
-    /* #endregion InboxRule operations */
-
-
-    /* #region eDiscovery/Compliance operations */
-
-    //// BeginGetNonIndexableItemDetails(callback: Function /*System.AsyncCallback*/, state: any, parameters: GetNonIndexableItemDetailsParameters): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginGetNonIndexableItemDetails : Not implemented."); }
-    //// BeginGetNonIndexableItemStatistics(callback: Function /*System.AsyncCallback*/, state: any, parameters: GetNonIndexableItemStatisticsParameters): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginGetNonIndexableItemStatistics : Not implemented."); }
-    //// BeginSearchMailboxes(callback: Function /*System.AsyncCallback*/, state: any, searchParameters: SearchMailboxesParameters): Function /*System.IAsyncResult*/ { throw new Error("ExchangeService.ts - BeginSearchMailboxes : Not implemented."); }
-    //// EndGetNonIndexableItemDetails(asyncResult: Function /*System.IAsyncResult*/): GetNonIndexableItemDetailsResponse { throw new Error("ExchangeService.ts - EndGetNonIndexableItemDetails : Not implemented."); }
-    //// EndGetNonIndexableItemStatistics(asyncResult: Function /*System.IAsyncResult*/): GetNonIndexableItemStatisticsResponse { throw new Error("ExchangeService.ts - EndGetNonIndexableItemStatistics : Not implemented."); }
-    //// EndSearchMailboxes(asyncResult: Function /*System.IAsyncResult*/): ServiceResponseCollection<TResponse> { throw new Error("ExchangeService.ts - EndSearchMailboxes : Not implemented."); }
-
-    /**
-     * Create get non indexable item details request
-     *
-     * @param   {GetNonIndexableItemDetailsParameters}   parameters   Get non indexable item details parameters
-     * @return  {GetNonIndexableItemDetailsRequest}      GetNonIndexableItemDetails request
-     */
-    private CreateGetNonIndexableItemDetailsRequest(parameters: GetNonIndexableItemDetailsParameters): GetNonIndexableItemDetailsRequest {
-        EwsUtilities.ValidateParam(parameters, "parameters");
-        EwsUtilities.ValidateParam(parameters.Mailboxes, "parameters.Mailboxes");
-
-        let request: GetNonIndexableItemDetailsRequest = new GetNonIndexableItemDetailsRequest(this);
-        request.Mailboxes = parameters.Mailboxes;
-        request.PageSize = parameters.PageSize;
-        request.PageItemReference = parameters.PageItemReference;
-        request.PageDirection = parameters.PageDirection;
-        request.SearchArchiveOnly = parameters.SearchArchiveOnly;
-
-        return request;
-    }
-
-    /**
-     * Create get non indexable item statistics request
-     *
-     * @param   {GetNonIndexableItemStatisticsParameters}   parameters   Get non indexable item statistics parameters
-     * @return  {GetNonIndexableItemStatisticsRequest}      Service response object
-     */
-    private CreateGetNonIndexableItemStatisticsRequest(parameters: GetNonIndexableItemStatisticsParameters): GetNonIndexableItemStatisticsRequest {
-        EwsUtilities.ValidateParam(parameters, "parameters");
-        EwsUtilities.ValidateParam(parameters.Mailboxes, "parameters.Mailboxes");
-
-        let request: GetNonIndexableItemStatisticsRequest = new GetNonIndexableItemStatisticsRequest(this);
-        request.Mailboxes = parameters.Mailboxes;
-        request.SearchArchiveOnly = parameters.SearchArchiveOnly;
-
-        return request;
-    }
-
-    /**
-     * Creates SearchMailboxesRequest from SearchMailboxesParameters
-     *
-     * @param   {SearchMailboxesParameters}   searchParameters   search parameters
-     * @return  {SearchMailboxesRequest}      request object
-     */
-    private CreateSearchMailboxesRequest(searchParameters: SearchMailboxesParameters): SearchMailboxesRequest {
-        let request: SearchMailboxesRequest = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
-        ArrayHelper.AddRange(request.SearchQueries, searchParameters.SearchQueries); //request.SearchQueries.AddRange(searchParameters.SearchQueries);
-        request.ResultType = searchParameters.ResultType;
-        request.PreviewItemResponseShape = searchParameters.PreviewItemResponseShape;
-        request.SortByProperty = searchParameters.SortBy;
-        request.SortOrder = searchParameters.SortOrder;
-        request.Language = searchParameters.Language;
-        request.PerformDeduplication = searchParameters.PerformDeduplication;
-        request.PageSize = searchParameters.PageSize;
-        request.PageDirection = searchParameters.PageDirection;
-        request.PageItemReference = searchParameters.PageItemReference;
-
-        return request;
-    }
-
-    /**
-     * Get dicovery search configuration
-     *
-     * @param   {string}    searchId                       Search Id
-     * @param   {boolean}   expandGroupMembership          True if want to expand group membership
-     * @param   {boolean}   inPlaceHoldConfigurationOnly   True if only want the inplacehold configuration
-     * @return  {Promise<GetDiscoverySearchConfigurationResponse>}      Service response object    :Promise.
-     */
-    GetDiscoverySearchConfiguration(searchId: string, expandGroupMembership: boolean, inPlaceHoldConfigurationOnly: boolean): Promise<GetDiscoverySearchConfigurationResponse> {
-        let request: GetDiscoverySearchConfigurationRequest = new GetDiscoverySearchConfigurationRequest(this);
-        request.SearchId = searchId;
-        request.ExpandGroupMembership = expandGroupMembership;
-        request.InPlaceHoldConfigurationOnly = inPlaceHoldConfigurationOnly;
-
-        return request.Execute();
-    }
-
-    /**
-     * Get hold on mailboxes
-     *
-     * @param   {string}   holdId   Hold id
-     * @return  {Promise<GetHoldOnMailboxesResponse>}       Service response object
-     */
-    GetHoldOnMailboxes(holdId: string): Promise<GetHoldOnMailboxesResponse> {
-        let request: GetHoldOnMailboxesRequest = new GetHoldOnMailboxesRequest(this);
-        request.HoldId = holdId;
-
-        return request.Execute();
-    }
-
-    /**
-     * Get non indexable item details
-     *
-     * @param   {string[]}  mailboxes           Array of mailbox legacy DN
-     * @return  {Promise<GetNonIndexableItemDetailsResponse>}       Service response object :Promise.
-     */
-    GetNonIndexableItemDetails(mailboxes: string[]): Promise<GetNonIndexableItemDetailsResponse>;
-    /**
-     * Get non indexable item details
-     *
-     * @param   {string[]}              mailboxes           Array of mailbox legacy DN
-     * @param   {number}                pageSize            The page size
-     * @param   {string}                pageItemReference   Page item reference
-     * @param   {SearchPageDirection}   pageDirection       Page direction
-     * @return  {Promise<GetNonIndexableItemDetailsResponse>}       Service response object :Promise.
-     */
-    GetNonIndexableItemDetails(mailboxes: string[], pageSize: number, pageItemReference: string, pageDirection: SearchPageDirection): Promise<GetNonIndexableItemDetailsResponse>;
-    /**
-     * Get non indexable item details
-     *
-     * @param   {GetNonIndexableItemDetailsParameters}   parameters   Get non indexable item details parameters
-     * @return  {Promise<GetNonIndexableItemDetailsResponse>}         Service response object   :Promise.
-     */
-    GetNonIndexableItemDetails(parameters: GetNonIndexableItemDetailsParameters): Promise<GetNonIndexableItemDetailsResponse>;
-    GetNonIndexableItemDetails(mailboxesOrParameters: string[] | GetNonIndexableItemDetailsParameters, pageSize: number = null, pageItemReference: string = null, pageDirection: SearchPageDirection = null): Promise<GetNonIndexableItemDetailsResponse> {
-        let parameters: GetNonIndexableItemDetailsParameters = null;
-        if (mailboxesOrParameters instanceof GetNonIndexableItemDetailsParameters) {
-            parameters = mailboxesOrParameters;
-        }
-        else {
-            parameters = new GetNonIndexableItemDetailsParameters();
-            parameters.Mailboxes = mailboxesOrParameters;
-            parameters.PageSize = pageSize;
-            parameters.PageItemReference = pageItemReference;
-            parameters.PageDirection = pageDirection;
-            parameters.SearchArchiveOnly = false;
-        }
-
-        let request: GetNonIndexableItemDetailsRequest = this.CreateGetNonIndexableItemDetailsRequest(parameters);
-
-        return request.Execute();
-    }
-
-    /**
-     * Get non indexable item statistics
-     *
-     * @param   {string[]}   mailboxes   Array of mailbox legacy DN
-     * @return  {Promise<GetNonIndexableItemStatisticsResponse>}    Service response object :Promise.
-     */
-    GetNonIndexableItemStatistics(mailboxes: string[]): Promise<GetNonIndexableItemStatisticsResponse>;
-    /**
-     * Get non indexable item statistics
-     *
-     * @param   {GetNonIndexableItemStatisticsParameters}   parameters   Get non indexable item statistics parameters
-     * @return  {Promise<GetNonIndexableItemStatisticsResponse>}         Service response object :Promise.
-     */
-    GetNonIndexableItemStatistics(parameters: GetNonIndexableItemStatisticsParameters): Promise<GetNonIndexableItemStatisticsResponse>;
-    GetNonIndexableItemStatistics(mailboxesOrParameters: string[] | GetNonIndexableItemStatisticsParameters): Promise<GetNonIndexableItemStatisticsResponse> {
-        let parameters: GetNonIndexableItemStatisticsParameters = null;
-        if (mailboxesOrParameters instanceof GetNonIndexableItemStatisticsParameters) {
-            parameters = mailboxesOrParameters;
-        } else {
-            parameters = new GetNonIndexableItemStatisticsParameters();
-            parameters.Mailboxes = mailboxesOrParameters;
-            parameters.SearchArchiveOnly = false;
-        }
-
-        let request: GetNonIndexableItemStatisticsRequest = this.CreateGetNonIndexableItemStatisticsRequest(parameters);
-
-        return request.Execute();
-    }
-
-    /**
-     * Get searchable mailboxes
-     *
-     * @param   {string}    searchFilter            Search filter
-     * @param   {boolean}   expandGroupMembership   True if want to expand group membership
-     * @return  {Promise<GetSearchableMailboxesResponse>}       Service response object :Promise
-     */
-    GetSearchableMailboxes(searchFilter: string, expandGroupMembership: boolean): Promise<GetSearchableMailboxesResponse> {
-        let request: GetSearchableMailboxesRequest = new GetSearchableMailboxesRequest(this);
-        request.SearchFilter = searchFilter;
-        request.ExpandGroupMembership = expandGroupMembership;
-
-        return request.Execute();
-    }
-
-    /**
-     * Search mailboxes
-     *
-     * @param   {SearchMailboxesParameters}   searchParameters   Search mailboxes parameters
-     * @return  {Promise<ServiceResponseCollection<SearchMailboxesResponse>>}       Collection of search mailboxes response object  :Promise.
-     */
-    SearchMailboxes(searchParameters: SearchMailboxesParameters): Promise<ServiceResponseCollection<SearchMailboxesResponse>>;
-    /**
-     * Search mailboxes
-     *
-     * @param   {MailboxQuery[]}        mailboxQueries      Collection of query and mailboxes
-     * @param   {SearchResultType}      resultType          Search result type
-     * @return  {Promise<ServiceResponseCollection<SearchMailboxesResponse>>}       Collection of search mailboxes response object  :Promise.
-     */
-    SearchMailboxes(mailboxQueries: MailboxQuery[], resultType: SearchResultType): Promise<ServiceResponseCollection<SearchMailboxesResponse>>;
-    /**
-     * Search mailboxes
-     *
-     * @param   {MailboxQuery[]}        mailboxQueries      Collection of query and mailboxes
-     * @param   {SearchResultType}      resultType          Search result type
-     * @param   {string}                sortByProperty      Sort by property name
-     * @param   {SortDirection}         sortOrder           Sort order
-     * @param   {number}                pageSize            Page size
-     * @param   {SearchPageDirection}   pageDirection       Page navigation direction
-     * @param   {string}                pageItemReference   Item reference used for paging
-     * @return  {Promise<ServiceResponseCollection<SearchMailboxesResponse>>}       Collection of search mailboxes response object  :Promise.
-     */
-    SearchMailboxes(mailboxQueries: MailboxQuery[], resultType: SearchResultType, sortByProperty: string, sortOrder: SortDirection, pageSize: number, pageDirection: SearchPageDirection, pageItemReference: string): Promise<ServiceResponseCollection<SearchMailboxesResponse>>;
-    SearchMailboxes(mailboxQueriesOrSearchParameters: MailboxQuery[] | SearchMailboxesParameters, resultType: SearchResultType = SearchResultType.PreviewOnly, sortByProperty: string = null, sortOrder: SortDirection = SortDirection.Ascending, pageSize: number = 0, pageDirection: SearchPageDirection = SearchPageDirection.Next, pageItemReference: string = null): Promise<ServiceResponseCollection<SearchMailboxesResponse>> {
-        let request: SearchMailboxesRequest = null;
-        if (mailboxQueriesOrSearchParameters instanceof SearchMailboxesParameters) {
-            let searchParameters: SearchMailboxesParameters = null;
-            searchParameters = mailboxQueriesOrSearchParameters;
-            EwsUtilities.ValidateParam(searchParameters, "searchParameters");
-            EwsUtilities.ValidateParam(searchParameters.SearchQueries, "searchParameters.SearchQueries");
-            request = this.CreateSearchMailboxesRequest(searchParameters);
-        }
-        else {
-            request = new SearchMailboxesRequest(this, ServiceErrorHandling.ReturnErrors);
-            if (mailboxQueriesOrSearchParameters != null) {
-                ArrayHelper.AddRange(request.SearchQueries, mailboxQueriesOrSearchParameters);
-            }
-            request.ResultType = resultType;
-
-            if (arguments.length > 2) {
-                request.SortByProperty = sortByProperty;
-                request.SortOrder = sortOrder;
-                request.PageSize = pageSize;
-                request.PageDirection = pageDirection;
-                request.PageItemReference = pageItemReference;
-            }
-        }
-        return request.Execute();
-    }
-
-    /**
-     * Set hold on mailboxes
-     *
-     * @param   {SetHoldOnMailboxesParameters}  parameters      Set hold parameters
-     * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
-     */
-    SetHoldOnMailboxes(parameters: SetHoldOnMailboxesParameters): Promise<SetHoldOnMailboxesResponse>;
-    /**
-     * Set hold on mailboxes
-     *
-     * @param   {string}        holdId          Hold id
-     * @param   {HoldAction}    actionType      Action type
-     * @param   {string}        query           Query string
-     * @param   {string[]}      mailboxes       Collection of mailboxes
-     * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
-     */
-    SetHoldOnMailboxes(holdId: string, actionType: HoldAction, query: string, mailboxes: String[]): Promise<SetHoldOnMailboxesResponse>;
-    /**
-     * Set hold on mailboxes
-     *
-     * @param   {string}        holdId                Hold id
-     * @param   {HoldAction}    actionType            Action type
-     * @param   {string}        query                 Query string
-     * @param   {string}        inPlaceHoldIdentity   in-place hold identity
-     * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
-     */
-    SetHoldOnMailboxes(holdId: string, actionType: HoldAction, query: string, inPlaceHoldIdentity: string): Promise<SetHoldOnMailboxesResponse>;
-    /**
-     * Set hold on mailboxes
-     *
-     * @param   {string}        holdId                Hold id
-     * @param   {HoldAction}    actionType            Action type
-     * @param   {string}        query                 Query string
-     * @param   {string}        inPlaceHoldIdentity   in-place hold identity
-     * @param   {string}        itemHoldPeriod        item hold period
-     * @return  {Promise<SetHoldOnMailboxesResponse>}   Service response object :Promise.
-     */
-    SetHoldOnMailboxes(holdId: string, actionType: HoldAction, query: string, inPlaceHoldIdentity: string, itemHoldPeriod: string): Promise<SetHoldOnMailboxesResponse>;
-    SetHoldOnMailboxes(holdIdOrParameters: string | SetHoldOnMailboxesParameters, _actionType: HoldAction = null, _query: string = null, mailboxesOrInPlaceHoldIdentity: String[] | string = null, _itemHoldPeriod: string = null): Promise<SetHoldOnMailboxesResponse> {
-
-        let holdId: string = <string>holdIdOrParameters;
-        let actionType: HoldAction = _actionType;
-        let query: string = _query;
-        let mailboxes: string[] = <string[]>mailboxesOrInPlaceHoldIdentity;
-        let inPlaceHoldIdentity: string = <string>mailboxesOrInPlaceHoldIdentity;
-        let itemHoldPeriod: string = _itemHoldPeriod;
-
-        let request: SetHoldOnMailboxesRequest = new SetHoldOnMailboxesRequest(this);
-        let argsLength = arguments.length;
-        if (argsLength === 1) { //SetHoldOnMailboxesParameters
-            let parameters: SetHoldOnMailboxesParameters = <SetHoldOnMailboxesParameters>holdIdOrParameters;
-
-            EwsUtilities.ValidateParam(parameters, "parameters");
-
-            holdId = parameters.HoldId;
-            actionType = parameters.ActionType;
-            query = parameters.Query;
-            mailboxes = parameters.Mailboxes;
-            request.Language = parameters.Language;
-            inPlaceHoldIdentity = parameters.InPlaceHoldIdentity;
-
-            /** per #120 */
-            itemHoldPeriod = request.ItemHoldPeriod;
-            request.PerformDeduplication = parameters.PerformDeduplication;
-            request.IncludeNonIndexableItems = parameters.IncludeNonIndexableItems;
-
-        }
-        else {
-            if (ArrayHelper.isArray(mailboxesOrInPlaceHoldIdentity)) {
-                inPlaceHoldIdentity = null;
-            }
-            else {
-                mailboxes = null;
-            }
-        }
-
-        request.HoldId = holdId;
-        request.ActionType = actionType;
-        request.Query = query;
-        request.Mailboxes = mailboxes;
-        request.InPlaceHoldIdentity = inPlaceHoldIdentity;
-        request.ItemHoldPeriod = itemHoldPeriod;
-
-        return request.Execute();
-    }
-
-    /* #endregion eDiscovery/Compliance operations */
-
-
-    /* #region MRM operations */
-
-    /**
-     * Get user retention policy tags.
-     *
-     * @return  {Promise<GetUserRetentionPolicyTagsResponse>}       Service response object.
-     */
-    GetUserRetentionPolicyTags(): Promise<GetUserRetentionPolicyTagsResponse> {
-        let request: GetUserRetentionPolicyTagsRequest = new GetUserRetentionPolicyTagsRequest(this);
-
-        return request.Execute();
-    }
-    /* #endregion MRM operations */
-
-
-    /* #region Autodiscover */
-
-    /**
-     * Adjusts the service URI based on the current type of credentials.
-     *
-     * @param   {Uri}   uri   The URI.
-     * @return  {Uri}         Adjusted URL.
-     */
-    private AdjustServiceUriFromCredentials(uri: Uri): Uri {
-        return (this.Credentials != null)
-            ? this.Credentials.AdjustUrl(uri)
-            : uri;
-    }
-    /**
-     * Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by calling the Autodiscover service.
-     *
-     * @param   {string}   emailAddress     The email address to use.
-     */
-    AutodiscoverUrl(emailAddress: string): Promise<void>;
-    /**
-     * Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by calling the Autodiscover service.
-     *
-     * @param   {string}   emailAddress                             The email address to use.
-     * @param   {AutodiscoverRedirectionUrlValidationCallback}      validateRedirectionUrlCallback   The callback used to validate redirection URL.
-     */
-    AutodiscoverUrl(emailAddress: string, validateRedirectionUrlCallback: AutodiscoverRedirectionUrlValidationCallback): Promise<void>;
-    AutodiscoverUrl(emailAddress: string, validateRedirectionUrlCallback: AutodiscoverRedirectionUrlValidationCallback = this.DefaultAutodiscoverRedirectionUrlValidationCallback): Promise<void> {
-        //validateRedirectionUrlCallback = validateRedirectionUrlCallback || this.DefaultAutodiscoverRedirectionUrlValidationCallback;
-
-        var exchangeServiceUrl: Uri = null;
-
-        if (this.RequestedServerVersion > ExchangeVersion.Exchange2007_SP1) {
-
-            return this.GetAutodiscoverUrl(
-                emailAddress,
-                this.RequestedServerVersion,
-                validateRedirectionUrlCallback).then((url) => {
-                    exchangeServiceUrl = url;
-                    this.Url = this.AdjustServiceUriFromCredentials(exchangeServiceUrl);
-                    //return;
-                }, (err) => {
-                    //catch (AutodiscoverLocalException ex)
-                    this.TraceMessage(
-                        TraceFlags.AutodiscoverResponse,
-                        StringHelper.Format("Autodiscover service call failed with error '{0}'. Will try legacy service", err));
-                    //catch (ServiceRemoteException ex)
-
-                    // Special case: if the caller's account is locked we want to return this exception, not continue.
-                    //        if (ex is AccountIsLockedException)
-                    //{
-                    //    throw;
-                    //}
-
-                    //this.TraceMessage(
-                    //    TraceFlags.AutodiscoverResponse,
-                    //    string.Format("Autodiscover service call failed with error '{0}'. Will try legacy service", ex.Message));
-
-
-                    // Try legacy Autodiscover provider
-
-                    var exchangeServiceUrl = this.GetAutodiscoverUrl(
-                        emailAddress,
-                        ExchangeVersion.Exchange2007_SP1,
-                        validateRedirectionUrlCallback).then((url) => {
-
-                            this.Url = this.AdjustServiceUriFromCredentials(url);
-                        });
-
-                });
-        }
-
-
-
-
-
-
-
-    }
-    /**
-     * Default implementation of AutodiscoverRedirectionUrlValidationCallback. Always returns true indicating that the URL can be used.
-     *
-     * @param   {string}   redirectionUrl   The redirection URL.
-     * @return  {boolean}                    Returns true.
-     */
-    private DefaultAutodiscoverRedirectionUrlValidationCallback(redirectionUrl: string): boolean { //ref: need to fix this type - Always returns true indicating that the URL can be used
-
-        throw new AutodiscoverLocalException(StringHelper.Format(Strings.AutodiscoverRedirectBlocked, redirectionUrl));
-    }
-    /**
-     * Gets the EWS URL from Autodiscover.
-     *
-     * @param   {string}                                        emailAddress                     The email address.
-     * @param   {ExchangeVersion}                               requestedServerVersion           Exchange version.
-     * @param   {AutodiscoverRedirectionUrlValidationCallback}  validateRedirectionUrlCallback   The validate redirection URL callback.
-     * @return  {Promise<Uri>}                                  Ews URL :Promise.
-     */
-    private GetAutodiscoverUrl(emailAddress: string, requestedServerVersion: ExchangeVersion, validateRedirectionUrlCallback: AutodiscoverRedirectionUrlValidationCallback): Promise<Uri> {
-        var autodiscoverService: AutodiscoverService = new AutodiscoverService(null, null, requestedServerVersion);
-        autodiscoverService.Credentials = this.Credentials;
-        autodiscoverService.XHRApi = this.XHRApi;
-        autodiscoverService.RedirectionUrlValidationCallback = validateRedirectionUrlCallback,
-            autodiscoverService.EnableScpLookup = this.EnableScpLookup
-
-        return autodiscoverService.GetUserSettings(
+    request.HoldId = holdId;
+    request.ActionType = actionType;
+    request.Query = query;
+    request.Mailboxes = mailboxes;
+    request.InPlaceHoldIdentity = inPlaceHoldIdentity;
+    request.ItemHoldPeriod = itemHoldPeriod;
+
+    return request.Execute();
+  }
+
+  //#endregion
+
+
+  //#region MRM operations
+
+  /**
+   * Get user retention policy tags.
+   *
+   * @return  {Promise<GetUserRetentionPolicyTagsResponse>}       Service response object.
+   */
+  GetUserRetentionPolicyTags(): Promise<GetUserRetentionPolicyTagsResponse> {
+    let request: GetUserRetentionPolicyTagsRequest = new GetUserRetentionPolicyTagsRequest(this);
+
+    return request.Execute();
+  }
+  //#endregion
+
+
+  //#region Autodiscover
+
+  /**
+   * Adjusts the service URI based on the current type of credentials.
+   *
+   * @param   {Uri}   uri   The URI.
+   * @return  {Uri}         Adjusted URL.
+   */
+  private AdjustServiceUriFromCredentials(uri: Uri): Uri {
+    return (this.Credentials != null)
+      ? this.Credentials.AdjustUrl(uri)
+      : uri;
+  }
+  /**
+   * Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by calling the Autodiscover service.
+   *
+   * @param   {string}   emailAddress     The email address to use.
+   */
+  AutodiscoverUrl(emailAddress: string): Promise<void>;
+  /**
+   * Initializes the Url property to the Exchange Web Services URL for the specified e-mail address by calling the Autodiscover service.
+   *
+   * @param   {string}   emailAddress                             The email address to use.
+   * @param   {AutodiscoverRedirectionUrlValidationCallback}      validateRedirectionUrlCallback   The callback used to validate redirection URL.
+   */
+  AutodiscoverUrl(emailAddress: string, validateRedirectionUrlCallback: AutodiscoverRedirectionUrlValidationCallback): Promise<void>;
+  AutodiscoverUrl(emailAddress: string, validateRedirectionUrlCallback: AutodiscoverRedirectionUrlValidationCallback = this.DefaultAutodiscoverRedirectionUrlValidationCallback): Promise<void> {
+    //validateRedirectionUrlCallback = validateRedirectionUrlCallback || this.DefaultAutodiscoverRedirectionUrlValidationCallback;
+
+    let exchangeServiceUrl: Uri = null;
+
+    if (this.RequestedServerVersion > ExchangeVersion.Exchange2007_SP1) {
+
+      return this.GetAutodiscoverUrl(
+        emailAddress,
+        this.RequestedServerVersion,
+        validateRedirectionUrlCallback).then((url) => {
+          exchangeServiceUrl = url;
+          this.Url = this.AdjustServiceUriFromCredentials(exchangeServiceUrl);
+          //return;
+        }, (err) => {
+          //catch (AutodiscoverLocalException ex)
+          this.TraceMessage(
+            TraceFlags.AutodiscoverResponse,
+            StringHelper.Format("Autodiscover service call failed with error '{0}'. Will try legacy service", err));
+          //catch (ServiceRemoteException ex)
+
+          // Special case: if the caller's account is locked we want to return this exception, not continue.
+          //        if (ex is AccountIsLockedException)
+          //{
+          //    throw;
+          //}
+
+          //this.TraceMessage(
+          //    TraceFlags.AutodiscoverResponse,
+          //    string.Format("Autodiscover service call failed with error '{0}'. Will try legacy service", ex.Message));
+
+
+          // Try legacy Autodiscover provider
+          return this.GetAutodiscoverUrl(
             emailAddress,
-            UserSettingName.InternalEwsUrl,
-            UserSettingName.ExternalEwsUrl)
-            .then<Uri>((response) => {
-                switch (response.ErrorCode) {
-                    case AutodiscoverErrorCode.NoError:
-                        return this.GetEwsUrlFromResponse(response, autodiscoverService.IsExternal);
-
-                    case AutodiscoverErrorCode.InvalidUser:
-                        throw new ServiceRemoteException(
-                            StringHelper.Format(Strings.InvalidUser, emailAddress));
-
-                    case AutodiscoverErrorCode.InvalidRequest:
-                        throw new ServiceRemoteException(
-                            StringHelper.Format(Strings.InvalidAutodiscoverRequest, response.ErrorMessage));
-
-                    default:
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverConfiguration,
-                            StringHelper.Format("No EWS Url returned for user {0}, error code is {1}", emailAddress, response.ErrorCode));
-
-                        throw new ServiceRemoteException(response.ErrorMessage);
-                }
-            }, (err) => {
-                throw err;
+            ExchangeVersion.Exchange2007_SP1,
+            validateRedirectionUrlCallback).then(url => {
+              this.Url = this.AdjustServiceUriFromCredentials(url);
+            }, error => {
+              throw error;
             });
-
-    }
-    /**
-     * Gets the EWS URL from Autodiscover GetUserSettings response.
-     *
-     * @param   {GetUserSettingsResponse}   response     The response.
-     * @param   {boolean}                   isExternal   If true, Autodiscover call was made externally.
-     * @return  {Uri}                       EWS URL.
-     */
-    private GetEwsUrlFromResponse(response: GetUserSettingsResponse, isExternal: boolean): Uri {
-
-        var uriString = response.GetSettingValue<string>(UserSettingName.ExternalEwsUrl)
-
-        // Figure out which URL to use: Internal or External.
-        // AutoDiscover may not return an external protocol. First try external, then internal.
-        // Either protocol may be returned without a configured URL.
-        if ((isExternal &&
-            uriString) &&
-            !StringHelper.IsNullOrEmpty(uriString)) {
-            return new Uri(uriString);
-        }
-        else {
-            uriString = response.GetSettingValue<string>(UserSettingName.InternalEwsUrl) || uriString;
-            if (!StringHelper.IsNullOrEmpty(uriString)) {
-                return new Uri(uriString);
-            }
-        }
-        // If Autodiscover doesn't return an internal or external EWS URL, throw an exception.
-        throw new AutodiscoverLocalException(Strings.AutodiscoverDidNotReturnEwsUrl);
-    }
-    /* #endregion Autodiscover */
-
-
-    /* #region ClientAccessTokens */
-
-    /**
-     * GetClientAccessToken
-     *
-     * @param   {KeyValuePair<string, ClientAccessTokenType>[]}   idAndTypes   Id and Types
-     * @return  {Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>}      A ServiceResponseCollection providing token results for each of the specified id and types  :Promise.
-     */
-    GetClientAccessToken(idAndTypes: KeyValuePair<string, ClientAccessTokenType>[]): Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>;
-    /**
-     * GetClientAccessToken
-     *
-     * @param   {ClientAccessTokenRequest[]}   tokenRequests   Token requests array
-     * @return  {Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>}      A ServiceResponseCollection providing token results for each of the specified id and types  :Promise.
-     */
-    GetClientAccessToken(tokenRequests: ClientAccessTokenRequest[]): Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>;
-    GetClientAccessToken(tokenRequestsOrIdAndTypes: KeyValuePair<string, ClientAccessTokenType>[] | ClientAccessTokenRequest[]): Promise<ServiceResponseCollection<GetClientAccessTokenResponse>> {
-        if (!tokenRequestsOrIdAndTypes && tokenRequestsOrIdAndTypes.length === 0) {
-            throw new ArgumentOutOfRangeException(Strings.IndexIsOutOfRange);
-        }
-
-        let requestList: ClientAccessTokenRequest[] = [];
-
-        if (tokenRequestsOrIdAndTypes[0] instanceof ClientAccessTokenRequest) {
-            requestList = <ClientAccessTokenRequest[]>tokenRequestsOrIdAndTypes;
-        }
-        else {
-
-            for (let idAndType of <KeyValuePair<string, ClientAccessTokenType>[]>tokenRequestsOrIdAndTypes) {
-                let clientAccessTokenRequest: ClientAccessTokenRequest = new ClientAccessTokenRequest(idAndType.key, idAndType.value);
-                requestList.push(clientAccessTokenRequest);
-            }
-        }
-
-        let request: GetClientAccessTokenRequest = new GetClientAccessTokenRequest(this, ServiceErrorHandling.ReturnErrors);
-        request.TokenRequests = requestList;
-        return request.Execute();
-    }
-    /* #end region ClientAccessTokens */
-
-
-    /* #region Client Extensibility */
-
-    /**
-     * Get the app manifests.
-     *
-     * @return  {Promise<string[]>}              Collection of manifests xml file as base64 encoded string :Promise.
-     */
-    GetAppManifests(): Promise<string[]>;
-    /**
-     * Get the app manifests.  Works with Exchange 2013 SP1 or later EWS.
-     *
-     * @param   {string}   apiVersionSupported      The api version supported by the client.
-     * @param   {string}   schemaVersionSupported   The schema version supported by the client.
-     * @return  {Promise<ClientApp[]>}              Collection of manifests :Promise.
-     */
-    GetAppManifests(apiVersionSupported: string, schemaVersionSupported: string): Promise<ClientApp[]>;
-    GetAppManifests(apiVersionSupported: string = null, schemaVersionSupported: string = null): Promise<ClientApp[] | string[]> {
-        let argsLength = arguments.length;
-        let request: GetAppManifestsRequest = new GetAppManifestsRequest(this);
-
-        if (argsLength !== 0) {
-            request.ApiVersionSupported = apiVersionSupported;
-            request.SchemaVersionSupported = schemaVersionSupported;
-        }
-
-        return request.Execute().then((response: GetAppManifestsResponse) => {
-            if (argsLength !== 0) {
-                return response.Apps;
-            }
-            else {
-                return response.Manifests;
-            }
-        });
-
-
-    }
-
-    /**
-     * Get App Marketplace Url.
-     *
-     * /remarks/                        Exception will be thrown for errors.
-     * @return  {Promise<string>}       marketplace url as string :Promise.
-     */
-    GetAppMarketplaceUrl(): Promise<string>;
-    /**
-     * Get App Marketplace Url.  Works with Exchange 2013 SP1 or later EWS.
-     *
-     * /remarks/                                    Exception will be thrown for errors.
-     * @param   {string}   apiVersionSupported      The api version supported by the client.
-     * @param   {string}   schemaVersionSupported   The schema version supported by the client.
-     * @return  {Promise<string>}                   marketplace url as string :Promise.
-     */
-    GetAppMarketplaceUrl(apiVersionSupported: string, schemaVersionSupported: string): Promise<string>;
-    GetAppMarketplaceUrl(apiVersionSupported: string = null, schemaVersionSupported: string = null): Promise<string> {
-
-        let request: GetAppMarketplaceUrlRequest = new GetAppMarketplaceUrlRequest(this);
-        request.ApiVersionSupported = apiVersionSupported;
-        request.SchemaVersionSupported = schemaVersionSupported;
-
-        return request.Execute().then((response: GetAppMarketplaceUrlResponse) => {
-
-            return response.AppMarketplaceUrl;
         });
     }
 
-    /**
-     * Disable an App.
-     *
-     * /remarks/    Exception will be thrown for errors.
-     * @param   {string}                id              App ID
-     * @param   {DisableReasonType}     disableReason   Disable reason
-     * @return  {Promise<void>}         :Promise.
-     */
-    DisableApp(id: string, disableReason: DisableReasonType): Promise<void> {
-        EwsUtilities.ValidateParam(id, "id");
-        EwsUtilities.ValidateParam(disableReason, "disableReason");
+    // Try legacy Autodiscover provider
+    return this.GetAutodiscoverUrl(
+      emailAddress,
+      ExchangeVersion.Exchange2007_SP1,
+      validateRedirectionUrlCallback).then(url => {
+        this.Url = this.AdjustServiceUriFromCredentials(url);
+      }, error => {
+        throw error;
+      });
+  }
 
-        let request: DisableAppRequest = new DisableAppRequest(this, id, disableReason);
+  /**
+   * Default implementation of AutodiscoverRedirectionUrlValidationCallback. Always returns true indicating that the URL can be used.
+   *
+   * @param   {string}   redirectionUrl   The redirection URL.
+   * @return  {boolean}                    Returns true.
+   */
+  private DefaultAutodiscoverRedirectionUrlValidationCallback(redirectionUrl: string): boolean { //ref: need to fix this type - Always returns true indicating that the URL can be used
 
-        return <any>request.Execute();
+    throw new AutodiscoverLocalException(StringHelper.Format(Strings.AutodiscoverRedirectBlocked, redirectionUrl));
+  }
+  /**
+   * Gets the EWS URL from Autodiscover.
+   *
+   * @param   {string}                                        emailAddress                     The email address.
+   * @param   {ExchangeVersion}                               requestedServerVersion           Exchange version.
+   * @param   {AutodiscoverRedirectionUrlValidationCallback}  validateRedirectionUrlCallback   The validate redirection URL callback.
+   * @return  {Promise<Uri>}                                  Ews URL :Promise.
+   */
+  private GetAutodiscoverUrl(emailAddress: string, requestedServerVersion: ExchangeVersion, validateRedirectionUrlCallback: AutodiscoverRedirectionUrlValidationCallback): Promise<Uri> {
+    const autodiscoverService: AutodiscoverService = new AutodiscoverService(this, requestedServerVersion);
+    autodiscoverService.RedirectionUrlValidationCallback = validateRedirectionUrlCallback;
+    autodiscoverService.EnableScpLookup = this.EnableScpLookup;
+
+    return autodiscoverService.GetUserSettings(
+      emailAddress,
+      [UserSettingName.InternalEwsUrl, UserSettingName.ExternalEwsUrl])
+      .then<Uri>((response) => {
+        switch (response.ErrorCode) {
+          case AutodiscoverErrorCode.NoError:
+            return this.GetEwsUrlFromResponse(response, autodiscoverService.IsExternal);
+
+          case AutodiscoverErrorCode.InvalidUser:
+            throw new ServiceRemoteException(
+              StringHelper.Format(Strings.InvalidUser, emailAddress));
+
+          case AutodiscoverErrorCode.InvalidRequest:
+            throw new ServiceRemoteException(
+              StringHelper.Format(Strings.InvalidAutodiscoverRequest, response.ErrorMessage));
+
+          default:
+            this.TraceMessage(
+              TraceFlags.AutodiscoverConfiguration,
+              StringHelper.Format("No EWS Url returned for user {0}, error code is {1}", emailAddress, response.ErrorCode));
+
+            throw new ServiceRemoteException(response.ErrorMessage);
+        }
+      }, (err) => {
+        throw err;
+      });
+
+  }
+  /**
+   * Gets the EWS URL from Autodiscover GetUserSettings response.
+   *
+   * @param   {GetUserSettingsResponse}   response     The response.
+   * @param   {boolean}                   isExternal   If true, Autodiscover call was made externally.
+   * @return  {Uri}                       EWS URL.
+   */
+  private GetEwsUrlFromResponse(response: GetUserSettingsResponse, isExternal: boolean): Uri {
+
+    var uriString = response.GetSettingValue<string>(UserSettingName.ExternalEwsUrl)
+
+    // Figure out which URL to use: Internal or External.
+    // AutoDiscover may not return an external protocol. First try external, then internal.
+    // Either protocol may be returned without a configured URL.
+    if ((isExternal &&
+      uriString) &&
+      !StringHelper.IsNullOrEmpty(uriString)) {
+      return new Uri(uriString);
+    }
+    else {
+      uriString = response.GetSettingValue<string>(UserSettingName.InternalEwsUrl) || uriString;
+      if (!StringHelper.IsNullOrEmpty(uriString)) {
+        return new Uri(uriString);
+      }
+    }
+    // If Autodiscover doesn't return an internal or external EWS URL, throw an exception.
+    throw new AutodiscoverLocalException(Strings.AutodiscoverDidNotReturnEwsUrl);
+  }
+  //#endregion
+
+
+  //#region ClientAccessTokens
+
+  /**
+   * GetClientAccessToken
+   *
+   * @param   {KeyValuePair<string, ClientAccessTokenType>[]}   idAndTypes   Id and Types
+   * @return  {Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>}      A ServiceResponseCollection providing token results for each of the specified id and types  :Promise.
+   */
+  GetClientAccessToken(idAndTypes: KeyValuePair<string, ClientAccessTokenType>[]): Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>;
+  /**
+   * GetClientAccessToken
+   *
+   * @param   {ClientAccessTokenRequest[]}   tokenRequests   Token requests array
+   * @return  {Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>}      A ServiceResponseCollection providing token results for each of the specified id and types  :Promise.
+   */
+  GetClientAccessToken(tokenRequests: ClientAccessTokenRequest[]): Promise<ServiceResponseCollection<GetClientAccessTokenResponse>>;
+  GetClientAccessToken(tokenRequestsOrIdAndTypes: KeyValuePair<string, ClientAccessTokenType>[] | ClientAccessTokenRequest[]): Promise<ServiceResponseCollection<GetClientAccessTokenResponse>> {
+    if (!tokenRequestsOrIdAndTypes && tokenRequestsOrIdAndTypes.length === 0) {
+      throw new ArgumentOutOfRangeException(Strings.IndexIsOutOfRange);
     }
 
-    /**
-     * Install an App.
-     *
-     * /remarks/    Exception will be thrown for errors.
-     * @param   {string}   manifestStream   The manifest's plain text XML as base64 encoded string.
-     * @return  {Promise<void>}     :Promise.
-     */
-    InstallApp(manifestStream: string): Promise<void> {
-        EwsUtilities.ValidateParam(manifestStream, "manifestStream");
+    let requestList: ClientAccessTokenRequest[] = [];
 
-        let request: InstallAppRequest = new InstallAppRequest(this, manifestStream);
+    if (tokenRequestsOrIdAndTypes[0] instanceof ClientAccessTokenRequest) {
+      requestList = <ClientAccessTokenRequest[]>tokenRequestsOrIdAndTypes;
+    }
+    else {
 
-        return <any>request.Execute();
+      for (let idAndType of <KeyValuePair<string, ClientAccessTokenType>[]>tokenRequestsOrIdAndTypes) {
+        let clientAccessTokenRequest: ClientAccessTokenRequest = new ClientAccessTokenRequest(idAndType.key, idAndType.value);
+        requestList.push(clientAccessTokenRequest);
+      }
     }
 
-    /**
-     * Uninstall an App.
-     *
-     * /remarks/    Exception will be thrown for errors.
-     * @param   {string}   id   App ID
-     * @return  {Promise<void>}     :Promise.
-     */
-    UninstallApp(id: string): Promise<void> {
-        EwsUtilities.ValidateParam(id, "id");
+    let request: GetClientAccessTokenRequest = new GetClientAccessTokenRequest(this, ServiceErrorHandling.ReturnErrors);
+    request.TokenRequests = requestList;
+    return request.Execute();
+  }
+  //#endregion
 
-        let request: UninstallAppRequest = new UninstallAppRequest(this, id);
 
-        return <any>request.Execute();
+  //#region Client Extensibility
+
+  /**
+   * Get the app manifests.
+   *
+   * @return  {Promise<string[]>}              Collection of manifests xml file as base64 encoded string :Promise.
+   */
+  GetAppManifests(): Promise<string[]>;
+  /**
+   * Get the app manifests.  Works with Exchange 2013 SP1 or later EWS.
+   *
+   * @param   {string}   apiVersionSupported      The api version supported by the client.
+   * @param   {string}   schemaVersionSupported   The schema version supported by the client.
+   * @return  {Promise<ClientApp[]>}              Collection of manifests :Promise.
+   */
+  GetAppManifests(apiVersionSupported: string, schemaVersionSupported: string): Promise<ClientApp[]>;
+  GetAppManifests(apiVersionSupported: string = null, schemaVersionSupported: string = null): Promise<ClientApp[] | string[]> {
+    let argsLength = arguments.length;
+    let request: GetAppManifestsRequest = new GetAppManifestsRequest(this);
+
+    if (argsLength !== 0) {
+      request.ApiVersionSupported = apiVersionSupported;
+      request.SchemaVersionSupported = schemaVersionSupported;
     }
 
-    //info - not used in client side, only server side calls are supported per function documentation.
-    // GetClientExtension(requestedExtensionIds: StringList, shouldReturnEnabledOnly: boolean, isUserScope: boolean, userId: string, userEnabledExtensionIds: StringList, userDisabledExtensionIds: StringList, isDebug: boolean): GetClientExtensionResponse { throw new Error("ExchangeService.ts - GetClientExtension : Not implemented."); }
-    // SetClientExtension(actions: Function[] /*System.Collections.Generic.List<T>*/): any { throw new Error("ExchangeService.ts - SetClientExtension : Not implemented."); }
-    // GetEncryptionConfiguration(): GetEncryptionConfigurationResponse { throw new Error("ExchangeService.ts - GetEncryptionConfiguration : Not implemented."); }
-    // SetEncryptionConfiguration(imageBase64: string, emailText: string, portalText: string, disclaimerText: string): any { throw new Error("ExchangeService.ts - SetEncryptionConfiguration : Not implemented."); }
-    /* #endregion Client Extensibility */
+    return request.Execute().then((response: GetAppManifestsResponse) => {
+      if (argsLength !== 0) {
+        return response.Apps;
+      }
+      else {
+        return response.Manifests;
+      }
+    });
 
 
-    /* #region Diagnostic Method -- Only used by test */
+  }
 
-    //ExecuteDiagnosticMethod(verb: string, parameter: System.Xml.XmlNode): System.Xml.XmlDocument { throw new Error("ExchangeService.ts - ExecuteDiagnosticMethod : Not implemented."); }
-    /* #endregion Diagnostic Method -- Only used by test */
+  /**
+   * Get App Marketplace Url.
+   *
+   * /remarks/                        Exception will be thrown for errors.
+   * @return  {Promise<string>}       marketplace url as string :Promise.
+   */
+  GetAppMarketplaceUrl(): Promise<string>;
+  /**
+   * Get App Marketplace Url.  Works with Exchange 2013 SP1 or later EWS.
+   *
+   * /remarks/                                    Exception will be thrown for errors.
+   * @param   {string}   apiVersionSupported      The api version supported by the client.
+   * @param   {string}   schemaVersionSupported   The schema version supported by the client.
+   * @return  {Promise<string>}                   marketplace url as string :Promise.
+   */
+  GetAppMarketplaceUrl(apiVersionSupported: string, schemaVersionSupported: string): Promise<string>;
+  GetAppMarketplaceUrl(apiVersionSupported: string = null, schemaVersionSupported: string = null): Promise<string> {
 
+    let request: GetAppMarketplaceUrlRequest = new GetAppMarketplaceUrlRequest(this);
+    request.ApiVersionSupported = apiVersionSupported;
+    request.SchemaVersionSupported = schemaVersionSupported;
 
-    /* #region Validation */
+    return request.Execute().then((response: GetAppMarketplaceUrlResponse) => {
 
-    static IsMajorMinor(versionPart: string): boolean {
-        var MajorMinorSeparator: string = '.';//char
+      return response.AppMarketplaceUrl;
+    });
+  }
 
-        var parts: string[] = versionPart.split(MajorMinorSeparator);
-        if (parts.length != 2) {
-            return false;
-        }
+  /**
+   * Disable an App.
+   *
+   * /remarks/    Exception will be thrown for errors.
+   * @param   {string}                id              App ID
+   * @param   {DisableReasonType}     disableReason   Disable reason
+   * @return  {Promise<void>}         :Promise.
+   */
+  DisableApp(id: string, disableReason: DisableReasonType): Promise<void> {
+    EwsUtilities.ValidateParam(id, "id");
+    EwsUtilities.ValidateParam(disableReason, "disableReason");
 
-        for (var s of parts) {
-            for (var c of s.split('')) {
-                if (isNaN(<any>c)) {
-                    return false;
-                }
-            }
-        }
+    let request: DisableAppRequest = new DisableAppRequest(this, id, disableReason);
 
-        return true;
-    }
-    /**
-     * @internal Validates this instance.
-     *
-     */
-    Validate(): void {
-        super.Validate();
+    return <any>request.Execute();
+  }
 
-        if (this.Url == null) {
-            throw new ServiceLocalException(Strings.ServiceUrlMustBeSet);
-        }
+  /**
+   * Install an App.
+   *
+   * /remarks/    Exception will be thrown for errors.
+   * @param   {string}   manifestStream   The manifest's plain text XML as base64 encoded string.
+   * @return  {Promise<void>}     :Promise.
+   */
+  InstallApp(manifestStream: string): Promise<void> {
+    EwsUtilities.ValidateParam(manifestStream, "manifestStream");
 
-        if (this.PrivilegedUserId != null && this.ImpersonatedUserId != null) {
-            throw new ServiceLocalException(Strings.CannotSetBothImpersonatedAndPrivilegedUser);
-        }
+    let request: InstallAppRequest = new InstallAppRequest(this, manifestStream);
 
-        // only one of PrivilegedUserId|ImpersonatedUserId|ManagementRoles can be set.
-    }
-    /**
-     * @internal Validates a new-style version string. This validation is not as strict as server-side validation.
-     *
-     * @param   {string}   version   the version string
-     */
-    static ValidateTargetVersion(version: string): void {
-        var ParameterSeparator: string = ';'; //char
-        var LegacyVersionPrefix: string = "Exchange20";
-        var ParameterValueSeparator: string = '='; //char
-        var ParameterName: string = "minimum";
+    return <any>request.Execute();
+  }
 
-        if (StringHelper.IsNullOrEmpty(version)) {
-            throw new ArgumentException("Target version must not be empty.");
-        }
+  /**
+   * Uninstall an App.
+   *
+   * /remarks/    Exception will be thrown for errors.
+   * @param   {string}   id   App ID
+   * @return  {Promise<void>}     :Promise.
+   */
+  UninstallApp(id: string): Promise<void> {
+    EwsUtilities.ValidateParam(id, "id");
 
-        var parts: string[] = version.trim().split(ParameterSeparator);
+    let request: UninstallAppRequest = new UninstallAppRequest(this, id);
 
-        if (parts.length > 2) {
-            throw new ArgumentException("Target version should have the form.");
-        }
+    return <any>request.Execute();
+  }
 
-        var skipPart1: boolean = true;
-        if (parts.length === 2) {
-            // Validate the optional minimum version parameter, "minimum=X.Y"
-            var part2: string = parts[1].trim();
-            var minParts: string[] = part2.split(ParameterValueSeparator);
-            if (minParts.length == 2 &&
-                minParts[0].trim().toUpperCase() === ParameterName.toUpperCase() &&
-                ExchangeService.IsMajorMinor(minParts[1].trim())) {
-                skipPart1 = false;
-            }
-            else {
-                throw new ArgumentException("Target version must match X.Y or Exchange20XX.");
-            }
-        }
-
-        if (parts.length >= 0 && !skipPart1) {
-            // Validate the header value. We allow X.Y or Exchange20XX.
-            var part1: string = parts[0].trim();
-            if (parts[0].indexOf(LegacyVersionPrefix) === 0) {
-                // Close enough; misses corner cases like "Exchange2001". Server will do complete validation.
-            }
-            else if (ExchangeService.IsMajorMinor(part1)) {
-                // Also close enough; misses corner cases like ".5".
-            }
-            else {
-                throw new ArgumentException("Target version must match X.Y or Exchange20XX.");
-            }
-        }
-    }
-    /* #endregion Validation */
+  //info - not used in client side, only server side calls are supported per function documentation.
+  // GetClientExtension(requestedExtensionIds: StringList, shouldReturnEnabledOnly: boolean, isUserScope: boolean, userId: string, userEnabledExtensionIds: StringList, userDisabledExtensionIds: StringList, isDebug: boolean): GetClientExtensionResponse { throw new Error("ExchangeService.ts - GetClientExtension : Not implemented."); }
+  // SetClientExtension(actions: Function[] /*System.Collections.Generic.List<T>*/): any { throw new Error("ExchangeService.ts - SetClientExtension : Not implemented."); }
+  // GetEncryptionConfiguration(): GetEncryptionConfigurationResponse { throw new Error("ExchangeService.ts - GetEncryptionConfiguration : Not implemented."); }
+  // SetEncryptionConfiguration(imageBase64: string, emailText: string, portalText: string, disclaimerText: string): any { throw new Error("ExchangeService.ts - SetEncryptionConfiguration : Not implemented."); }
+  //#endregion
 
 
-    /* #region Utilities */
+  //#region Diagnostic Method -- Only used by test
 
-    /**
-     * @internal Creates an IXHROptions instance and initializes it with the appropriate parameters, based on the configuration of this service object.
-     *
-     * @param   {string}   methodName   Name of the method.
-     * @return  {IXHROptions}           An instance of IXHROptions to call web service with.
-     */
-    PrepareHttpWebRequest(methodName: string): IXHROptions {
-        var endpoint = this.Url;
-        //this.RegisterCustomBasicAuthModule();
+  //ExecuteDiagnosticMethod(verb: string, parameter: System.Xml.XmlNode): System.Xml.XmlDocument { throw new Error("ExchangeService.ts - ExecuteDiagnosticMethod : Not implemented."); }
+  //#endregion
 
-        if (this.RenderingMethod === RenderingMode.JSON) {
-            //endpoint = new Uri(
-            //    endpoint,
-            //    string.Format("{0}/{1}{2}", endpoint.AbsolutePath, methodName, endpoint.Query));
-        }
-        else {
-            endpoint = this.AdjustServiceUriFromCredentials(endpoint);
-        }
 
-        var request = this.PrepareHttpWebRequestForUrl(
-            endpoint,
-            this.AcceptGzipEncoding,
-            true);
+  //#region Validation
 
-        if (!StringHelper.IsNullOrEmpty(this.TargetServerVersion)) {
-            request.headers[ExchangeService.TargetServerVersionHeaderName] = this.TargetServerVersion;
-        }
+  static IsMajorMinor(versionPart: string): boolean {
+    var MajorMinorSeparator: string = '.';//char
 
-        return request;
+    var parts: string[] = versionPart.split(MajorMinorSeparator);
+    if (parts.length != 2) {
+      return false;
     }
 
-    /**
-     * @internal Processes an HTTP error response.
-     *
-     * @param   {XMLHttpRequest}   httpWebResponse      The HTTP web response.
-     * @param   {SoapFaultDetails}   soapFault          The SoapFault Instance.
-     */
-    ProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest, soapFault: SoapFaultDetails): void {
-        this.InternalProcessHttpErrorResponse(
-            httpWebResponse,
-            soapFault,
-            TraceFlags.EwsResponseHttpHeaders,
-            TraceFlags.EwsResponse);
+    for (var s of parts) {
+      for (var c of s.split('')) {
+        if (isNaN(<any>c)) {
+          return false;
+        }
+      }
     }
 
-    /**
-     * Sets the type of the content.
-     *
-     * @param   {IXHROptions}   request   The request.
-     */
-    SetContentType(request: IXHROptions /*IEwsHttpWebRequest*/): void {
-        if (this.renderingMode == RenderingMode.Xml) {
-            request.headers["Content-Type"] = "text/xml; charset=utf-8";
-            request.headers["Accept"] = "text/xml";
-        }
-        else if (this.renderingMode == RenderingMode.JSON) {
-            request.headers["Content-Type"] = "application/json; charset=utf-8";
-            request.headers["Accept"] = "application/json";
-        }
-        else {
-            super.SetContentType(request);
-        }
-    }
-    /* #endregion Utilities */
+    return true;
+  }
+  /**
+   * @internal Validates this instance.
+   *
+   */
+  Validate(): void {
+    super.Validate();
 
-    //#region Additional Operations not in official EWS Managed Api in the commit
-
-    /**
-     * Get the TimeZoneInfo objects from server
-     *
-     * @returns {Promise<TimeZoneInfo[]>}
-     */
-    GetServerTimeZones(): Promise<TimeZoneInfo[]> {
-        let argsLength = arguments.length;
-        let request: GetServerTimeZonesRequest = new GetServerTimeZonesRequest(this);
-
-        return request.Execute().then((response: ServiceResponseCollection<GetServerTimeZonesResponse>) => {
-            return response.Responses[0].TimeZones;
-        });
+    if (this.Url == null) {
+      throw new ServiceLocalException(Strings.ServiceUrlMustBeSet);
     }
 
-    //#endregion
+    if (this.PrivilegedUserId != null && this.ImpersonatedUserId != null) {
+      throw new ServiceLocalException(Strings.CannotSetBothImpersonatedAndPrivilegedUser);
+    }
+
+    // only one of PrivilegedUserId|ImpersonatedUserId|ManagementRoles can be set.
+  }
+  /**
+   * @internal Validates a new-style version string. This validation is not as strict as server-side validation.
+   *
+   * @param   {string}   version   the version string
+   */
+  static ValidateTargetVersion(version: string): void {
+    var ParameterSeparator: string = ';'; //char
+    var LegacyVersionPrefix: string = "Exchange20";
+    var ParameterValueSeparator: string = '='; //char
+    var ParameterName: string = "minimum";
+
+    if (StringHelper.IsNullOrEmpty(version)) {
+      throw new ArgumentException("Target version must not be empty.");
+    }
+
+    var parts: string[] = version.trim().split(ParameterSeparator);
+
+    if (parts.length > 2) {
+      throw new ArgumentException("Target version should have the form.");
+    }
+
+    var skipPart1: boolean = true;
+    if (parts.length === 2) {
+      // Validate the optional minimum version parameter, "minimum=X.Y"
+      var part2: string = parts[1].trim();
+      var minParts: string[] = part2.split(ParameterValueSeparator);
+      if (minParts.length == 2 &&
+        minParts[0].trim().toUpperCase() === ParameterName.toUpperCase() &&
+        ExchangeService.IsMajorMinor(minParts[1].trim())) {
+        skipPart1 = false;
+      }
+      else {
+        throw new ArgumentException("Target version must match X.Y or Exchange20XX.");
+      }
+    }
+
+    if (parts.length >= 0 && !skipPart1) {
+      // Validate the header value. We allow X.Y or Exchange20XX.
+      var part1: string = parts[0].trim();
+      if (parts[0].indexOf(LegacyVersionPrefix) === 0) {
+        // Close enough; misses corner cases like "Exchange2001". Server will do complete validation.
+      }
+      else if (ExchangeService.IsMajorMinor(part1)) {
+        // Also close enough; misses corner cases like ".5".
+      }
+      else {
+        throw new ArgumentException("Target version must match X.Y or Exchange20XX.");
+      }
+    }
+  }
+  //#endregion
+
+
+  //#region Utilities
+
+  /**
+   * @internal Creates an IXHROptions instance and initializes it with the appropriate parameters, based on the configuration of this service object.
+   *
+   * @param   {string}   methodName   Name of the method.
+   * @return  {IXHROptions}           An instance of IXHROptions to call web service with.
+   */
+  PrepareHttpWebRequest(methodName: string): IXHROptions {
+    var endpoint = this.Url;
+    //this.RegisterCustomBasicAuthModule();
+
+    if (this.RenderingMethod === RenderingMode.JSON) {
+      //endpoint = new Uri(
+      //    endpoint,
+      //    string.Format("{0}/{1}{2}", endpoint.AbsolutePath, methodName, endpoint.Query));
+    }
+    else {
+      endpoint = this.AdjustServiceUriFromCredentials(endpoint);
+    }
+
+    var request = this.PrepareHttpWebRequestForUrl(
+      endpoint,
+      this.AcceptGzipEncoding,
+      true);
+
+    if (!StringHelper.IsNullOrEmpty(this.TargetServerVersion)) {
+      request.headers[ExchangeService.TargetServerVersionHeaderName] = this.TargetServerVersion;
+    }
+
+    return request;
+  }
+
+  /**
+   * @internal Processes an HTTP error response.
+   *
+   * @param   {XMLHttpRequest}   httpWebResponse      The HTTP web response.
+   * @param   {SoapFaultDetails}   soapFault          The SoapFault Instance.
+   */
+  ProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest, soapFault: SoapFaultDetails): void {
+    this.InternalProcessHttpErrorResponse(
+      httpWebResponse,
+      soapFault,
+      TraceFlags.EwsResponseHttpHeaders,
+      TraceFlags.EwsResponse);
+  }
+
+  /**
+   * Sets the type of the content.
+   *
+   * @param   {IXHROptions}   request   The request.
+   */
+  SetContentType(request: IXHROptions /*IEwsHttpWebRequest*/): void {
+    if (this.renderingMode == RenderingMode.Xml) {
+      request.headers["Content-Type"] = "text/xml; charset=utf-8";
+      request.headers["Accept"] = "text/xml";
+    }
+    else if (this.renderingMode == RenderingMode.JSON) {
+      request.headers["Content-Type"] = "application/json; charset=utf-8";
+      request.headers["Accept"] = "application/json";
+    }
+    else {
+      super.SetContentType(request);
+    }
+  }
+  //#endregion
+
+  //#region Additional Operations not in official EWS Managed Api in the commit
+
+  /**
+   * Get the TimeZoneInfo objects from server
+   *
+   * @returns {Promise<TimeZoneInfo[]>}
+   */
+  GetServerTimeZones(): Promise<TimeZoneInfo[]> {
+    let argsLength = arguments.length;
+    let request: GetServerTimeZonesRequest = new GetServerTimeZonesRequest(this);
+
+    return request.Execute().then((response: ServiceResponseCollection<GetServerTimeZonesResponse>) => {
+      return response.Responses[0].TimeZones;
+    });
+  }
+
+  //#endregion
 }
 
 //module ExchangeService { -> moved to its own file to remove circular dependency.
@@ -39032,8 +39426,6 @@ export class ExchangeService extends ExchangeServiceBase {
 //        JSON = 1
 //    }
 //}
-
-
 /**
  * JSON names not shared with the XmlElementNames or XmlAttributeNames classes.
  */
@@ -39258,7 +39650,7 @@ export class PropertyBag {
             return propertyValue;
         }
         else {
-            throw serviceException.exception;
+            throw serviceException.outValue;
         }
     }
     /**
@@ -39621,50 +40013,48 @@ export class PropertyBag {
         this.requestedPropertySet = requestedPropertySet;
         this.onlySummaryPropertiesRequested = onlySummaryPropertiesRequested;
 
-        try {
 
-            for (let key in jsObject) {
-                if (key.indexOf("__") === 0) //skip xmljsobject conversion entries like __type and __prefix
-                    continue;
+        for (let key in jsObject) {
+            if (key.indexOf("__") === 0) //skip xmljsobject conversion entries like __type and __prefix
+                continue;
 
-                if (jsObject.hasOwnProperty(key)) {
-                    let element = jsObject[key];
+            if (jsObject.hasOwnProperty(key)) {
+                let element = jsObject[key];
 
-                    let propertyDefinition: IOutParam<PropertyDefinition> = { outValue: null };
+                let propertyDefinition: IOutParam<PropertyDefinition> = { outValue: null };
 
-                    if (this.owner.Schema.TryGetPropertyDefinition(key, propertyDefinition)) {
+                if (this.owner.Schema.TryGetPropertyDefinition(key, propertyDefinition)) {
+                    try {
                         EwsLogging.Assert(false, EwsUtilities.GetPrintableTypeName(propertyDefinition.outValue), "\t\tLoading property :\t\t" + key);
                         propertyDefinition.outValue.LoadPropertyValueFromXmlJsObject(element, service, this);
                         this.loadedProperties.push(propertyDefinition.outValue);
                         EwsLogging.DebugLog(this._getItem(propertyDefinition.outValue), true);//todo:remove this after testing
+                    } catch (exception) {
+                        EwsLogging.Log(exception);
                     }
                 }
             }
+        }
 
 
-            //            let objTypeName: string = jsObject["__type"];
-            //            if (StringHelper.IsNullOrEmpty(objTypeName)) {
-            //                objTypeName = TypeSystem.GetJsObjectTypeName(jsObject);
-            //                jsObject = jsObject[objTypeName];
-            //            }
-            //            if (StringHelper.IsNullOrEmpty(objTypeName))
-            //                throw new Error("error determining typename");
-            //
-            //            let propertyDefinition: IOutParam<PropertyDefinition> = { value: null };
-            //
-            //            if (this.Owner.Schema.TryGetPropertyDefinition(objTypeName, propertyDefinition)) {
-            //                propertyDefinition.outValue.LoadPropertyValueFromXmlJsObject(jsObject, this);
-            //
-            //                this.loadedProperties.push(propertyDefinition.outValue);
-            //            }
-            this.ClearChangeLog();
-        }
-        catch (exception) {
-            EwsLogging.Log(exception);
-        }
-        finally {
-            this.loading = false;
-        }
+        //            let objTypeName: string = jsObject["__type"];
+        //            if (StringHelper.IsNullOrEmpty(objTypeName)) {
+        //                objTypeName = TypeSystem.GetJsObjectTypeName(jsObject);
+        //                jsObject = jsObject[objTypeName];
+        //            }
+        //            if (StringHelper.IsNullOrEmpty(objTypeName))
+        //                throw new Error("error determining typename");
+        //
+        //            let propertyDefinition: IOutParam<PropertyDefinition> = { value: null };
+        //
+        //            if (this.Owner.Schema.TryGetPropertyDefinition(objTypeName, propertyDefinition)) {
+        //                propertyDefinition.outValue.LoadPropertyValueFromXmlJsObject(jsObject, this);
+        //
+        //                this.loadedProperties.push(propertyDefinition.outValue);
+        //            }
+        this.ClearChangeLog();
+
+        this.loading = false;
     }
 
     /**
@@ -40862,7 +41252,7 @@ export abstract class ServiceRequestBase {
             //IEwsHttpWebResponse httpWebResponse = this.Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
             var soapFaultDetails: SoapFaultDetails = null;
 
-            if (webException.status == 500  /*System.Net.HttpStatusCode.InternalServerError*/) {
+            if (webException.status == HttpStatusCode.InternalServerError) {
                 //this.Service.ProcessHttpResponseHeaders(TraceFlags.EwsResponseHttpHeaders, httpWebResponse);
 
                 // If tracing is enabled, we read the entire response into a MemoryStream so that we
@@ -41098,7 +41488,7 @@ export abstract class ServiceRequestBase {
         //var startTime = Date.now();// DateTime.UtcNow;
         //var response = XHR(request);
         EwsLogging.DebugLog("sending ews request");
-        EwsLogging.DebugLog(request, true);
+        EwsLogging.DebugLog({ ...request, ...{ headers: { ...request.headers, Authorization: "REDACTED" } }}, true);
 
         return this.service.XHRApi.xhr(request);
 
@@ -41213,13 +41603,13 @@ export abstract class ServiceRequestBase {
         }
 
         // Emit the MailboxCulture header
-        if (this.Service.PreferredCulture != null) {
-            //todo: fix preferred culture.
-            writer.WriteElementValue(
-                XmlNamespace.Types,
-                XmlElementNames.MailboxCulture,
-                this.Service.PreferredCulture.Name);
-        }
+        // if (this.Service.PreferredCulture != null) {
+        //     //todo: fix preferred culture.
+        //     writer.WriteElementValue(
+        //         XmlNamespace.Types,
+        //         XmlElementNames.MailboxCulture,
+        //         this.Service.PreferredCulture.Name);
+        // }
 
         // Emit the DateTimePrecision header
         if (this.Service.DateTimePrecision != DateTimePrecision.Default) {
@@ -41653,7 +42043,7 @@ export class HangingServiceRequestBase extends ServiceRequestBase {
         //var startTime = Date.now();// DateTime.UtcNow;
         //var response = XHR(request);
         EwsLogging.DebugLog("sending ews request");
-        EwsLogging.DebugLog(request, true);
+        EwsLogging.DebugLog({ ...request, ...{ headers: { ...request.headers, Authorization: "REDACTED" } }}, true);
 
         return this.Service.XHRApi.xhrStream(request, progressDelegate);
         // return new Promise((successDelegate, errorDelegate) => {
@@ -41885,7 +42275,7 @@ export class SimpleServiceRequestBase extends ServiceRequestBase {
 
                         var ewsXmlReader: EwsServiceXmlReader = new EwsServiceXmlReader(xhrResponse.responseText || xhrResponse.response, this.Service);
                         //EwsLogging.DebugLog(ewsXmlReader.JsObject, true);
-                        var serviceResponse = this.ReadResponsePrivate(ewsXmlReader.JsObject);
+                        var serviceResponse = this.ReadResponsePrivate(xhrResponse, ewsXmlReader.JsObject);
 
                         if (successDelegate)
                             successDelegate(serviceResponse || xhrResponse.responseText || xhrResponse.response);
@@ -41908,7 +42298,7 @@ export class SimpleServiceRequestBase extends ServiceRequestBase {
         });
 
     }
-    private ReadResponsePrivate(response: any /*IEwsHttpWebResponse*/): any {
+    private ReadResponsePrivate(response: any /*IEwsHttpWebResponse*/, jsObject: any): any {
         var serviceResponse: any;
 
         try {
@@ -41942,10 +42332,10 @@ export class SimpleServiceRequestBase extends ServiceRequestBase {
 
 
                 if (this.Service.RenderingMethod == RenderingMode.Xml) {
-                    serviceResponse = this.ReadResponseXmlJsObject(response);
+                    serviceResponse = this.ReadResponseXmlJsObject(jsObject);
                 }
                 else if (this.Service.RenderingMethod == RenderingMode.JSON) {
-                    serviceResponse = this.ReadResponseJson(response);
+                    serviceResponse = this.ReadResponseJson(jsObject);
                 }
                 else {
                     throw new Error/*InvalidOperationException*/("Unknown RenderingMethod.");
@@ -48024,7 +48414,7 @@ export class UpdateItemRequest extends MultiResponseServiceRequest<UpdateItemRes
             writer.WriteAttributeValue(XmlAttributeNames.MessageDisposition, MessageDisposition[this.MessageDisposition]);
         }
 
-        if (hasValue(this.SuppressReadReceipts)) {
+        if (this.SuppressReadReceipts) {
             writer.WriteAttributeValue(XmlAttributeNames.SuppressReadReceipts, true);
         }
 
@@ -54507,7 +54897,9 @@ export class Item extends ServiceObject {
      * @param   {boolean}   suppressReadReceipts   Whether to suppress read receipts
      */
     Delete(deleteMode: DeleteMode, suppressReadReceipts: boolean): Promise<void>
-    Delete(deleteMode: DeleteMode, suppressReadReceipts: boolean = false): Promise<void> { return this.InternalDelete(deleteMode, null, null, suppressReadReceipts); }
+    Delete(deleteMode: DeleteMode, suppressReadReceipts: boolean = false): Promise<void> {
+        return this.InternalDelete(deleteMode, null, null, suppressReadReceipts);
+    }
 
     /**
      * @internal Gets a list of extended properties defined on this object.
@@ -54622,16 +55014,14 @@ export class Item extends ServiceObject {
         this.ThrowIfThisIsAttachment();
 
         // If sendCancellationsMode is null, use the default value that's appropriate for item type.
-        // if (!sendCancellationsMode)
-        // {
-        //     sendCancellationsMode = this.DefaultSendCancellationsMode;
-        // }
+        if (isNullOrUndefined(sendCancellationsMode)) {
+            sendCancellationsMode = this.DefaultSendCancellationsMode;
+        }
 
         // If affectedTaskOccurrences is null, use the default value that's appropriate for item type.
-        // if (!affectedTaskOccurrences)
-        // {
-        //     affectedTaskOccurrences = this.DefaultAffectedTaskOccurrences;
-        // }
+        if (isNullOrUndefined(affectedTaskOccurrences)) {
+            affectedTaskOccurrences = this.DefaultAffectedTaskOccurrences;
+        }
 
         return this.Service.DeleteItem(
             this.Id,
@@ -66843,2299 +67233,3109 @@ export class OutlookUser {
     //LoadFromXml(reader: EwsXmlReader): any { throw new Error("OutlookUser.ts - LoadFromXml : Not implemented."); }
 }
 
-export class AutodiscoverRequest {
+/**
+ * @internal Represents the base class for all requested made to the Autodiscover service.
+ */
+export abstract class AutodiscoverRequest {
 
-    get Service(): AutodiscoverService {
-        return this.service;
+  private service: AutodiscoverService;
+  private url: Uri = null;
+
+  /**
+   * @internal Gets the URL.
+   */
+  get Service(): AutodiscoverService {
+    return this.service;
+  }
+
+  /**
+   * @internal Gets the service.
+   */
+  get Url(): Uri {
+    return this.url;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverRequest** class.
+   *
+   * @param   {AutodiscoverService}   service   Autodiscover service associated with this request.
+   * @param   {Uri}                   url       URL of Autodiscover service.
+   */
+  constructor(service: AutodiscoverService, url: Uri) {
+    this.service = service;
+    this.url = url;
+  }
+
+  private CreateRedirectionResponse(httpWebResponse: any /*IEwsHttpWebResponse*/): AutodiscoverResponse {
+    //string location = httpWebResponse.Headers[System.Net.HttpResponseHeader.Location];
+    //    if (!string.IsNullOrEmpty(location)) {
+    //        try {
+    //            Uri redirectionUri = new Uri(this.Url, location);
+    //            if ((redirectionUri.Scheme == Uri.UriSchemeHttp) || (redirectionUri.Scheme == Uri.UriSchemeHttps)) {
+    //                AutodiscoverResponse response = this.CreateServiceResponse();
+    //                response.ErrorCode = AutodiscoverErrorCode.RedirectUrl;
+    //                response.RedirectionUrl = redirectionUri;
+    //                return response;
+    //            }
+
+    //            this.Service.TraceMessage(
+    //                TraceFlags.AutodiscoverConfiguration,
+    //                string.Format("Invalid redirection URL '{0}' returned by Autodiscover service.", redirectionUri));
+    //        }
+    //        catch (UriFormatException) {
+    //            this.Service.TraceMessage(
+    //                TraceFlags.AutodiscoverConfiguration,
+    //                string.Format("Invalid redirection location '{0}' returned by Autodiscover service.", location));
+    //        }
+    //    }
+    //    else {
+    //        this.Service.TraceMessage(
+    //            TraceFlags.AutodiscoverConfiguration,
+    //            "Redirection response returned by Autodiscover service without redirection location.");
+    //    }
+
+    return null;
+  }
+
+  /**
+   * @internal Creates the service response.
+   *
+   * @return  {AutodiscoverResponse}      AutodiscoverResponse
+   */
+  abstract CreateServiceResponse(): AutodiscoverResponse;
+
+  /**
+   * Gets the name of the request XML element.
+   *
+   * @return  {string}      [description]
+   */
+  abstract GetRequestXmlElementName(): string;
+
+
+  GetResponseStream(response: any /*IEwsHttpWebResponse*/): any { //System.IO.Stream{
+    //string contentEncoding = response.ContentEncoding;
+    //Stream responseStream = response.GetResponseStream();
+
+    //if (contentEncoding.ToLowerInvariant().Contains("gzip")) {
+    //    return new GZipStream(responseStream, CompressionMode.Decompress);
+    //}
+    //else if (contentEncoding.ToLowerInvariant().Contains("deflate")) {
+    //    return new DeflateStream(responseStream, CompressionMode.Decompress);
+    //}
+    //else {
+    //    return responseStream;
+    //}
+  }
+
+  /**
+   * @internal Gets the name of the response XML element.
+   *
+   * @return  {string}      [description]
+   */
+  abstract GetResponseXmlElementName(): string;
+
+  /**
+   * @internal Gets the WS-Addressing action name.
+   *
+   * @return  {string}      [description]
+   */
+  abstract GetWsAddressingActionName(): string;
+
+  /**
+   * Executes this instance.
+   *
+   * @return  {Promise<AutodiscoverResponse>}      [description]
+   */
+  async InternalExecute(): Promise<AutodiscoverResponse> {
+    this.Validate();
+    try {
+
+      var writer = new EwsServiceXmlWriter(this.service);
+      this.WriteSoapRequest(this.url, writer);
+
+      if (!this.service)
+        throw new Error("Missing Service");
+
+      var cc = writer.GetXML();
+      var xhrOptions: IXHROptions = {
+        type: "POST",
+        data: cc,
+        url: this.url.ToString(),
+        headers: { "Content-Type": "text/xml" },
+      };
+
+      //If not set, credentials might come from custom XHRApi
+      if (this.service.Credentials) {
+        this.service.Credentials.PrepareWebRequest(xhrOptions);
+      }
+
+      EwsLogging.DebugLog("sending ews request");
+      EwsLogging.DebugLog({ ...xhrOptions, ...{ headers: { ...xhrOptions.headers, Authorization: "REDACTED" } }}, true);
+      const xhrResponse = await this.service.XHRApi.xhr(xhrOptions)
+      const ewsXmlReader = new EwsXmlReader(xhrResponse.responseText || xhrResponse.response);
+      const responseObject = ewsXmlReader.JsObject;
+
+      EwsLogging.DebugLog(responseObject, true);
+      if (xhrResponse.status == 200) {
+        EwsLogging.DebugLog(xhrResponse, true);
+        this.ReadSoapHeader(responseObject[XmlElementNames.SOAPHeaderElementName]);
+
+        var response: AutodiscoverResponse = this.ReadSoapBody(responseObject);
+
+        if (response.ErrorCode == AutodiscoverErrorCode.NoError) {
+          //todo: passon to successDelegate
+          //return response;
+        }
+        else {
+          throw new AutodiscoverResponseException(response.ErrorCode, response.ErrorMessage);
+        }
+
+      }
+      else {
+        EwsLogging.Log("status !== 200", true, true);
+        EwsLogging.Log(xhrResponse.response, true, true);
+        EwsLogging.Log(ewsXmlReader, true, true);
+
+      }
+
+      return response || xhrResponse.responseText || xhrResponse.response;
+
+    } catch (resperr) {
+      let exception: any;
+      try {
+        this.ProcessWebException(resperr);
+      }
+      catch (exc) {
+        exception = exc;
+      }
+      throw (exception || resperr.responseText || resperr.response);
     }
-    get Url(): Uri {
-        return this.url;
-    }
+  }
 
-    private service: AutodiscoverService;
-    private url: Uri = null;
+  /**
+   * @internal Determines whether response is a redirection.
+   *
+   * @param   {XMLHttpRequest}    httpWebResponse   The HTTP web response.
+   * @return  {boolean}           True if redirection response.
+   */
+  static IsRedirectionResponse(httpWebResponse: XMLHttpRequest): boolean {
+    return (httpWebResponse.status == HttpStatusCode.Redirect) ||
+      (httpWebResponse.status == HttpStatusCode.Moved) ||
+      (httpWebResponse.status == HttpStatusCode.RedirectKeepVerb) ||
+      (httpWebResponse.status == HttpStatusCode.RedirectMethod);
+  }
 
-    constructor(service: AutodiscoverService, url: Uri) {
-        this.service = service;
-        this.url = url;
-    }
+  /**
+   * @internal Loads response from XML.
+   *
+   * @param   {any} responseObject  Json Object converted from XML.
+   */
+  LoadFromXmlJsObject(jsObject: any): AutodiscoverResponse {
+    const elementName = this.GetResponseXmlElementName();
+    const responseObject = jsObject[elementName];
+    var response = this.CreateServiceResponse();
+    response.LoadFromXmlJsObject(responseObject[XmlElementNames.Response]);
+    return response;
+  }
 
-    private CreateRedirectionResponse(httpWebResponse: any /*IEwsHttpWebResponse*/): AutodiscoverResponse {
-        //string location = httpWebResponse.Headers[System.Net.HttpResponseHeader.Location];
-        //    if (!string.IsNullOrEmpty(location)) {
-        //        try {
-        //            Uri redirectionUri = new Uri(this.Url, location);
-        //            if ((redirectionUri.Scheme == Uri.UriSchemeHttp) || (redirectionUri.Scheme == Uri.UriSchemeHttps)) {
-        //                AutodiscoverResponse response = this.CreateServiceResponse();
-        //                response.ErrorCode = AutodiscoverErrorCode.RedirectUrl;
-        //                response.RedirectionUrl = redirectionUri;
-        //                return response;
-        //            }
+  /**
+   * Processes the web exception.
+   *
+   * @param   {XMLHttpRequest}   webException   The web exception.
+   */
+  private ProcessWebException(webException: XMLHttpRequest): void {
+    if (webException.response) {
+      //IEwsHttpWebResponse httpWebResponse = this.Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
+      var soapFaultDetails: SoapFaultDetails = null;
 
-        //            this.Service.TraceMessage(
-        //                TraceFlags.AutodiscoverConfiguration,
-        //                string.Format("Invalid redirection URL '{0}' returned by Autodiscover service.", redirectionUri));
-        //        }
-        //        catch (UriFormatException) {
-        //            this.Service.TraceMessage(
-        //                TraceFlags.AutodiscoverConfiguration,
-        //                string.Format("Invalid redirection location '{0}' returned by Autodiscover service.", location));
-        //        }
+      if (webException.status == HttpStatusCode.InternalServerError) {
+        // If tracing is enabled, we read the entire response into a MemoryStream so that we
+        // can pass it along to the ITraceListener. Then we parse the response from the
+        // MemoryStream.
+        //if (this.Service.IsTraceEnabledFor(TraceFlags.AutodiscoverRequest)) {
+        //using(MemoryStream memoryStream = new MemoryStream())
+        //{
+        //    using(Stream serviceResponseStream = AutodiscoverRequest.GetResponseStream(httpWebResponse))
+        //    {
+        //        // Copy response to in-memory stream and reset position to start.
+        //        EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
+        //        memoryStream.Position = 0;
         //    }
-        //    else {
-        //        this.Service.TraceMessage(
-        //            TraceFlags.AutodiscoverConfiguration,
-        //            "Redirection response returned by Autodiscover service without redirection location.");
-        //    }
 
-        return null;
-    }
-    CreateServiceResponse(): AutodiscoverResponse { throw new Error("AutodiscoverRequest.ts - CreateServiceResponse : Not implemented."); }
-    GetRequestXmlElementName(): string { throw new Error("AutodiscoverRequest.ts - GetRequestXmlElementName : Not implemented."); }
-    GetResponseStream(response: any /*IEwsHttpWebResponse*/): any { //System.IO.Stream{
-        //string contentEncoding = response.ContentEncoding;
-        //Stream responseStream = response.GetResponseStream();
+        //todo implement tracing to base class.
+        //this.Service.TraceResponse(httpWebResponse, memoryStream);
 
-        //if (contentEncoding.ToLowerInvariant().Contains("gzip")) {
-        //    return new GZipStream(responseStream, CompressionMode.Decompress);
+        //var reader = new EwsXmlReader(webException.responseText);
+        //soapFaultDetails = this.ReadSoapFault(reader);
         //}
-        //else if (contentEncoding.ToLowerInvariant().Contains("deflate")) {
-        //    return new DeflateStream(responseStream, CompressionMode.Decompress);
         //}
         //else {
-        //    return responseStream;
+        //    using(Stream stream = AutodiscoverRequest.GetResponseStream(httpWebResponse))
+        //    {
+        //        EwsXmlReader reader = new EwsXmlReader(stream);
+        //        soapFaultDetails = this.ReadSoapFault(reader);
+        //    }
         //}
-    }
-    GetResponseXmlElementName(): string { throw new Error("AutodiscoverRequest.ts - GetResponseXmlElementName : Not implemented."); }
-    GetWsAddressingActionName(): string { throw new Error("AutodiscoverRequest.ts - GetWsAddressingActionName : Not implemented."); }
-    InternalExecute(): Promise<AutodiscoverResponse> {
-        var writer = new EwsServiceXmlWriter(this.service);
-        this.WriteSoapRequest(this.url, writer);
+        var reader = new EwsXmlReader(webException.responseText || webException.response);
+        soapFaultDetails = this.ReadSoapFault(reader.JsObject);
 
-        if (!this.service)
-            throw new Error("Missing Service");
-
-        //var cred = "Basic " + btoa(this.Service.Credentials.UserName + ":" + this.Service.Credentials.Password);
-        var cc = writer.GetXML();
-        var xhrOptions: IXHROptions = {
-            type: "POST",
-            data: cc,
-            //url: "https://pod51045.outlook.com/autodiscover/autodiscover.svc",
-            url: this.url.ToString(),
-            //headers: { "Content-Type": "text/xml", "Authorization": cred },
-            headers: { "Content-Type": "text/xml" },
-            //customRequestInitializer: function (x) {
-            //    var m = x;
-            //}
-        };
-
-        //If not set, credentials might come from custom XHRApi
-        if (this.service.Credentials)
-            this.service.Credentials.PrepareWebRequest(xhrOptions);
-
-        return new Promise((successDelegate, errorDelegate) => {
-            EwsLogging.DebugLog("sending ews request");
-            EwsLogging.DebugLog(xhrOptions, true);
-            this.service.XHRApi.xhr(xhrOptions)
-                .then((xhrResponse: XMLHttpRequest) => {
-                    var ewsXmlReader = new EwsXmlReader(xhrResponse.responseText || xhrResponse.response);
-                    //EwsLogging.log(util.inspect(xhrResponse.response, { showHidden: false, depth: null, colors: true }));
-                    EwsLogging.DebugLog(ewsXmlReader.JsObject, true);
-                    if (xhrResponse.status == 200) {
-
-                        //ewsXmlReader.Read();
-                        //if (ewsXmlReader.NodeType == Node.DOCUMENT_NODE /*System.Xml.XmlNodeType.Document*/) {
-                        //    ewsXmlReader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
-                        //}
-                        //else if ((ewsXmlReader.NodeType != Node.ELEMENT_NODE /*System.Xml.XmlNodeType.Element*/) || (ewsXmlReader.LocalName != XmlElementNames.SOAPEnvelopeElementName) || (ewsXmlReader.NamespaceUri != EwsUtilities.GetNamespaceUri(XmlNamespace.Soap))) {
-                        //    throw new Error(Strings.InvalidAutodiscoverServiceResponse);
-                        //}
-
-                        this.ReadSoapHeaders(ewsXmlReader);
-
-                        var response: AutodiscoverResponse = this.ReadSoapBody(ewsXmlReader);
-
-                        //ewsXmlReader.ReadEndElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
-
-                        if (response.ErrorCode == AutodiscoverErrorCode.NoError) {
-                            //todo: passon to successDelegate
-                            //return response;
-                        }
-                        else {
-                            throw new Error("response error " + response.ErrorCode + response.ErrorMessage);// new AutodiscoverResponseException(response.ErrorCode, response.ErrorMessage);
-                        }
-
-                    }
-                    else {
-                        EwsLogging.Log("status !== 200", true, true);
-                        EwsLogging.Log(xhrResponse.response, true, true);
-                        EwsLogging.Log(ewsXmlReader, true, true);
-
-                    }
-
-                    if (successDelegate)
-                        successDelegate(response || xhrResponse.responseText || xhrResponse.response);
-
-                }, (resperr: XMLHttpRequest) => {
-                    var exception: any;
-                    try {
-                        this.ProcessWebException(resperr);
-                    }
-                    catch (exc) {
-                        exception = exc;
-                    }
-                    if (errorDelegate) errorDelegate(exception || resperr.responseText || resperr.response);
-                });
-        });
-
-    }
-    static IsRedirectionResponse(httpWebResponse: XMLHttpRequest): boolean {
-        return (httpWebResponse.status == 302 /*System.Net.HttpStatusCode.Redirect*/) ||
-            (httpWebResponse.status == 301 /*System.Net.HttpStatusCode.Moved*/) ||
-            (httpWebResponse.status == 307 /*System.Net.HttpStatusCode.RedirectKeepVerb*/) ||
-            (httpWebResponse.status == 303 /*System.Net.HttpStatusCode.RedirectMethod*/);
-    }
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader): AutodiscoverResponse {
-        var elementName = this.GetResponseXmlElementName();
-        reader.ReadStartElement(XmlNamespace.Autodiscover, elementName);
-        var response = this.CreateServiceResponse();
-        response.LoadFromXml(reader, elementName);
-        return response;
-    }
-    LoadFromObject(obj: any): AutodiscoverResponse {
-        var elementName = this.GetResponseXmlElementName();
-        obj = obj.Body[elementName];
-        var response = this.CreateServiceResponse();
-        response.LoadFromJson(obj[XmlElementNames.Response]);
-        return response;
-    }
-
-
-    ProcessWebException(webException: XMLHttpRequest): void {
-        if (webException.response) {
-            //IEwsHttpWebResponse httpWebResponse = this.Service.HttpWebRequestFactory.CreateExceptionResponse(webException);
-            var soapFaultDetails: SoapFaultDetails = null;
-
-            if (webException.status == 500 /*System.Net.HttpStatusCode.InternalServerError*/) {
-                // If tracing is enabled, we read the entire response into a MemoryStream so that we
-                // can pass it along to the ITraceListener. Then we parse the response from the
-                // MemoryStream.
-                //if (this.Service.IsTraceEnabledFor(TraceFlags.AutodiscoverRequest)) {
-                //using(MemoryStream memoryStream = new MemoryStream())
-                //{
-                //    using(Stream serviceResponseStream = AutodiscoverRequest.GetResponseStream(httpWebResponse))
-                //    {
-                //        // Copy response to in-memory stream and reset position to start.
-                //        EwsUtilities.CopyStream(serviceResponseStream, memoryStream);
-                //        memoryStream.Position = 0;
-                //    }
-
-                //todo implement tracing to base class.
-                //this.Service.TraceResponse(httpWebResponse, memoryStream);
-
-                //var reader = new EwsXmlReader(webException.responseText);
-                //soapFaultDetails = this.ReadSoapFault(reader);
-                //}
-                //}
-                //else {
-                //    using(Stream stream = AutodiscoverRequest.GetResponseStream(httpWebResponse))
-                //    {
-                //        EwsXmlReader reader = new EwsXmlReader(stream);
-                //        soapFaultDetails = this.ReadSoapFault(reader);
-                //    }
-                //}
-                var reader = new EwsXmlReader(webException.responseText || webException.response);
-                soapFaultDetails = this.ReadSoapFault(reader);
-
-                if (soapFaultDetails) {
-                    //todo: implement soap fault error throw
-                    throw new ServiceResponseException(new ServiceResponse(soapFaultDetails));
-                }
-            }
-            else {
-                //todo: fix this
-                this.Service.ProcessHttpErrorResponse(webException, webException);
-            }
+        if (soapFaultDetails) {
+          //todo: implement soap fault error throw
+          throw new ServiceResponseException(new ServiceResponse(soapFaultDetails));
         }
+      }
+      else {
+        //todo: fix this
+        this.Service.ProcessHttpErrorResponse(webException, webException);
+      }
     }
-    /**@internal */
-    ReadServerVersionInfo(reader: EwsXmlReader): ExchangeServerInfo {
-        var serverInfo = new ExchangeServerInfo();
-        do {
-            reader.Read();
-            switch (reader.LocalName) {
-                case XmlElementNames.MajorVersion:
-                    serverInfo.MajorVersion = +(reader.ReadElementValue());
-                    break;
-                case XmlElementNames.MinorVersion:
-                    serverInfo.MinorVersion = +(reader.ReadElementValue());
-                    break;
-                case XmlElementNames.MajorBuildNumber:
-                    serverInfo.MajorBuildNumber = +(reader.ReadElementValue());
-                    break;
-                case XmlElementNames.MinorBuildNumber:
-                    serverInfo.MinorBuildNumber = +(reader.ReadElementValue());
-                    break;
-                case XmlElementNames.Version:
-                    serverInfo.VersionString = reader.ReadElementValue();
-                    break;
-                default:
-                    break;
-            }
+  }
 
-        }
-        while (reader.ParentNode.localName === XmlElementNames.ServerVersionInfo);
-        //while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.ServerVersionInfo));
+  /**
+   * @internal Read SOAP body.
+   *
+   * @param   {object}   jsObject   EwsXmlReader
+   * @returns {AutodiscoverResponse}  AutodiscoverResponse
+   */
+  ReadSoapBody(jsObject: object): AutodiscoverResponse {
+    var responses = this.LoadFromXmlJsObject(jsObject[XmlElementNames.SOAPBodyElementName]);
+    return responses
+  }
 
-        return serverInfo;
+  /**
+   * Reads the SOAP fault.
+   *
+   * @param   {any}   jsObject   The reader.
+   * @return  {SoapFaultDetails}  SOAP fault details.
+   */
+  private ReadSoapFault(jsObject: any): SoapFaultDetails {
+    var soapFaultDetails: SoapFaultDetails = undefined;
+    if (jsObject && jsObject[XmlElementNames.SOAPBodyElementName]) {
+      var obj = jsObject[XmlElementNames.SOAPBodyElementName];
+      if (obj[XmlElementNames.SOAPFaultElementName])
+        soapFaultDetails = SoapFaultDetails.Parse(obj[XmlElementNames.SOAPFaultElementName]);
     }
-    /**@internal */
-    ReadSoapBody(reader: EwsXmlReader): AutodiscoverResponse {
-        var responses = this.LoadFromObject(reader.JsObject);
-        return responses
 
-        reader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName);
-        var responses = this.LoadFromXml(reader);
-        //reader.ReadEndElement(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName);
-        return responses;
+    return soapFaultDetails;
+    //skipped xml section, using Json only.
+    //////try {
+    //////    // WCF may not generate an XML declaration.
+    //////    reader.Read();
+    //////    //if (reader.NodeType == Node.  System.Xml.XmlNodeType.XmlDeclaration) {
+    //////    //    reader.Read();
+    //////    //}
+
+    //////    if (reader.LocalName != XmlElementNames.SOAPEnvelopeElementName) {
+    //////        return soapFaultDetails;
+    //////    }
+
+    //////    // Get the namespace URI from the envelope element and use it for the rest of the parsing.
+    //////    // If it's not 1.1 or 1.2, we can't continue.
+    //////    var soapNamespace: XmlNamespace = EwsUtilities.GetNamespaceFromUri(reader.NamespaceUri);
+    //////    if (soapNamespace == XmlNamespace.NotSpecified) {
+    //////        return soapFaultDetails;
+    //////    }
+
+    //////    reader.Read();
+
+    //////    // Skip SOAP header.
+    //////    if (reader.IsElement(soapNamespace, XmlElementNames.SOAPHeaderElementName)) {
+    //////        do {
+    //////            reader.Read();
+    //////        }
+    //////        while (reader.HasRecursiveParent(XmlElementNames.SOAPHeaderElementName));
+
+    //////        // Queue up the next read
+    //////        //reader.Read(); - no need with nodeiterator/treewalker as the node is already a body Node
+    //////    }
+
+    //////    // Parse the fault element contained within the SOAP body.
+    //////    if (reader.IsElement(soapNamespace, XmlElementNames.SOAPBodyElementName)) {
+    //////        do {
+    //////            reader.Read();
+
+    //////            // Parse Fault element
+    //////            if (reader.IsElement(soapNamespace, XmlElementNames.SOAPFaultElementName)) {
+    //////                soapFaultDetails = SoapFaultDetails.Parse(reader, soapNamespace);
+    //////            }
+    //////        }
+    //////        while (reader.HasRecursiveParent(XmlElementNames.SOAPBodyElementName));
+    //////    }
+    //////}
+    //////catch (XmlException) {
+    //////    // If response doesn't contain a valid SOAP fault, just ignore exception and
+    //////    // return null for SOAP fault details.
+    //////}
+
+    //////return soapFaultDetails;
+  }
+
+
+  /**
+   * @internal Read SOAP headers.
+   *
+   * @param   {object}   reader   EwsXmlReader
+   */
+  ReadSoapHeader(jsobject: object): void {
+    this.service.ServerInfo = ExchangeServerInfo.Parse(jsobject[XmlElementNames.ServerVersionInfo]);
+  }
+
+  /**
+   * @internal Validates the request.
+   */
+  Validate(): void {
+    this.Service.Validate();
+  }
+
+  /**
+   * @internal Writes attributes to request XML.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer.
+   */
+  abstract WriteAttributesToXml(writer: EwsServiceXmlWriter): void;
+
+  /**
+   * @internal Writes XML body.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer.
+   */
+  WriteBodyToXml(writer: EwsServiceXmlWriter): void {
+    writer.WriteStartElement(XmlNamespace.Autodiscover, this.GetRequestXmlElementName());
+    this.WriteAttributesToXml(writer);
+    this.WriteElementsToXml(writer);
+
+    writer.WriteEndElement(); // m:this.GetXmlElementName()
+  }
+
+  /**
+   * @internal Writes elements to request XML.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer.
+   */
+  abstract WriteElementsToXml(writer: EwsServiceXmlWriter): void;
+
+  /**
+   * @internal Write extra headers.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer
+   */
+  WriteExtraCustomSoapHeadersToXml(writer: EwsServiceXmlWriter): void { }
+
+  /**
+   * @internal Writes the autodiscover SOAP request.
+   *
+   * @param   {Uri}                   requestUrl   Request URL.
+   * @param   {EwsServiceXmlWriter}   writer       The writer.
+   */
+  WriteSoapRequest(requestUrl: Uri, writer: EwsServiceXmlWriter): void {
+
+    writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
+    writer.WriteAttributeValue("xmlns", EwsUtilities.AutodiscoverSoapNamespacePrefix, EwsUtilities.AutodiscoverSoapNamespace);
+    writer.WriteAttributeValue("xmlns", EwsUtilities.WSAddressingNamespacePrefix, EwsUtilities.WSAddressingNamespace);
+    writer.WriteAttributeValue("xmlns", EwsUtilities.EwsXmlSchemaInstanceNamespacePrefix, EwsUtilities.EwsXmlSchemaInstanceNamespace);
+    if (writer.RequireWSSecurityUtilityNamespace) {
+      writer.WriteAttributeValue("xmlns", EwsUtilities.WSSecurityUtilityNamespacePrefix, EwsUtilities.WSSecurityUtilityNamespace);
     }
-    /**@internal */
-    ReadSoapFault(reader: EwsXmlReader): SoapFaultDetails {
-        var soapFaultDetails: SoapFaultDetails = undefined;
-        if (reader.JsObject && reader.JsObject[XmlElementNames.SOAPBodyElementName]) {
-            var obj = reader.JsObject[XmlElementNames.SOAPBodyElementName];
-            if (obj[XmlElementNames.SOAPFaultElementName])
-                soapFaultDetails = SoapFaultDetails.Parse(obj[XmlElementNames.SOAPFaultElementName]);
-        }
 
-        return soapFaultDetails;
-        //skipped xml section, using Json only.
-        //////try {
-        //////    // WCF may not generate an XML declaration.
-        //////    reader.Read();
-        //////    //if (reader.NodeType == Node.  System.Xml.XmlNodeType.XmlDeclaration) {
-        //////    //    reader.Read();
-        //////    //}
+    writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName);
 
-        //////    if (reader.LocalName != XmlElementNames.SOAPEnvelopeElementName) {
-        //////        return soapFaultDetails;
-        //////    }
-
-        //////    // Get the namespace URI from the envelope element and use it for the rest of the parsing.
-        //////    // If it's not 1.1 or 1.2, we can't continue.
-        //////    var soapNamespace: XmlNamespace = EwsUtilities.GetNamespaceFromUri(reader.NamespaceUri);
-        //////    if (soapNamespace == XmlNamespace.NotSpecified) {
-        //////        return soapFaultDetails;
-        //////    }
-
-        //////    reader.Read();
-
-        //////    // Skip SOAP header.
-        //////    if (reader.IsElement(soapNamespace, XmlElementNames.SOAPHeaderElementName)) {
-        //////        do {
-        //////            reader.Read();
-        //////        }
-        //////        while (reader.HasRecursiveParent(XmlElementNames.SOAPHeaderElementName));
-
-        //////        // Queue up the next read
-        //////        //reader.Read(); - no need with nodeiterator/treewalker as the node is already a body Node
-        //////    }
-
-        //////    // Parse the fault element contained within the SOAP body.
-        //////    if (reader.IsElement(soapNamespace, XmlElementNames.SOAPBodyElementName)) {
-        //////        do {
-        //////            reader.Read();
-
-        //////            // Parse Fault element
-        //////            if (reader.IsElement(soapNamespace, XmlElementNames.SOAPFaultElementName)) {
-        //////                soapFaultDetails = SoapFaultDetails.Parse(reader, soapNamespace);
-        //////            }
-        //////        }
-        //////        while (reader.HasRecursiveParent(XmlElementNames.SOAPBodyElementName));
-        //////    }
-        //////}
-        //////catch (XmlException) {
-        //////    // If response doesn't contain a valid SOAP fault, just ignore exception and
-        //////    // return null for SOAP fault details.
-        //////}
-
-        //////return soapFaultDetails;
+    if (this.Service.Credentials != null) {
+      this.Service.Credentials.EmitExtraSoapHeaderNamespaceAliases(writer);
     }
-    /**@internal */
-    ReadSoapHeader(reader: EwsXmlReader): void {
-        // Is this the ServerVersionInfo?
-        if (reader.IsElement(XmlNamespace.Autodiscover, XmlElementNames.ServerVersionInfo)) {
-            this.service.ServerInfo = this.ReadServerVersionInfo(reader);
-        }
-    }
-    /**@internal */
-    ReadSoapHeaders(reader: EwsXmlReader): void {
 
-        this.service.ServerInfo = reader.JsObject.Header.ServerVersionInfo;
-        //return;
-        //reader.ReadStartElement(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName);
-        //do {
-        //    reader.Read();
+    writer.WriteElementValue(
+      XmlNamespace.Autodiscover,
+      XmlElementNames.RequestedServerVersion,
+      ExchangeVersion[this.Service.RequestedServerVersion]
+    );
 
-        //    this.ReadSoapHeader(reader);
-        //}
-        //while (reader.HasRecursiveParent(XmlElementNames.SOAPHeaderElementName));
-    }
-    Validate(): void {
-        //this.Service.Validate();
-    }
-    /**@internal */
-    WriteAttributesToXml(writer: EwsServiceXmlWriter): any { throw new Error("Not implemented. overridden"); }
-    /**@internal */
-    WriteBodyToXml(writer: EwsServiceXmlWriter): void {
-        writer.WriteStartElement(XmlNamespace.Autodiscover, this.GetRequestXmlElementName());
-        this.WriteAttributesToXml(writer);
-        this.WriteElementsToXml(writer);
+    writer.WriteElementValue(
+      XmlNamespace.WSAddressing,
+      XmlElementNames.Action,
+      this.GetWsAddressingActionName());
 
-        writer.WriteEndElement(); // m:this.GetXmlElementName()
-    }
-    /**@internal */
-    WriteElementsToXml(writer: EwsServiceXmlWriter): any { throw new Error("Not implemented. overridden"); }
-    /**@internal */
-    WriteExtraCustomSoapHeadersToXml(writer: EwsServiceXmlWriter): void { }
-    /**@internal */
-    WriteSoapRequest(requestUrl: Uri,
-        writer: EwsServiceXmlWriter): void {
+    writer.WriteElementValue(
+      XmlNamespace.WSAddressing,
+      XmlElementNames.To,
+      requestUrl.AbsoluteUri);
 
-        writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPEnvelopeElementName);
-        writer.WriteAttributeValue("xmlns", EwsUtilities.AutodiscoverSoapNamespacePrefix, EwsUtilities.AutodiscoverSoapNamespace);
-        writer.WriteAttributeValue("xmlns", EwsUtilities.WSAddressingNamespacePrefix, EwsUtilities.WSAddressingNamespace);
-        writer.WriteAttributeValue("xmlns", EwsUtilities.EwsXmlSchemaInstanceNamespacePrefix, EwsUtilities.EwsXmlSchemaInstanceNamespace);
-        if (writer.RequireWSSecurityUtilityNamespace) {
-            writer.WriteAttributeValue("xmlns", EwsUtilities.WSSecurityUtilityNamespacePrefix, EwsUtilities.WSSecurityUtilityNamespace);
-        }
+    this.WriteExtraCustomSoapHeadersToXml(writer);
 
-        writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPHeaderElementName);
+    //if (this.Service.Credentials != null) {
+    //    this.Service.Credentials.SerializeWSSecurityHeaders(writer.InternalWriter);
+    //}
 
-        //if (this.Service.Credentials != null) {
-        //    this.Service.Credentials.EmitExtraSoapHeaderNamespaceAliases(writer.InternalWriter);
-        //}
+    //this.Service.DoOnSerializeCustomSoapHeaders(writer.InternalWriter);
 
-        writer.WriteElementValue(
-            XmlNamespace.Autodiscover,
-            XmlElementNames.RequestedServerVersion,
-            ExchangeVersion[this.Service.RequestedServerVersion]
-        );
+    writer.WriteEndElement(); // soap:Header
 
-        writer.WriteElementValue(
-            XmlNamespace.WSAddressing,
-            XmlElementNames.Action,
-            this.GetWsAddressingActionName());
+    writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName);
 
-        writer.WriteElementValue(
-            XmlNamespace.WSAddressing,
-            XmlElementNames.To,
-            requestUrl.ToString());//.AbsoluteUri);
+    this.WriteBodyToXml(writer);
 
-        this.WriteExtraCustomSoapHeadersToXml(writer);
-
-        //if (this.Service.Credentials != null) {
-        //    this.Service.Credentials.SerializeWSSecurityHeaders(writer.InternalWriter);
-        //}
-
-        //this.Service.DoOnSerializeCustomSoapHeaders(writer.InternalWriter);
-
-        writer.WriteEndElement(); // soap:Header
-
-        writer.WriteStartElement(XmlNamespace.Soap, XmlElementNames.SOAPBodyElementName);
-
-        this.WriteBodyToXml(writer);
-
-        writer.WriteEndElement(); // soap:Body
-        writer.WriteEndElement(); // soap:Envelope
-        writer.Flush();
-    }
+    writer.WriteEndElement(); // soap:Body
+    writer.WriteEndElement(); // soap:Envelope
+    writer.Flush();
+  }
 }
 
-
-
-
-
+/**
+ * @internal Represents a GetDomainSettings request.
+ */
 export class GetDomainSettingsRequest extends AutodiscoverRequest {
-    private static GetDomainSettingsActionUri: string = EwsUtilities.AutodiscoverSoapNamespace + "/Autodiscover/GetDomainSettings";
-    Domains: string[];// System.Collections.Generic.List<string>;
-    Settings: DomainSettingName[];// System.Collections.Generic.List<DomainSettingName>;
-    RequestedVersion: ExchangeVersion;
-    private domains: string;// System.Collections.Generic.List<string>;
-    private settings: DomainSettingName[];// System.Collections.Generic.List<DomainSettingName>;
-    private requestedVersion: ExchangeVersion;
+  /**
+   * Action Uri of Autodiscover.GetDomainSettings method.
+   */
+  private static GetDomainSettingsActionUri: string = `${EwsUtilities.AutodiscoverSoapNamespace}/Autodiscover/GetDomainSettings`;
 
-    constructor(service: AutodiscoverService, url: Uri) {
-        super(service, url);
+  private domains: string[];
+  private settings: DomainSettingName[];
+  private requestedVersion: ExchangeVersion;
+
+  /**
+   * @internal Gets or sets the domains.
+   */
+  get Domains(): string[] {
+    return this.domains;
+  }
+  set Domains(value) {
+    this.domains = value;
+  }
+
+  /**
+   * @internal Gets or sets the settings.
+   */
+  get Settings(): DomainSettingName[] {
+    return this.settings;
+  }
+  set Settings(value) {
+    this.settings = value;
+  }
+
+  /**
+   * @internal Gets or sets the RequestedVersion.
+   */
+  get RequestedVersion(): ExchangeVersion {
+    return this.requestedVersion;
+  }
+  set RequestedVersion(value) {
+    this.requestedVersion = value;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **GetDomainSettingsRequest** class.
+   *
+   * @param   {AutodiscoverService}   service   Autodiscover service associated with this request.
+   * @param   {Uri}                   url       URL of Autodiscover service.
+   */
+  constructor(service: AutodiscoverService, url: Uri) {
+    super(service, url);
+  }
+
+  /**
+   * @internal Creates the service response.
+   *
+   * @return  {AutodiscoverResponse}      AutodiscoverResponse
+   */
+  CreateServiceResponse(): AutodiscoverResponse {
+    return new GetDomainSettingsResponseCollection();
+
+  }
+
+  /**
+   * @internal Executes this instance.
+   *
+   * @return  {Promise<GetDomainSettingsResponseCollection>}      [description]
+   */
+  async Execute(): Promise<GetDomainSettingsResponseCollection> {
+    const responses: GetDomainSettingsResponseCollection = await this.InternalExecute() as GetDomainSettingsResponseCollection;
+
+    if (responses.ErrorCode == AutodiscoverErrorCode.NoError) {
+      this.PostProcessResponses(responses);
     }
 
-    CreateServiceResponse(): AutodiscoverResponse { return new GetDomainSettingsResponseCollection(); }
-    Execute(): Promise<GetDomainSettingsResponseCollection> {
-        var responses = <Promise<GetDomainSettingsResponseCollection>>this.InternalExecute();
+    return responses;
+  }
 
-        //GetDomainSettingsResponseCollection responses = (GetDomainSettingsResponseCollection) this.InternalExecute();
-        //if (responses.ErrorCode == AutodiscoverErrorCode.NoError) {
-        //    this.PostProcessResponses(responses);
-        //}
+  /**
+   * Gets the name of the request XML element.
+   *
+   * @return  {string}      [description]
+   */
+  GetRequestXmlElementName(): string {
+    return XmlElementNames.GetDomainSettingsRequestMessage;
+  }
 
-        return responses;
+  /**
+   * @internal Gets the name of the response XML element.
+   *
+   * @return  {string}      [description]
+   */
+  GetResponseXmlElementName(): string {
+    return XmlElementNames.GetDomainSettingsResponseMessage;
+  }
+
+  /**
+   * @internal Gets the WS-Addressing action name.
+   *
+   * @return  {string}      [description]
+   */
+  GetWsAddressingActionName(): string {
+    return GetDomainSettingsRequest.GetDomainSettingsActionUri;
+  }
+
+  /**
+   * Post-process responses to GetDomainSettings.
+   *
+   * @param   {GetDomainSettingsResponseCollection}   responses   The GetDomainSettings responses.
+   */
+  private PostProcessResponses(responses: GetDomainSettingsResponseCollection): void {
+    // Note:The response collection may not include all of the requested domains if the request has been throttled.
+    for (var index = 0; index < responses.Count; index++) {
+      responses.Responses[index].Domain = this.Domains[index];
     }
-    GetRequestXmlElementName(): string { return XmlElementNames.GetDomainSettingsRequestMessage; }
-    GetResponseXmlElementName(): string { return XmlElementNames.GetDomainSettingsResponseMessage; }
-    GetWsAddressingActionName(): string { return GetDomainSettingsRequest.GetDomainSettingsActionUri; }
-    PostProcessResponses(responses: GetDomainSettingsResponseCollection): any {
-        // Note:The response collection may not include all of the requested domains if the request has been throttled.
-        for (var index = 0; index < responses.Count; index++) {
-            responses.__thisIndexer(index).Domain = this.Domains[index];
-        }
+  }
+
+  /**
+   * @internal Validates the request.
+   */
+  Validate(): void {
+    super.Validate();
+    if (this.settings.length == 0) {
+      throw new ServiceValidationException(Strings.InvalidAutodiscoverSettingsCount);
     }
-    Validate(): void { super.Validate(); }
-    /**@internal */
-    WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
-        writer.WriteAttributeValue(
-            "xmlns",
-            EwsUtilities.AutodiscoverSoapNamespacePrefix,
-            EwsUtilities.AutodiscoverSoapNamespace);
+
+    if (this.domains.length == 0) {
+      throw new ServiceValidationException(Strings.InvalidAutodiscoverDomainsCount);
     }
-    /**@internal */
-    WriteElementsToXml(writer: EwsServiceXmlWriter): any {
-        writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Request);
 
-        writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Domains);
-
-        for (var domain of this.Domains) {
-
-            //if (!string.IsNullOrEmpty(domain)) {
-            if (domain != undefined && domain !== "") {
-                writer.WriteElementValue(
-                    XmlNamespace.Autodiscover,
-                    XmlElementNames.Domain,
-                    domain);
-            }
-        }
-        writer.WriteEndElement(); //Domains
-
-        writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.RequestedSettings);
-        for (var setting of this.Settings) {
-
-            writer.WriteElementValue(
-                XmlNamespace.Autodiscover,
-                XmlElementNames.Setting,
-                DomainSettingName[setting]);
-        }
-
-        writer.WriteEndElement(); //RequestedSettings
-
-        if (hasValue(this.requestedVersion)) {
-            writer.WriteElementValue(XmlNamespace.Autodiscover,
-                XmlElementNames.RequestedVersion,
-                this.requestedVersion);
-        }
-
-        writer.WriteEndElement(); //Request
+    for (let domain of this.domains) {
+      if (StringHelper.IsNullOrEmpty(domain)) {
+        throw new ServiceValidationException(Strings.InvalidAutodiscoverDomain);
+      }
     }
+  }
+
+  /**
+   * @internal Writes attributes to request XML.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer.
+   */
+  WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
+    writer.WriteAttributeValue(
+      "xmlns",
+      EwsUtilities.AutodiscoverSoapNamespacePrefix,
+      EwsUtilities.AutodiscoverSoapNamespace);
+  }
+
+  /**
+   * @internal Writes elements to request XML.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer.
+   */
+  WriteElementsToXml(writer: EwsServiceXmlWriter): void {
+    writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Request);
+
+    writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Domains);
+
+    for (var domain of this.Domains) {
+
+      if (!StringHelper.IsNullOrEmpty(domain)) {
+        writer.WriteElementValue(
+          XmlNamespace.Autodiscover,
+          XmlElementNames.Domain,
+          domain);
+      }
+    }
+    writer.WriteEndElement(); //Domains
+
+    writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.RequestedSettings);
+    for (var setting of this.Settings) {
+
+      writer.WriteElementValue(
+        XmlNamespace.Autodiscover,
+        XmlElementNames.Setting,
+        DomainSettingName[setting]);
+    }
+
+    writer.WriteEndElement(); //RequestedSettings
+
+    if (hasValue(this.requestedVersion)) {
+      writer.WriteElementValue(XmlNamespace.Autodiscover,
+        XmlElementNames.RequestedVersion,
+        this.requestedVersion);
+    }
+
+    writer.WriteEndElement(); //Request
+  }
 }
 
-
-
-
-
-
+/**
+ * @internal Represents a GetUserSettings request.
+ */
 export class GetUserSettingsRequest extends AutodiscoverRequest {
-    static GetUserSettingsActionUri: string = EwsUtilities.AutodiscoverSoapNamespace + "/Autodiscover/GetUserSettings";
+  /**
+   * Action Uri of Autodiscover.GetUserSettings method.
+   */
+  static GetUserSettingsActionUri: string = `${EwsUtilities.AutodiscoverSoapNamespace}/Autodiscover/GetUserSettings`;
 
-    SmtpAddresses: string[];//System.Collections.Generic.List<string>;
-    Settings: UserSettingName[];//System.Collections.Generic.List<UserSettingName>;
-    PartnerToken: string;
-    PartnerTokenReference: string;
-    private expectPartnerToken: boolean;
+  private expectPartnerToken: boolean = false;
 
-    constructor(service: AutodiscoverService, url: Uri) {
-        super(service, url);
-        this.expectPartnerToken = false;
+  private smtpAddresses: string[];
+  private settings: UserSettingName[];
+  private partnerToken: string;
+  private partnerTokenReference: string;
+
+  /** @internal Gets or sets the SMTP addresses. */
+  get SmtpAddresses(): string[] {
+    return this.smtpAddresses;
+  }
+  set SmtpAddresses(value) {
+    this.smtpAddresses = value;
+  }
+
+  /** @internal Gets or sets the settings. */
+  get Settings(): UserSettingName[] {
+    return this.settings;
+  }
+  set Settings(value) {
+    this.settings = value;
+  }
+
+  /**
+   * @internal Gets the partner token.
+   */
+  get PartnerToken(): string {
+    return this.partnerToken;
+  }
+  /** @private set */
+  set PartnerToken(value) {
+    this.partnerToken = value;
+  }
+
+  /**
+   * @internal Gets the partner token reference.
+   */
+  get PartnerTokenReference(): string {
+    return this.partnerTokenReference;
+  }
+  /** @private set */
+  set PartnerTokenReference(value) {
+    this.partnerTokenReference = value;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **GetUserSettingsRequest** class.
+   *
+   * @param   {AutodiscoverService}   service   Autodiscover service associated with this request.
+   * @param   {Uri}                   url       URL of Autodiscover service.
+   */
+  constructor(service: AutodiscoverService, url: Uri);
+  /**
+   * @internal Initializes a new instance of the GetUserSettingsRequest class.
+   *
+   * @param   {AutodiscoverService}   service   Autodiscover service associated with this request.
+   * @param   {Uri}                   url       URL of Autodiscover service.
+   * @param   {boolean}               expectPartnerToken   [description]
+   */
+  constructor(service: AutodiscoverService, url: Uri, expectPartnerToken: boolean);
+  constructor(service: AutodiscoverService, url: Uri, expectPartnerToken: boolean = false) {
+    super(service, url);
+    this.expectPartnerToken = expectPartnerToken;
+
+    // make an explicit https check.
+    if (expectPartnerToken && !(url.Scheme.toLowerCase() === "https")) {
+      throw new ServiceValidationException(Strings.HttpsIsRequired);
     }
-    CreateServiceResponse(): AutodiscoverResponse {
-        return new GetUserSettingsResponseCollection();
+  }
+
+  /**
+   * @internal Creates the service response.
+   *
+   * @return  {AutodiscoverResponse}      AutodiscoverResponse
+   */
+  CreateServiceResponse(): AutodiscoverResponse {
+    return new GetUserSettingsResponseCollection();
+  }
+
+  /**
+   * @internal Executes this instance.
+   *
+   * @return  {Promise<GetUserSettingsResponseCollection>}      [description]
+   */
+  async Execute(): Promise<GetUserSettingsResponseCollection> {
+    const responses: GetUserSettingsResponseCollection = await this.InternalExecute() as GetUserSettingsResponseCollection;
+    if (responses.ErrorCode == AutodiscoverErrorCode.NoError) {
+      this.PostProcessResponses(responses);
     }
-    Execute(): Promise<GetUserSettingsResponseCollection> {
-        return this.InternalExecute().then((adr: GetUserSettingsResponseCollection) => {
-            this.PostProcessResponses(adr)
-            return adr;
-        });
-        //<Promise<>> v
-        //if (!responses) return;
-        //if (responses.ErrorCode == AutodiscoverErrorCode.NoError) {
-        //    this.PostProcessResponses(responses);
-        //}
-        //return responses;
+    return responses;
+  }
+
+  /**
+   * Gets the name of the request XML element.
+   *
+   * @return  {string}      [description]
+   */
+  GetRequestXmlElementName(): string {
+    return XmlElementNames.GetUserSettingsRequestMessage;
+  }
+
+  /**
+   * @internal Gets the name of the response XML element.
+   *
+   * @return  {string}      [description]
+   */
+  GetResponseXmlElementName(): string {
+    return XmlElementNames.GetUserSettingsResponseMessage;
+  }
+
+  /**
+   * @internal Gets the WS-Addressing action name.
+   *
+   * @return  {string}      [description]
+   */
+  GetWsAddressingActionName(): string {
+    return GetUserSettingsRequest.GetUserSettingsActionUri;// GetUserSettingsActionUri;
+  }
+
+  /**
+   * Post-process responses to GetUserSettings.
+   *
+   * @param   {GetUserSettingsResponseCollection}   responses   The GetUserSettings responses.
+   */
+  private PostProcessResponses(responses: GetUserSettingsResponseCollection): void {
+    // Note:The response collection may not include all of the requested users if the request has been throttled.
+    for (let index = 0; index < responses.Count; index++) {
+      responses.Responses[index].SmtpAddress = this.SmtpAddresses[index];
     }
-    GetRequestXmlElementName(): string {
-        return XmlElementNames.GetUserSettingsRequestMessage;
+  }
+
+  /**
+   * @internal Read SOAP headers.
+   *
+   * @param   {object}   reader   EwsXmlReader
+   */
+  ReadSoapHeader(jsobject: object): void {
+    super.ReadSoapHeader(jsobject);
+    return;
+    if (this.expectPartnerToken) {
+      EwsLogging.Assert(false, "GetUserSettingsRequest.ReadSoapHeader", "Partner tokens not implemented")
+      // if (reader.IsElement(XmlNamespace.Autodiscover, XmlElementNames.PartnerToken)) {
+      //   this.PartnerToken = reader.ReadInnerXml();
+      // }
+
+      // if (reader.IsElement(XmlNamespace.Autodiscover, XmlElementNames.PartnerTokenReference)) {
+      //   this.PartnerTokenReference = reader.ReadInnerXml();
+      // }
     }
-    GetResponseXmlElementName(): string {
-        return XmlElementNames.GetUserSettingsResponseMessage;
+  }
+
+  /**
+   * @internal Validates the request.
+   */
+  Validate(): void {
+    super.Validate();
+
+    EwsUtilities.ValidateParam(this.SmtpAddresses, "smtpAddresses");
+    EwsUtilities.ValidateParam(this.Settings, "settings");
+
+    if (this.Settings.length == 0) {
+      throw new ServiceValidationException(
+        Strings.InvalidAutodiscoverSettingsCount
+      );
     }
-    GetWsAddressingActionName(): string {
-        return GetUserSettingsRequest.GetUserSettingsActionUri;// GetUserSettingsActionUri;
+
+    if (this.SmtpAddresses.length == 0) {
+      throw new ServiceValidationException(
+        Strings.InvalidAutodiscoverSmtpAddressesCount
+      );
     }
-    PostProcessResponses(responses: GetUserSettingsResponseCollection): void {
-        // Note:The response collection may not include all of the requested users if the request has been throttled.
-        for (var index = 0; index < responses.Count; index++) {
-            responses.__thisIndexer(index).SmtpAddress = this.SmtpAddresses[index];
-        }
+
+    for (let smtpAddress of this.SmtpAddresses) {
+      if (StringHelper.IsNullOrEmpty(smtpAddress)) {
+        throw new ServiceValidationException(Strings.InvalidAutodiscoverSmtpAddress);
+      }
     }
-    /**@internal */
-    ReadSoapHeader(reader: EwsXmlReader): void {
-        super.ReadSoapHeader(reader);
-        return;
-        if (this.expectPartnerToken) {
-            if (reader.IsElement(XmlNamespace.Autodiscover, XmlElementNames.PartnerToken)) {
-                this.PartnerToken = reader.ReadInnerXml();
-            }
+  }
 
-            if (reader.IsElement(XmlNamespace.Autodiscover, XmlElementNames.PartnerTokenReference)) {
-                this.PartnerTokenReference = reader.ReadInnerXml();
-            }
-        }
+  /**
+   * @internal Writes attributes to request XML.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer.
+   */
+  WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
+    writer.WriteAttributeValue(
+      "xmlns",
+      EwsUtilities.AutodiscoverSoapNamespacePrefix,
+      EwsUtilities.AutodiscoverSoapNamespace);
+  }
+
+  /**
+   * @internal Writes elements to request XML.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer.
+   */
+  WriteElementsToXml(writer: EwsServiceXmlWriter): any {
+    writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Request);
+
+    writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Users);
+
+    for (var s in this.SmtpAddresses) {
+      var smtpAddress = this.SmtpAddresses[s];
+      writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.User);
+
+      if (!StringHelper.IsNullOrEmpty(smtpAddress)) {
+        writer.WriteElementValue(
+          XmlNamespace.Autodiscover,
+          XmlElementNames.Mailbox,
+          smtpAddress);
+      }
+      writer.WriteEndElement(); // User
     }
-    Validate(): void {
-        super.Validate();
+    writer.WriteEndElement(); // Users
 
-        EwsUtilities.ValidateParam(this.SmtpAddresses, "smtpAddresses");
-        EwsUtilities.ValidateParam(this.Settings, "settings");
+    writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.RequestedSettings);
+    for (var s in this.Settings) {
+      var setting = this.Settings[s];
 
-        if (this.Settings.length == 0) {
-            throw new ServiceValidationException(
-                Strings.InvalidAutodiscoverSettingsCount
-                );
-        }
-
-        if (this.SmtpAddresses.length == 0) {
-            throw new ServiceValidationException(
-                Strings.InvalidAutodiscoverSmtpAddressesCount
-                );
-        }
-
-        for (var s in this.SmtpAddresses) {
-            var smtpAddress = this.SmtpAddresses[s];
-            //if (string.IsNullOrEmpty(smtpAddress)) {
-            if (smtpAddress != undefined && smtpAddress !== "") {
-                throw new ServiceValidationException(
-                    Strings.InvalidAutodiscoverSmtpAddress
-                    );
-            }
-        }
+      writer.WriteElementValue(
+        XmlNamespace.Autodiscover,
+        XmlElementNames.Setting,
+        UserSettingName[setting]);
     }
-    /**@internal */
-    WriteAttributesToXml(writer: EwsServiceXmlWriter): void {
-        writer.WriteAttributeValue(
-            "xmlns",
-            EwsUtilities.AutodiscoverSoapNamespacePrefix,
-            EwsUtilities.AutodiscoverSoapNamespace);
+
+    writer.WriteEndElement(); // RequestedSettings
+
+    writer.WriteEndElement(); // Request
+  }
+
+  /**
+   * @internal Write extra headers.
+   *
+   * @param   {EwsServiceXmlWriter}   writer   The writer
+   */
+  WriteExtraCustomSoapHeadersToXml(writer: EwsServiceXmlWriter): void {
+
+    if (this.expectPartnerToken) {
+      EwsLogging.Assert(false, "GetUserSettingsRequest.WriteExtraCustomSoapHeadersToXml", "Partner tokens not implemented")
+      debugger;
+      // writer.WriteElementValue(
+      //    XmlNamespace.Autodiscover,
+      //    XmlElementNames.BinarySecret,
+      //    btoa(ExchangeServiceBase.SessionKey));
+      //    //System.Convert.ToBase64String(ExchangeServiceBase.SessionKey));
     }
-    /**@internal */
-    WriteElementsToXml(writer: EwsServiceXmlWriter): any {
-        writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Request);
-
-        writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.Users);
-
-        for (var s in this.SmtpAddresses) {
-            var smtpAddress = this.SmtpAddresses[s];
-            writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.User);
-
-            //if (!string.IsNullOrEmpty(smtpAddress)) {
-            if (smtpAddress != undefined && smtpAddress !== "") {
-                writer.WriteElementValue(
-                    XmlNamespace.Autodiscover,
-                    XmlElementNames.Mailbox,
-                    smtpAddress);
-            }
-            writer.WriteEndElement(); // User
-        }
-        writer.WriteEndElement(); // Users
-
-        writer.WriteStartElement(XmlNamespace.Autodiscover, XmlElementNames.RequestedSettings);
-        for (var s in this.Settings) {
-            var setting = this.Settings[s];
-
-            writer.WriteElementValue(
-                XmlNamespace.Autodiscover,
-                XmlElementNames.Setting,
-                UserSettingName[setting]);
-        }
-
-        writer.WriteEndElement(); // RequestedSettings
-
-        writer.WriteEndElement(); // Request
-    }
-    /**@internal */
-    WriteExtraCustomSoapHeadersToXml(writer: EwsServiceXmlWriter): void {
-
-        if (this.expectPartnerToken) {
-            debugger;
-            // writer.WriteElementValue(
-            //    XmlNamespace.Autodiscover,
-            //    XmlElementNames.BinarySecret,
-            //    btoa(ExchangeServiceBase.SessionKey));
-            //    //System.Convert.ToBase64String(ExchangeServiceBase.SessionKey));
-        }
-    }
+  }
 }
 
-export class AutodiscoverResponse {
-    ErrorCode: AutodiscoverErrorCode;
-    ErrorMessage: string;
-    RedirectionUrl: Uri;
-    //private errorCode: AutodiscoverErrorCode;
-    //private errorMessage: string;
-    //private redirectionUrl: Uri;
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader, endElementName: string): void {
-        switch (reader.LocalName) {
-            case XmlElementNames.ErrorCode:
-                var errorstring = reader.ReadElementValue();
-                this.ErrorCode = AutodiscoverErrorCode[errorstring];
-                break;
-            case XmlElementNames.ErrorMessage:
-                this.ErrorMessage = reader.ReadElementValue();
-                break;
-            default:
-                break;
-        }
-    }
-    LoadFromJson(obj: any/*, endElementName: string*/): void {
+/**
+ * Represents the base class for all responses returned by the Autodiscover service.
+ */
+export abstract class AutodiscoverResponse {
+  private errorCode: AutodiscoverErrorCode = AutodiscoverErrorCode.NoError;
+  private errorMessage: string;
+  private redirectionUrl: Uri;
 
-        var errorstring: string = obj[XmlElementNames.ErrorCode];
-        this.ErrorCode = AutodiscoverErrorCode[errorstring];
+  /**
+   * Gets the error code that was returned by the service.
+   */
+  get ErrorCode(): AutodiscoverErrorCode {
+    return this.errorCode;
+  }
+  /** @internal */
+  set ErrorCode(value) {
+    this.errorCode = value;
+  }
 
-        var errmsg = obj[XmlElementNames.ErrorMessage]
-        this.ErrorMessage = errmsg;
+  /**
+   * Gets the error message that was returned by the service.
+   */
+  get ErrorMessage(): string {
+    return this.errorMessage;
+  }
+  /** @internal */
+  set ErrorMessage(value) {
+    this.errorMessage = value;
+  }
 
-    }
+  /**
+   * @internal Gets or sets the redirection URL.
+   */
+  get RedirectionUrl(): Uri {
+    return this.redirectionUrl;
+  }
+  set RedirectionUrl(value) {
+    this.redirectionUrl = value;
+  }
+
+  /**
+   * @internal Loads service object from XML.
+   *
+   * @param   {any} responseObject  Json Object converted from XML.
+   */
+  LoadFromXmlJsObject(jsObject: any): void {
+    var errorstring: string = jsObject[XmlElementNames.ErrorCode];
+    this.errorCode = AutodiscoverErrorCode[errorstring];
+
+    var errmsg = jsObject[XmlElementNames.ErrorMessage]
+    this.errorMessage = errmsg;
+  }
 }
 
+/**
+ * Represents a collection of responses to a call to the Autodiscover service.
+ * @typeparam {TResponse} The type of the responses in the collection.
+ */
+export abstract class AutodiscoverResponseCollection<TResponse extends AutodiscoverResponse> extends AutodiscoverResponse { //IEnumerable<TResponse>
+  private responses: TResponse[];
 
-export class AutodiscoverResponseCollection<TResponse extends AutodiscoverResponse> extends AutodiscoverResponse { //IEnumerable<TResponse>
-    get Count(): number{return this.Responses.length};
-    Item: TResponse;
-    Responses: TResponse[] = [];//System.Collections.Generic.List<TResponse>;
-    //private responses: TResponse[];//System.Collections.Generic.List<TResponse>;
+  /**
+   * Gets the number of responses in the collection.
+   */
+  get Count(): number {
+    return this.responses.length
+  };
 
-    constructor() {
-        super();
+  /**
+   * @internal Gets the responses list.
+   */
+  get Responses(): TResponse[] {
+    return this.responses;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverResponseCollection<TResponse>** class.
+   */
+  constructor() {
+    super();
+    this.responses = [];
+  }
+
+  /**
+   * Gets the response at the specified index.
+   *
+   * @param   {number}   index   Index.
+   * @returns {TResponse} TResponse at the index
+   */
+  __thisIndexer(index: number): TResponse {
+    return this.Responses[index];
+  }
+
+  /**
+   * @internal Create a response instance.
+   *
+   * @return  {TResponse}      TResponse.
+   */
+  abstract CreateResponseInstance(): TResponse;
+
+  /**
+   * Gets an enumerator that iterates through the elements of the collection.
+   *
+   * @return  {TResponse[]}      An IEnumerator for the collection.
+   */
+  GetEnumerator(): TResponse[] {
+    return this.responses;
+  }
+
+  /**
+   * @internal Gets the name of the response collection XML element.
+   *
+   * @return  {string}      Response collection XMl element name.
+   */
+  abstract GetResponseCollectionXmlElementName(): string;
+
+  /**
+   * @internal Gets the name of the response instance XML element.
+   *
+   * @return  {string}      Response instance XMl element name.
+   */
+  abstract GetResponseInstanceXmlElementName(): string;
+
+  /**
+   * @internal Loads response from XML.
+   *
+   * @param   {any} responseObject  Json Object converted from XML.
+   */
+  LoadFromXmlJsObject(responseObject: any): void {
+
+    var element = this.GetResponseCollectionXmlElementName()
+    super.LoadFromXmlJsObject(responseObject);
+    this.LoadResponseCollectionFromXmlJsObject(responseObject[element]);
+  }
+
+  /**
+   * Loads the response collection from XML.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  private LoadResponseCollectionFromXmlJsObject(jsObject: any): void {
+    var element = this.GetResponseInstanceXmlElementName()
+    var responses: any = undefined;
+    if (Array.isArray(jsObject[element]))
+      responses = jsObject[element];
+    else
+      responses = [jsObject[element]];
+
+    for (var i = 0; i < responses.length; i++) {
+      var response: TResponse = this.CreateResponseInstance();
+      response.LoadFromXmlJsObject(responses[i]);
+      this.Responses.push(response);
     }
-    __thisIndexer(index: number): TResponse {
-        return this.Responses[index];
-    }
-    CreateResponseInstance(): TResponse { throw new Error("AutodiscoverResponseCollection.ts - CreateResponseInstance : Not implemented."); }
-    GetEnumerator(): any { throw new Error("AutodiscoverResponseCollection.ts - GetEnumerator : Not implemented."); }
-    GetResponseCollectionXmlElementName(): string { throw new Error("AutodiscoverResponseCollection.ts - GetResponseCollectionXmlElementName : Not implemented."); }
-    GetResponseInstanceXmlElementName(): string { throw new Error("AutodiscoverResponseCollection.ts - GetResponseInstanceXmlElementName : Not implemented."); }
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader, endElementName: string): void {
-        do {
-            reader.Read();
-
-            if (reader.NodeType == 1 /*Node.ELEMENT_NODE*/) {
-                if (reader.LocalName == this.GetResponseCollectionXmlElementName()) {
-                    this.LoadResponseCollectionFromXml(reader);
-                }
-                else {
-                    super.LoadFromXml(reader, endElementName);
-                }
-            }
-        }
-
-        while (reader.HasRecursiveParent(endElementName));
-        //while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
-    }
-
-    LoadFromJson(obj: any): void {
-
-        var element = this.GetResponseCollectionXmlElementName()
-        super.LoadFromJson(obj);
-        this.LoadResponseCollectionFromJson(obj[element]);
-    }
-
-    LoadResponseCollectionFromJson(obj: any): void {
-        var element = this.GetResponseInstanceXmlElementName()
-        var responses:any = undefined;
-        if (Object.prototype.toString.call(obj[element]) === "[object Array]")
-            responses = obj[element];
-        else
-            responses = [obj[element]];
-
-        for (var i = 0; i < responses.length; i++) {
-            var response: TResponse = this.CreateResponseInstance();
-            response.LoadFromJson(responses[i]);
-            this.Responses.push(response);
-        }
-    }
-
-    /**@internal */
-    LoadResponseCollectionFromXml(reader: EwsXmlReader): void {
-        if (!reader.IsEmptyElement) {
-            do {
-                reader.Read();
-                if ((reader.NodeType == 1 /*Node.ELEMENT_NODE*/ /*System.Xml.XmlNodeType.Element*/) && (reader.LocalName == this.GetResponseInstanceXmlElementName())) {
-                    var response: TResponse = this.CreateResponseInstance();
-                    response.LoadFromXml(reader, this.GetResponseInstanceXmlElementName());
-                    this.Responses.push(response);
-                }
-            }
-            while (reader.HasRecursiveParent(this.GetResponseCollectionXmlElementName()));
-            //while (!reader.IsEndElement(XmlNamespace.Autodiscover, this.GetResponseCollectionXmlElementName()));
-        }
-    }
+  }
 }
 
-
-
-
-
+/**
+ * Represents the response to a GetDomainSettings call for an individual domain.
+ * @sealed
+ */
 export class GetDomainSettingsResponse extends AutodiscoverResponse {
-    Domain: string;
-    RedirectTarget: string;
-    Settings: { [index: number]: any }; //System.Collections.Generic.IDictionary<DomainSettingName, any>;
-    DomainSettingErrors: DomainSettingError[]; //System.Collections.ObjectModel.Collection<DomainSettingError>;
-    /**@internal */
-    LoadDomainSettingErrorsFromXml(reader: EwsXmlReader): void {
-        if (!reader.IsEmptyElement) {
-            do {
-                reader.Read();
+  private domain: string = null;
+  private redirectTarget: string = null;
+  private settings: Dictionary<DomainSettingName, any> = null;
+  private domainSettingErrors: DomainSettingError[] = null;
 
-                if ((reader.NodeType == Node.ELEMENT_NODE) && (reader.LocalName == XmlElementNames.DomainSettingError)) {
-                    var error = new DomainSettingError();
-                    error.LoadFromXml(reader);
-                    this.DomainSettingErrors.push(error);
-                }
-            }
-            while (reader.HasRecursiveParent(XmlElementNames.UserSettingErrors));
-            reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
-        }
-    }
-    /**@internal */
-    LoadDomainSettingsFromXml(reader: EwsXmlReader): void {
-        var parent: Node = reader.CurrentNode;
-        if (!reader.IsEmptyElement) {
-            do {
-                reader.Read();
+  /**
+   * Gets the domain this response applies to.
+   */
+  get Domain(): string {
+    return this.domain;
+  }
+  /** @internal */
+  set Domain(value: string) {
+    this.domain = value;
+  }
 
-                if (reader.Eof || !reader.HasRecursiveParentNode(parent, XmlElementNames.DomainSettings))
-                    break;
+  /**
+   * Gets the redirectionTarget (URL or email address)
+   */
+  get RedirectTarget(): string {
+    return this.redirectTarget;
+  }
 
-                if ((reader.NodeType == Node.ELEMENT_NODE /*System.Xml.XmlNodeType.Element*/) && (reader.LocalName == XmlElementNames.DomainSetting)) {
-                    var settingClass: string = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
+  /**
+   * Gets the requested settings for the domain.
+   */
+  get Settings(): Dictionary<DomainSettingName, any> {
+    return this.settings;
+  }
 
-                    switch (settingClass) {
-                        case XmlElementNames.DomainStringSetting:
-                            this.ReadSettingFromXml(reader);
-                            break;
+  /**
+   * Gets error information for settings that could not be returned.
+   */
+  get DomainSettingErrors(): DomainSettingError[] {
+    return this.domainSettingErrors;
+  }
 
-                        default:
-                            EwsLogging.Assert(
-                                false,
-                                "GetUserSettingsResponse.LoadUserSettingsFromXml",
-                                StringHelper.Format("Invalid setting class '{0}' returned", settingClass));
-                            break;
-                    }
-                }
-            }
-            while (true);// (reader.HasRecursiveParent(XmlElementNames.UserSettings));
-            //while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettings));
+  /**
+   * Initializes a new instance of the **GetDomainSettingsResponse** class.
+   */
+  constructor() {
+    super();
+    this.domain = StringHelper.Empty;
+    this.settings = new Dictionary<DomainSettingName, any>((value) => value.toString());
+    this.domainSettingErrors = [];
+  }
 
-        }
-    }
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader, parentElementName: string): void {
-        do {
-            reader.Read();
+  /**
+   * Loads the domain setting errors.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  private LoadDomainSettingErrorsFromXmlJsObject(jsObject: any): void {
+    var errors: any = undefined;
 
-            if (reader.NodeType == Node.ELEMENT_NODE) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.RedirectTarget:
-                        this.RedirectTarget = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.DomainSettingErrors:
-                        this.LoadDomainSettingErrorsFromXml(reader);
-                        break;
-                    case XmlElementNames.DomainSettings:
-                        this.LoadDomainSettingsFromXml(reader);
-                        break;
-                    default:
-                        super.LoadFromXml(reader, parentElementName);
-                        break;
-                }
-            }
-        }
-        while (reader.HasRecursiveParent(parentElementName));
-        //while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
-    }
-    /**@internal */
-    ReadSettingFromXml(reader: EwsXmlReader): void {
-        var name: string = null;
-        var value: any = null;
-        var parent: Node = reader.CurrentNode;
-        do {
-            reader.Read();
+    if (isNullOrUndefined(jsObject) || isNullOrUndefined(jsObject[XmlElementNames.DomainSettingError])) return;
 
-            if (reader.Eof || !reader.HasRecursiveParentNode(parent, XmlElementNames.UserSetting))
-                break;
+    if (Array.isArray(jsObject[XmlElementNames.DomainSettingError]))
+      errors = jsObject[XmlElementNames.DomainSettingError];
+    else
+      errors = [jsObject[XmlElementNames.DomainSettingError]];
 
-            if (reader.NodeType == Node.ELEMENT_NODE) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.Name:
-                        name = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.Value:
-                        value = reader.ReadElementValue();
-                        break;
-                }
-            }
-        }
-        while (true);
-        reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
-
-
-        // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
-        var domainSettingName: DomainSettingName = DomainSettingName[name];// EwsUtilities.Parse<UserSettingName>(name);
-        if (domainSettingName !== undefined)
-            this.Settings[domainSettingName] = value;
-        else
-            EwsLogging.Assert(false,
-                "GetUserSettingsResponse.ReadSettingFromXml",
-                "Unexpected or empty name element in user setting");
+    for (var i = 0; i < errors.length; i++) {
+      var error = new DomainSettingError();
+      error.LoadFromXmlJsObject(errors[i]);
+      this.DomainSettingErrors.push(error);
     }
 
-    LoadDomainSettingErrorsFromJson(obj: any): void {
-        var errors:any = undefined;
+  }
 
-        if (typeof (obj[XmlElementNames.DomainSettingError]) === 'undefined') return;
+  /**
+   * @internal Loads setting from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  LoadDomainSettingsFromXmlJsObject(obj: any): void {
+    var settings: any = undefined;
 
-        if (Object.prototype.toString.call(obj[XmlElementNames.DomainSettingError]) === "[object Array]")
-            errors = obj[XmlElementNames.DomainSettingError];
-        else
-            errors = [obj[XmlElementNames.DomainSettingError]];
+    if (typeof (obj[XmlElementNames.DomainSetting]) === 'undefined') return;
 
-        for (var i = 0; i < errors.length; i++) {
-            var error = new DomainSettingError();
-            error.LoadFromObject(errors[0]);
-            this.DomainSettingErrors.push(error);
-        }
+    if (Object.prototype.toString.call(obj[XmlElementNames.DomainSetting]) === "[object Array]")
+      settings = obj[XmlElementNames.DomainSetting];
+    else
+      settings = [obj[XmlElementNames.DomainSetting]];
 
+    for (var i = 0; i < settings.length; i++) {
+      var setting = settings[i];
+      var settingClass = setting["type"];
+      switch (settingClass) {
+        case XmlElementNames.DomainStringSetting:
+          this.ReadSettingFromXmlJsObject(setting);
+          break;
+
+        default:
+          EwsLogging.Assert(
+            false,
+            "GetUserSettingsResponse.LoadUserSettingsFromXml",
+            StringHelper.Format("Invalid setting class '{0}' returned", settingClass));
+          break;
+      }
     }
-    LoadDomainSettingsFromJson(obj: any): void {
-        var settings:any = undefined;
+  }
 
-        if (typeof (obj[XmlElementNames.DomainSetting]) === 'undefined') return;
+  /**
+   * @internal Load from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  LoadFromXmlJsObject(jsObject: any): void {
+    super.LoadFromXmlJsObject(jsObject);
+    var settingscol = jsObject[XmlElementNames.DomainSettings];
+    this.LoadDomainSettingsFromXmlJsObject(settingscol);
+    this.redirectTarget = jsObject[XmlElementNames.RedirectTarget] || null;
+    this.LoadDomainSettingErrorsFromXmlJsObject(jsObject[XmlElementNames.DomainSettingErrors]);
+  }
 
-        if (Object.prototype.toString.call(obj[XmlElementNames.DomainSetting]) === "[object Array]")
-            settings = obj[XmlElementNames.DomainSetting];
-        else
-            settings = [obj[XmlElementNames.DomainSetting]];
+  /**
+   * Reads domain setting from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  private ReadSettingFromXmlJsObject(obj: any): void {
+    var name: string = obj[XmlElementNames.Name];
+    var value: any = obj[XmlElementNames.Value];
 
-        for (var i = 0; i < settings.length; i++) {
-            var setting = settings[i];
-            var settingClass = setting["type"];
-            switch (settingClass) {
-                case XmlElementNames.DomainStringSetting:
-                    this.ReadSettingFromJson(setting);
-                    break;
-
-                default:
-                    EwsLogging.Assert(
-                        false,
-                        "GetUserSettingsResponse.LoadUserSettingsFromXml",
-                        StringHelper.Format("Invalid setting class '{0}' returned", settingClass));
-                    break;
-            }
-        }
-    }
-    LoadFromJson(obj: any): void {
-        super.LoadFromJson(obj);
-        var settingscol = obj[XmlElementNames.DomainSettings];
-        this.LoadDomainSettingsFromJson(settingscol);
-        this.RedirectTarget = obj[XmlElementNames.RedirectTarget];
-        this.LoadDomainSettingErrorsFromJson(obj[XmlElementNames.DomainSettingErrors]);
-    }
-    ReadSettingFromJson(obj: any): void {
-        var name: string = obj[XmlElementNames.Name];
-        var value: any = obj[XmlElementNames.Value];
-
-        // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
-        var domainSettingName: DomainSettingName = DomainSettingName[name];// EwsUtilities.Parse<UserSettingName>(name);
-        if (domainSettingName !== undefined)
-            this.Settings[domainSettingName] = value;
-        else
-            EwsLogging.Assert(false,
-                "GetUserSettingsResponse.ReadSettingFromObject",
-                "Unexpected or empty name element in user setting");
-    }
+    // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
+    var domainSettingName: DomainSettingName = DomainSettingName[name];// EwsUtilities.Parse<UserSettingName>(name);
+    if (domainSettingName !== undefined)
+      this.Settings.Add(domainSettingName, value);
+    else
+      EwsLogging.Assert(false,
+        "GetUserSettingsResponse.ReadSettingFromObject",
+        "Unexpected or empty name element in user setting");
+  }
 
 }
+
+/**
+ * Represents a collection of responses to GetDomainSettings
+ * @sealed
+ */
 export class GetDomainSettingsResponseCollection extends AutodiscoverResponseCollection<GetDomainSettingsResponse> {
-    CreateResponseInstance(): GetDomainSettingsResponse { return new GetDomainSettingsResponse(); }
-    GetResponseCollectionXmlElementName(): string { return XmlElementNames.DomainResponses; }
-    GetResponseInstanceXmlElementName(): string { return XmlElementNames.DomainResponse; }
+  /**
+   * Initializes a new instance of the **GetDomainSettingsResponseCollection<GetDomainSettingsResponse>** class.
+   */
+  constructor() {
+    super();
+  }
+
+  /**
+   * @internal Create a response instance.
+   *
+   * @return  {GetDomainSettingsResponse}      GetDomainSettingsResponse.
+   */
+  CreateResponseInstance(): GetDomainSettingsResponse {
+    return new GetDomainSettingsResponse();
+  }
+
+  /**
+   * @internal Gets the name of the response collection XML element.
+   *
+   * @return  {string}      Response collection XMl element name.
+   */
+  GetResponseCollectionXmlElementName(): string {
+    return XmlElementNames.DomainResponses;
+  }
+
+  /**
+   * @internal Gets the name of the response instance XML element.
+   *
+   * @return  {string}      Response instance XMl element name.
+   */
+  GetResponseInstanceXmlElementName(): string {
+    return XmlElementNames.DomainResponse;
+  }
 }
 
-
-
-
+/**
+ * Represents the response to a GetUsersSettings call for an individual user.
+ * @sealed
+ */
 export class GetUserSettingsResponse extends AutodiscoverResponse {
-    SmtpAddress: string;
-    RedirectTarget: string;
-    Settings: { [index: number]: any }; //System.Collections.Generic.IDictionary<UserSettingName, any>;
-    UserSettingErrors: UserSettingError[];// System.Collections.ObjectModel.Collection<UserSettingError>;
+  private smtpAddress: string = null;
+  private redirectTarget: string = null;
+  private settings: Dictionary<UserSettingName, any> = null;
+  private userSettingErrors: UserSettingError[] = null;
 
-    constructor() {
-        super();
-        this.SmtpAddress = "";
-        this.Settings = {};
+  /**
+   * Gets the SMTP address this response applies to.
+   */
+  get SmtpAddress(): string {
+    return this.smtpAddress;
+  }
+  /** @internal */
+  set SmtpAddress(value) {
+    this.smtpAddress = value;
+  }
 
-        this.UserSettingErrors = new Array<UserSettingError>();
+  /**
+   * Gets the redirectionTarget (URL or email address)
+   */
+  get RedirectTarget(): string {
+    return this.redirectTarget;
+  }
+  /** @internal */
+  set RedirectTarget(value) {
+    this.redirectTarget = value
+  }
+
+  /**
+   * Gets the requested settings for the user.
+   */
+  get Settings(): Dictionary<UserSettingName, any> {
+    return this.settings;
+  }
+  /** @internal */
+  set Settings(value) {
+    this.settings = value;
+  }
+
+  /**
+   * Gets error information for settings that could not be returned.
+   */
+  get UserSettingErrors(): UserSettingError[] {
+    return this.userSettingErrors;
+  }
+  /** @internal */
+  set UserSettingErrors(value) {
+    this.userSettingErrors = value;
+  }
+
+  /**
+   * Initializes a new instance of the **GetUserSettingsResponse** class.
+   */
+  constructor() {
+    super();
+    this.smtpAddress = StringHelper.Empty;
+    this.settings = new Dictionary<UserSettingName, any>(value => value.toString());
+    this.userSettingErrors = [];
+  }
+
+  /**
+   * @internal Load from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  LoadFromXmlJsObject(jsObject: any): void {
+    super.LoadFromXmlJsObject(jsObject);
+    var settingscol = jsObject[XmlElementNames.UserSettings];
+    this.LoadUserSettingsFromXmlJsObject(settingscol);
+    this.redirectTarget = jsObject[XmlElementNames.RedirectTarget] || null;
+    this.LoadUserSettingErrorsFromXmlJsObject(jsObject[XmlElementNames.UserSettingErrors]);
+
+  }
+
+  /**
+   * Loads the user setting errors.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  private LoadUserSettingErrorsFromXmlJsObject(jsObject: any): void {
+    var errors: any = undefined;
+
+    if (isNullOrUndefined(jsObject) || isNullOrUndefined(jsObject[XmlElementNames.UserSettingError])) return;
+
+    if (Array.isArray(jsObject[XmlElementNames.UserSettingError]))
+      errors = jsObject[XmlElementNames.UserSettingError];
+    else
+      errors = [jsObject[XmlElementNames.UserSettingError]];
+
+    for (var i = 0; i < errors.length; i++) {
+      var error = new UserSettingError();
+      error.LoadFromXmlJsObject(errors[i]);
+      this.UserSettingErrors.push(error);
     }
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader, parentElementName: string): void {
-        do {
-            reader.Read();
-
-            if (reader.NodeType == Node.ELEMENT_NODE) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.RedirectTarget:
-                        this.RedirectTarget = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.UserSettingErrors:
-                        this.LoadUserSettingErrorsFromXml(reader);
-                        break;
-                    case XmlElementNames.UserSettings:
-                        this.LoadUserSettingsFromXml(reader);
-                        break;
-                    default:
-                        super.LoadFromXml(reader, parentElementName);
-                        break;
-                }
-            }
-        }
-        while (reader.HasRecursiveParent(parentElementName));
-        //while (!reader.IsEndElement(XmlNamespace.Autodiscover, endElementName));
-    }
-    /**@internal */
-    LoadUserSettingErrorsFromXml(reader: EwsXmlReader): void {
-        if (!reader.IsEmptyElement) {
-            do {
-                reader.Read();
-
-                if ((reader.NodeType == Node.ELEMENT_NODE) && (reader.LocalName == XmlElementNames.UserSettingError)) {
-                    var error = new UserSettingError();
-                    error.LoadFromXml(reader);
-                    this.UserSettingErrors.push(error);
-                }
-            }
-            while (reader.HasRecursiveParent(XmlElementNames.UserSettingErrors));
-            reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
-        }
-    }
-    /**@internal */
-    LoadUserSettingsFromXml(reader: EwsXmlReader): void {
-        var parent: Node = reader.CurrentNode;
-        if (!reader.IsEmptyElement) {
-            do {
-                reader.Read();
-
-                if (reader.Eof || !reader.HasRecursiveParentNode(parent, XmlElementNames.UserSettings))
-                    break;
-
-                if ((reader.NodeType == Node.ELEMENT_NODE /*System.Xml.XmlNodeType.Element*/) && (reader.LocalName == XmlElementNames.UserSetting)) {
-                    var settingClass: string = reader.ReadAttributeValue(XmlNamespace.XmlSchemaInstance, XmlAttributeNames.Type);
-
-                    switch (settingClass) {
-                        case XmlElementNames.StringSetting:
-                        case XmlElementNames.WebClientUrlCollectionSetting:
-                        case XmlElementNames.AlternateMailboxCollectionSetting:
-                        case XmlElementNames.ProtocolConnectionCollectionSetting:
-                        case XmlElementNames.DocumentSharingLocationCollectionSetting:
-                            this.ReadSettingFromXml(reader);
-                            break;
-
-                        default:
-                            EwsLogging.Assert(false,
-                                "GetUserSettingsResponse.LoadUserSettingsFromXml",
-                                StringHelper.Format("Invalid setting class '{0}' returned", settingClass));
-                            break;
-                    }
-                }
-            }
-            while (true);// (reader.HasRecursiveParent(XmlElementNames.UserSettings));
-            //while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSettings));
-        }
-    }
-    /**@internal */
-    ReadSettingFromXml(reader: EwsXmlReader): any {
-        var name: string = null;
-        var value: any = null;
-        var parent: Node = reader.CurrentNode;
-        do {
-            reader.Read();
-
-            if (reader.Eof || !reader.HasRecursiveParentNode(parent, XmlElementNames.UserSetting))
-                break;
-
-            if (reader.NodeType == Node.ELEMENT_NODE) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.Name:
-                        name = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.Value:
-                        value = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.WebClientUrls:
-                        value = WebClientUrlCollection.LoadFromXml(reader);
-                        break;
-                    case XmlElementNames.ProtocolConnections:
-                        value = ProtocolConnectionCollection.LoadFromXml(reader);
-                        break;
-                    case XmlElementNames.AlternateMailboxes:
-                        value = AlternateMailboxCollection.LoadFromXml(reader);
-                        break;
-                    case XmlElementNames.DocumentSharingLocations:
-                        value = DocumentSharingLocationCollection.LoadFromXml(reader);
-                        break;
-                }
-            }
-        }
-        while (true);
-        //while (reader.HasRecursiveParentNode(parent, XmlElementNames.UserSetting));
-        //while (!reader.IsEndElement(XmlNamespace.Autodiscover, XmlElementNames.UserSetting));
-        reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
+  }
 
 
-        // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
-        var userSettingName: UserSettingName = UserSettingName[name];// EwsUtilities.Parse<UserSettingName>(name);
-        if (userSettingName !== undefined)
-            this.Settings[userSettingName] = value;
-        else
-            EwsLogging.Assert(false,
-                "GetUserSettingsResponse.ReadSettingFromXml",
-                "Unexpected or empty name element in user setting");
+  /**
+   * @internal Loads setting from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  LoadUserSettingsFromXmlJsObject(jsObject: any): void {
+    var settings: any = undefined;
 
-        //try {
+    if (!jsObject || typeof (jsObject[XmlElementNames.UserSetting]) === 'undefined')
+      return;
 
-        //}
-        //catch (ArgumentException) {
-        //    // ignore unexpected UserSettingName in the response (due to the server-side bugs).
-        //    // it'd be better if this is hooked into ITraceListener, but that is unavailable here.
-        //    //
-        //    // in case "name" is null, EwsUtilities.Parse throws ArgumentNullException
-        //    // (which derives from ArgumentException).
-        //    //
+    if (Object.prototype.toString.call(jsObject[XmlElementNames.UserSetting]) === "[object Array]")
+      settings = jsObject[XmlElementNames.UserSetting];
+    else
+      settings = [jsObject[XmlElementNames.UserSetting]];
 
-        //    //EwsUtilities.Assert(
-        //    //    false,
-        //    //    "GetUserSettingsResponse.ReadSettingFromXml",
-        //    //    "Unexpected or empty name element in user setting");
-        //}
+    for (var i = 0; i < settings.length; i++) {
+      var setting = settings[i];
+      var settingClass = setting["type"];
+      switch (settingClass) {
+        case XmlElementNames.StringSetting:
+        case XmlElementNames.WebClientUrlCollectionSetting:
+        case XmlElementNames.AlternateMailboxCollectionSetting:
+        case XmlElementNames.ProtocolConnectionCollectionSetting:
+        case XmlElementNames.DocumentSharingLocationCollectionSetting:
+          this.ReadSettingFromXmlJsObject(setting);
+          break;
+
+        default:
+          EwsLogging.Assert(false,
+            "GetUserSettingsResponse.LoadUserSettingsFromXml",
+            StringHelper.Format("Invalid setting class '{0}' returned", settingClass));
+          break;
+      }
     }
 
-    LoadFromJson(obj: any/*, parentElementName: string*/): void {
+  }
+
+  /**
+   * Reads user setting from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  ReadSettingFromXmlJsObject(jsObject: any): void {
+    var name: string = jsObject[XmlElementNames.Name];
+    var value: any = jsObject[XmlElementNames.Value];
+
+    switch (jsObject["type"]) {
+      case XmlElementNames.WebClientUrlCollectionSetting://.WebClientUrls:
+        value = WebClientUrlCollection.LoadFromXmlJsObject(jsObject[XmlElementNames.WebClientUrls]);
+        break;
+      case XmlElementNames.ProtocolConnectionCollectionSetting://ProtocolConnections:
+        value = ProtocolConnectionCollection.LoadFromXmlJsObject(jsObject[XmlElementNames.ProtocolConnections]);
+        break;
+      case XmlElementNames.AlternateMailboxCollectionSetting://AlternateMailboxes:
+        value = AlternateMailboxCollection.LoadFromXmlJsObject(jsObject[XmlElementNames.AlternateMailboxes]);
+        break;
+      case XmlElementNames.DocumentSharingLocationCollectionSetting://DocumentSharingLocations:
         //debugger;
-        super.LoadFromJson(obj/*, parentElementName*/);
-        var settingscol = obj[XmlElementNames.UserSettings];
-        this.LoadUserSettingsFromJson(settingscol);
-        this.RedirectTarget = obj[XmlElementNames.RedirectTarget];
-        //var redirecttarget = obj[XmlElementNames.RedirectTarget];
-        ////if (redirecttarget["nil"]) redirecttarget = null;
-        //this.RedirectTarget = redirecttarget;
-        this.LoadUserSettingErrorsFromJson(obj[XmlElementNames.UserSettingErrors]);
-
-    }
-    LoadUserSettingErrorsFromJson(obj: any): void {
-        var errors: any = undefined;
-
-        if (!obj || typeof (obj[XmlElementNames.UserSettingError]) === 'undefined')
-            return;
-
-        if (Object.prototype.toString.call(obj[XmlElementNames.UserSettingError]) === "[object Array]")
-            errors = obj[XmlElementNames.UserSettingError];
-        else
-            errors = [obj[XmlElementNames.UserSettingError]];
-
-        for (var i = 0; i < errors.length; i++) {
-            var error = new UserSettingError();
-            error.LoadFromJson(errors[0]);
-            this.UserSettingErrors.push(error);
-        }
-    }
-    LoadUserSettingsFromJson(obj: any): void {
-        var settings: any = undefined;
-
-        if (!obj || typeof (obj[XmlElementNames.UserSetting]) === 'undefined')
-            return;
-
-        if (Object.prototype.toString.call(obj[XmlElementNames.UserSetting]) === "[object Array]")
-            settings = obj[XmlElementNames.UserSetting];
-        else
-            settings = [obj[XmlElementNames.UserSetting]];
-
-        for (var i = 0; i < settings.length; i++) {
-            var setting = settings[i];
-            var settingClass = setting["type"];
-            switch (settingClass) {
-                case XmlElementNames.StringSetting:
-                case XmlElementNames.WebClientUrlCollectionSetting:
-                case XmlElementNames.AlternateMailboxCollectionSetting:
-                case XmlElementNames.ProtocolConnectionCollectionSetting:
-                case XmlElementNames.DocumentSharingLocationCollectionSetting:
-                    this.ReadSettingFromJson(setting);
-                    break;
-
-                default:
-                    EwsLogging.Assert(false,
-                        "GetUserSettingsResponse.LoadUserSettingsFromXml",
-                        StringHelper.Format("Invalid setting class '{0}' returned", settingClass));
-                    break;
-            }
-        }
-
-    }
-    ReadSettingFromJson(obj: any): void {
-        var name: string = obj[XmlElementNames.Name];
-        var value: any = obj[XmlElementNames.Value];
-
-        switch (obj["type"]) {
-            case XmlElementNames.WebClientUrlCollectionSetting://.WebClientUrls:
-                value = WebClientUrlCollection.LoadFromJson(obj[XmlElementNames.WebClientUrls]);
-                break;
-            case XmlElementNames.ProtocolConnectionCollectionSetting://ProtocolConnections:
-                value = ProtocolConnectionCollection.LoadFromJson(obj[XmlElementNames.ProtocolConnections]);
-                break;
-            case XmlElementNames.AlternateMailboxCollectionSetting://AlternateMailboxes:
-                value = AlternateMailboxCollection.LoadFromJson(obj[XmlElementNames.AlternateMailboxes]);
-                break;
-            case XmlElementNames.DocumentSharingLocationCollectionSetting://DocumentSharingLocations:
-                //debugger;
-                EwsLogging.Log("------------DocumentSharingLocationCollection needs test and fix ----------------", true);
-                EwsLogging.Log(obj, true, true);
-                value = DocumentSharingLocationCollection.LoadFromJson(obj);
-                break;
-        }
-
-        // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
-        var userSettingName: UserSettingName = UserSettingName[name];// EwsUtilities.Parse<UserSettingName>(name);
-        if (userSettingName !== undefined)
-            this.Settings[userSettingName] = value;
-        else
-            EwsLogging.Assert(false,
-                "GetUserSettingsResponse.ReadSettingFromXml",
-                "Unexpected or empty name element in user setting");
-
-        //try {
-
-        //}
-        //catch (ArgumentException) {
-        //    // ignore unexpected UserSettingName in the response (due to the server-side bugs).
-        //    // it'd be better if this is hooked into ITraceListener, but that is unavailable here.
-        //    //
-        //    // in case "name" is null, EwsUtilities.Parse throws ArgumentNullException
-        //    // (which derives from ArgumentException).
-        //    //
-
-        //    //EwsUtilities.Assert(
-        //    //    false,
-        //    //    "GetUserSettingsResponse.ReadSettingFromXml",
-        //    //    "Unexpected or empty name element in user setting");
-        //}
+        EwsLogging.Log("------------DocumentSharingLocationCollection needs test and fix ----------------", true);
+        EwsLogging.Log(jsObject, true, true);
+        value = DocumentSharingLocationCollection.LoadFromXmlJsObject(jsObject);
+        break;
     }
 
-    GetSettingValue<T>(setting: UserSettingName): T {
-        //public bool TryGetSettingValue<T>(UserSettingName setting, out T value)
+    // EWS Managed API is broken with AutoDSvc endpoint in RedirectUrl scenario
+    var userSettingName: UserSettingName = UserSettingName[name];// EwsUtilities.Parse<UserSettingName>(name);
+    if (userSettingName !== undefined)
+      this.Settings.Add(userSettingName, value);
+    else
+      EwsLogging.Assert(false,
+        "GetUserSettingsResponse.ReadSettingFromXml",
+        "Unexpected or empty name element in user setting");
+  }
 
-        return this.Settings[setting];
-    }
+  /**
+   * Tries the get the user setting value.
+   *
+   * @param   {UserSettingName}   setting   The setting.
+   * @return  {T}  The setting value.
+   */
+  GetSettingValue<T>(setting: UserSettingName): T {
+    //public bool TryGetSettingValue<T>(UserSettingName setting, out T value)
+    return this.Settings.get(setting);
+  }
 }
 
+/**
+ * Represents a collection of responses to GetUserSettings
+ * @sealed
+ */
 export class GetUserSettingsResponseCollection extends AutodiscoverResponseCollection<GetUserSettingsResponse> {
-    CreateResponseInstance(): GetUserSettingsResponse { return new GetUserSettingsResponse(); }
-    GetResponseCollectionXmlElementName(): string { return XmlElementNames.UserResponses; }
-    GetResponseInstanceXmlElementName(): string { return XmlElementNames.UserResponse; }
+  /**
+   * Initializes a new instance of the **GetUserSettingsResponseCollection<GetUserSettingsResponse>** class.
+   */
+  constructor() {
+    super();
+  }
+
+  /**
+   * @internal Create a response instance.
+   *
+   * @return  {GetUserSettingsResponse}      GetDomainSettingsResponse.
+   */
+  CreateResponseInstance(): GetUserSettingsResponse {
+    return new GetUserSettingsResponse();
+  }
+
+  /**
+   * @internal Gets the name of the response collection XML element.
+   *
+   * @return  {string}      Response collection XMl element name.
+   */
+  GetResponseCollectionXmlElementName(): string {
+    return XmlElementNames.UserResponses;
+  }
+
+  /**
+   * @internal Gets the name of the response instance XML element.
+   *
+   * @return  {string}      Response instance XMl element name.
+   */
+  GetResponseInstanceXmlElementName(): string {
+    return XmlElementNames.UserResponse;
+  }
 }
-//todo: fix this - import Xml = require("System.Xml");
 
-
+/**
+ * Represents an alternate mailbox.
+ * @sealed
+ */
 export class AlternateMailbox {
-    Type: string;
-    DisplayName: string;
-    LegacyDN: string;
-    Server: string;
-    SmtpAddress: string;
-    OwnerSmtpAddress: string;
-    //private type: string;
-    //private displayName: string;
-    //private legacyDN: string;
-    //private server: string;
-    //private smtpAddress: string;
-    //private ownerSmtpAddress: string;
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader): AlternateMailbox {
-        var altMailbox: AlternateMailbox = new AlternateMailbox();
+  private type: string;
+  private displayName: string;
+  private legacyDN: string;
+  private server: string;
+  private smtpAddress: string;
+  private ownerSmtpAddress: string;
 
-        do {
-            reader.Read();
-            if (reader.NodeType == 1){//todo:  1 = System.Xml.XmlNodeType.Element) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.Type:
-                        altMailbox.Type = reader.ReadElementValue();//  reader.ReadElementValue<string>();
-                        break;
-                    case XmlElementNames.DisplayName:
-                        altMailbox.DisplayName = reader.ReadElementValue();//reader.ReadElementValue<string>();
-                        break;
-                    case XmlElementNames.LegacyDN:
-                        altMailbox.LegacyDN = reader.ReadElementValue();//reader.ReadElementValue<string>();
-                        break;
-                    case XmlElementNames.Server:
-                        altMailbox.Server = reader.ReadElementValue();//reader.ReadElementValue<string>();
-                        break;
-                    case XmlElementNames.SmtpAddress:
-                        altMailbox.SmtpAddress = reader.ReadElementValue();//reader.ReadElementValue<string>();
-                        break;
-                    case XmlElementNames.OwnerSmtpAddress:
-                        altMailbox.OwnerSmtpAddress = reader.ReadElementValue();//reader.ReadElementValue<string>();
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-        while (!reader.IsElement(XmlNamespace.Autodiscover, XmlElementNames.AlternateMailbox));
-        reader.SeekLast(); // to go back to last one, fix for xmlnode based reader.
-        return altMailbox;
-    }
-    static LoadFromJson(obj: any): AlternateMailbox { throw new Error("this was skipped as not needed at dev time, fix this"); }
+  /**
+   * Gets the alternate mailbox type.
+   */
+  get Type(): string {
+    return this.type;
+  }
+  /** @internal set */
+  set Type(value: string) {
+    this.type = value;
+  }
 
+  /**
+   * Gets the alternate mailbox display name.
+   */
+  get DisplayName(): string {
+    return this.displayName;
+  }
+  /** @internal set */
+  set DisplayName(value: string) {
+    this.displayName = value;
+  }
+
+  /**
+   * Gets the alternate mailbox legacy DN.
+   */
+  get LegacyDN(): string {
+    return this.legacyDN;
+  }
+  /** @internal set */
+  set LegacyDN(value: string) {
+    this.legacyDN = value;
+  }
+
+  /**
+   * Gets the alernate mailbox server.
+   */
+  get Server(): string {
+    return this.server;
+  }
+  /** @internal set */
+  set Server(value: string) {
+    this.server = value;
+  }
+
+  /**
+   * Gets the alternate mailbox address.
+   * It has value only when Server and LegacyDN is empty.
+   */
+  get SmtpAddress(): string {
+    return this.smtpAddress;
+  }
+  /** @internal set */
+  set SmtpAddress(value: string) {
+    this.smtpAddress = value;
+  }
+
+  /**
+   * Gets the alternate mailbox owner SmtpAddress.
+   */
+  get OwnerSmtpAddress(): string {
+    return this.ownerSmtpAddress;
+  }
+  /** @internal set */
+  set OwnerSmtpAddress(value: string) {
+    this.ownerSmtpAddress = value;
+  }
+
+  /**
+   * Initializes a new instance of the **AlternateMailbox** class.
+   */
+  private constructor() {
+  }
+
+  /**
+   * @internal Loads AlternateMailbox instance.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   * @returns {AlternateMailbox}  AlternateMailbox.
+   */
+  static LoadFromXmlJsObject(jsObject: any): AlternateMailbox {
+    const altMailbox = new AlternateMailbox();
+
+    altMailbox.Type = jsObject[XmlElementNames.Type] || null;
+    altMailbox.DisplayName = jsObject[XmlElementNames.DisplayName] || null;
+    altMailbox.LegacyDN = jsObject[XmlElementNames.DisplayName] || null;
+    altMailbox.Server = jsObject[XmlElementNames.DisplayName] || null;
+    altMailbox.SmtpAddress = jsObject[XmlElementNames.DisplayName] || null;
+    altMailbox.OwnerSmtpAddress = jsObject[XmlElementNames.DisplayName] || null;
+
+    return altMailbox;
+  }
 }
 
-
-
+/**
+ * Represents a user setting that is a collection of alternate mailboxes.
+ * @sealed
+ */
 export class AlternateMailboxCollection {
-    Entries: AlternateMailbox[] = []; //System.Collections.Generic.List<AlternateMailbox>;
-    /**@internal */
-    static LoadFromXml(reader: EwsXmlReader): AlternateMailboxCollection { throw new Error("Not implemented. depricated use LoadFromJson"); }
-    static LoadFromJson(obj: any): AlternateMailboxCollection {
-        var instance = new AlternateMailboxCollection();
+  entries: AlternateMailbox[] = [];
 
-        var element = XmlElementNames.AlternateMailbox;
-        var responses = undefined;
-        if (Object.prototype.toString.call(obj[element]) === "[object Array]")
-            responses = obj[element];
-        else
-            responses = [obj[element]];
+  /**
+   * Gets the collection of alternate mailboxes.
+   */
+  get Entries(): AlternateMailbox[] {
+    return this.entries;
+  }
+  /** @private set */
+  set Entries(value) {
+    this.entries = value;
+  }
 
-        for (var i = 0; i < responses.length; i++) {
-            instance.Entries.push(responses[i]);
-            //AlternateMailbox.LoadFromJson(responses[i]);
-            //instance.Entries.push(responses);
+  /**
+   * @internal Loads instance of AlternateMailboxCollection.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   * @returns {AlternateMailboxCollection}
+   */
+  static LoadFromXmlJsObject(obj: any): AlternateMailboxCollection {
+    const instance = new AlternateMailboxCollection();
+
+    const element = XmlElementNames.AlternateMailbox;
+    let responses = undefined;
+    if (Array.isArray(obj[element]))
+      responses = obj[element];
+    else
+      responses = [obj[element]];
+
+    for (let i = 0; i < responses.length; i++) {
+      instance.Entries.push(AlternateMailbox.LoadFromXmlJsObject(responses[i]));
+    }
+
+    return instance;
+  }
+}
+
+/**
+ * @internal Class that reads AutoDiscover configuration information from DNS.
+ */
+export class AutodiscoverDnsClient {
+  //#region Constants
+  /**
+   * SRV DNS prefix to lookup.
+   *
+   * @static
+   */
+  private static AutoDiscoverSrvPrefix: string = "_autodiscover._tcp.";
+
+  /**
+   * We are only interested in records that use SSL.
+   *
+   * @static
+   */
+  private static SslPort: number = 443;
+  //#endregion
+
+  /**
+   * Random selector in the case of ties.
+   *
+   * @static
+   */
+  private static randomTieBreakerSelector: any;
+
+  /**
+   * AutodiscoverService using this DNS reader.
+   */
+  private service: AutodiscoverService;
+
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverDnsClient** class.
+   *
+   * @param   {AutodiscoverService}   service   The service.
+   */
+  constructor(service: AutodiscoverService) {
+    this.service = service;
+  }
+
+  //#region Instance methods
+
+  /**
+   * @internal Finds the Autodiscover host from DNS SRV records.
+   *  @remarks    If the domain to lookup is "contoso.com", Autodiscover will use DnsQuery on SRV records for "_autodiscover._tcp.contoso.com". If the query is successful it will return a target domain (e.g. "mail.contoso.com") which will be tried as an Autodiscover endpoint.
+   * @param   {string}   domain   The domain.
+   * @return  {Promise<string>}   Autodiscover hostname (will be null if lookup failed).
+   */
+  async FindAutodiscoverHostFromSrv(domain: string): Promise<string> {
+    const domainToMatch: string = AutodiscoverDnsClient.AutoDiscoverSrvPrefix + domain;
+
+    const dnsSrvRecord: DnsSrvRecord = await this.FindBestMatchingSrvRecord(domainToMatch);
+
+    if ((dnsSrvRecord == null) || StringHelper.IsNullOrEmpty(dnsSrvRecord.name)) {
+      this.service.TraceMessage(
+        TraceFlags.AutodiscoverConfiguration,
+        "No appropriate SRV record was found.");
+      return null;
+    }
+
+    this.service.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      StringHelper.Format("DNS query for SRV record for domain {0} found {1}", domain, dnsSrvRecord.name));
+
+    return dnsSrvRecord.name;
+
+  }
+
+  /**
+   * Finds the best matching SRV record.
+   *
+   * @param   {string}   domain   The domain.
+   * @return  {Promise<DnsSrvRecord>}      DnsSrvRecord(will be null if lookup failed).
+   */
+  private async FindBestMatchingSrvRecord(domain: string): Promise<DnsSrvRecord> {
+    return new Promise((resolve, reject) => {
+
+      let dnsSrvRecordList: DnsSrvRecord[];
+      let dns = null;
+      try {
+        // try to get the dns client, only works on nodejs, not valid in browser\
+        dns = require("dns");
+      } catch (error) {
+        resolve(null);
+        return;
+      }
+
+      if (!StringHelper.IsNullOrEmpty(this.service.DnsServerAddress)) {
+        const servers = dns.getServers();
+        dns.setServers([this.service.DnsServerAddress, ...servers]);
+      }
+
+      dns.resolveSrv(domain, (dnsError, dnsSrvRecordList) => {
+        if (dnsError) {
+          const dnsExcMessage = StringHelper.Format(
+            "DnsQuery returned error error '{0}' error code '{1}'.",
+            dnsError.message,
+            dnsError.code || dnsError.errno);
+          resolve(null);
+          return;
+        }
+        this.service.TraceMessage(
+          TraceFlags.AutodiscoverConfiguration,
+          StringHelper.Format("{0} SRV records were returned.", (dnsSrvRecordList || []).length));
+
+        if (!dnsSrvRecordList || dnsSrvRecordList.length === 0) {
+          resolve(null);
+          return;
         }
 
-        return instance;
-    }
+        // filter the addresses with ssl port
+        dnsSrvRecordList = dnsSrvRecordList.filter(a => a.port === AutodiscoverDnsClient.SslPort);
+
+        // Records were returned but nothing matched our criteria.
+        if (dnsSrvRecordList.length === 0) {
+          this.service.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            "No appropriate SRV records were found.");
+          resolve(null);
+          return;
+        }
+
+        // sort all records with the same (highest) priority and weight.
+        let bestDnsSrvRecordList = dnsSrvRecordList.sort((a, b) => a.priority === b.priority ? b.weight - a.weight : a.priority - b.priority);
+
+        // pick top one which has highest priority and highest weight value
+        const priority = bestDnsSrvRecordList[0].priority;
+        const weight = bestDnsSrvRecordList[0].weight;
+
+        // filter with highest priority and weight;
+        bestDnsSrvRecordList = bestDnsSrvRecordList.filter(a => a.priority === priority && a.weight === weight);
+
+        // The list must contain at least one matching record since we found one earlier.
+        EwsLogging.Assert(
+          dnsSrvRecordList.length > 0,
+          "AutodiscoverDnsClient.FindBestMatchingSrvRecord",
+          "At least one DNS SRV record must match the criteria.");
+
+        // If we have multiple records with the same priority and weight, randomly pick one.
+        const recordIndex = bestDnsSrvRecordList.length > 1 ? Math.floor(Math.random() * Math.floor(bestDnsSrvRecordList.length)) : 0;
+        const bestDnsSrvRecord: DnsSrvRecord = bestDnsSrvRecordList[recordIndex];
+        const traceMessage = StringHelper.Format(
+          "Returning SRV record {0} of {1} records. Target: {2}, Priority: {3}, Weight: {4}",
+          recordIndex,
+          dnsSrvRecordList.length,
+          bestDnsSrvRecord.name,
+          bestDnsSrvRecord.priority,
+          bestDnsSrvRecord.weight);
+        this.service.TraceMessage(TraceFlags.AutodiscoverConfiguration, traceMessage);
+
+        resolve(bestDnsSrvRecord);
+      });
+    });
+
+    //#endregion
+  }
 }
 
-
-/**@internal */
-    export class AutodiscoverDnsClient {
-    private service: AutodiscoverService;
-    private static randomTieBreakerSelector: any;
-    private static AutoDiscoverSrvPrefix: string = "_autodiscover._tcp.";
-    private static SslPort: number = 443;
-    FindAutodiscoverHostFromSrv(domain: string): string { throw new Error("AutodiscoverDnsClient.ts - FindAutodiscoverHostFromSrv : Not implemented."); }
-    FindBestMatchingSrvRecord(domain: string): DnsSrvRecord { throw new Error("AutodiscoverDnsClient.ts - FindBestMatchingSrvRecord : Not implemented."); }
-}
+/**
+ * Represents an error returned by the Autodiscover service.
+ * @sealed
+ */
 export class AutodiscoverError {
-    Time: string;
-    Id: string;
-    ErrorCode: number;
-    Message: string;
-    DebugData: string;
-    private time: string;
-    private id: string;
-    private errorCode: number;
-    private message: string;
-    private debugData: string;
-    //Parse(reader: EwsXmlReader): AutodiscoverError { throw new Error("AutodiscoverError.ts - Parse : Not implemented."); }
+  private time: string;
+  private id: string;
+  private errorCode: number;
+  private message: string;
+  private debugData: string;
+
+  /**
+   * Gets the time when the error was returned.
+   */
+  get Time(): string {
+    return this.time;
+  }
+
+  /**
+   * Gets a hash of the name of the computer that is running Microsoft Exchange Server that has the Client Access server role installed.
+   */
+  get Id(): string {
+    return this.id;
+  }
+
+  /**
+   * Gets the error code.
+   */
+  get ErrorCode(): number {
+    return this.errorCode;
+  }
+
+  /**
+   * Gets the error message.
+   */
+  get Message(): string {
+    return this.message;
+  }
+
+  /**
+   * Gets the debug data.
+   */
+  get DebugData(): string {
+    return this.debugData;
+  }
+
+  /**
+   * Initializes a new instance of the **AutodiscoverError** class.
+   */
+  private constructor() {
+  }
+
+  /**
+   * Parses the XML Js Object creates an Autodiscover error.
+   *
+   * @param   {any}   jsObject   The object.
+   * @return  {AutodiscoverError}            An Autodiscover error.
+   */
+  Parse(jsObject: any): AutodiscoverError {
+    const error = new AutodiscoverError();
+    error.time = jsObject[XmlAttributeNames.Time] || null;
+    error.id = jsObject[XmlAttributeNames.Id] || null;
+    error.errorCode = parseInt(jsObject[XmlElementNames.ErrorCode]) || 0;
+    error.message = jsObject[XmlElementNames.Message] || null;
+    error.debugData = jsObject[XmlElementNames.DebugData] || null;
+
+    return error;
+  }
 }
 
-
-
-
-
-
-
-
+/**
+ * Represents a binding to the Exchange Autodiscover Service.
+ * @sealed
+ */
 export class AutodiscoverService extends ExchangeServiceBase {
-    private static AutodiscoverLegacyPath: string = "/autodiscover/autodiscover.xml";
-    private static AutodiscoverLegacyUrl: string = "{0}://{1}" + AutodiscoverService.AutodiscoverLegacyPath;
-    private static AutodiscoverLegacyHttpsUrl: string = "https://{0}" + AutodiscoverService.AutodiscoverLegacyPath;
-    private static AutodiscoverLegacyHttpUrl: string = "http://{0}" + AutodiscoverService.AutodiscoverLegacyPath;
-    private static AutodiscoverSoapHttpsUrl: string = "https://{0}/autodiscover/autodiscover.svc";
-    private static AutodiscoverSoapWsSecurityHttpsUrl: string = AutodiscoverService.AutodiscoverSoapHttpsUrl + "/wssecurity";
-    private static AutodiscoverSoapWsSecuritySymmetricKeyHttpsUrl: string = AutodiscoverService.AutodiscoverSoapHttpsUrl + "/wssecurity/symmetrickey";
-    private static AutodiscoverSoapWsSecurityX509CertHttpsUrl: string = AutodiscoverService.AutodiscoverSoapHttpsUrl + "/wssecurity/x509cert";
-    private static AutodiscoverRequestNamespace: string = "http://schemas.microsoft.com/exchange/autodiscover/outlook/requestschema/2006";
-    static AutodiscoverMaxRedirections: number = 10;
-    private static AutodiscoverSoapEnabledHeaderName: string = "X-SOAP-Enabled";
-    private static AutodiscoverWsSecurityEnabledHeaderName: string = "X-WSSecurity-Enabled";
-    private static AutodiscoverWsSecuritySymmetricKeyEnabledHeaderName: string = "X-WSSecurity-SymmetricKey-Enabled";
-    private static AutodiscoverWsSecurityX509CertEnabledHeaderName: string = "X-WSSecurity-X509Cert-Enabled";
-    private static AutodiscoverOAuthEnabledHeaderName: string = "X-OAuth-Enabled";
-    private static LegacyPathRegex: RegExp = new RegExp("\/autodiscover/([^/]+/)*autodiscover.xml");
-    private static MinimumRequestVersionForAutoDiscoverSoapService: ExchangeVersion = ExchangeVersion.Exchange2010;
+  //#region Static members
+  /**
+   * Autodiscover legacy path
+   *
+   * @static
+   */
+  private static AutodiscoverLegacyPath: string = "/autodiscover/autodiscover.xml";
+
+  /**
+   * Autodiscover legacy Url with protocol fill-in
+   *
+   * @static
+   */
+  private static AutodiscoverLegacyUrl: string = "{0}://{1}" + AutodiscoverService.AutodiscoverLegacyPath;
+
+  /**
+   * Autodiscover legacy HTTPS Url
+   *
+   * @static
+   */
+  private static AutodiscoverLegacyHttpsUrl: string = "https://{0}" + AutodiscoverService.AutodiscoverLegacyPath;
+
+  /**
+   * Autodiscover legacy HTTP Url
+   *
+   * @static
+   */
+  private static AutodiscoverLegacyHttpUrl: string = "http://{0}" + AutodiscoverService.AutodiscoverLegacyPath;
+
+  /**
+   * Autodiscover SOAP HTTPS Url
+   *
+   * @static
+   */
+  private static AutodiscoverSoapHttpsUrl: string = "https://{0}/autodiscover/autodiscover.svc";
+
+  /**
+   * Autodiscover SOAP WS-Security HTTPS Url
+   *
+   * @static
+   */
+  private static AutodiscoverSoapWsSecurityHttpsUrl: string = AutodiscoverService.AutodiscoverSoapHttpsUrl + "/wssecurity";
+
+  /**
+   * Autodiscover SOAP WS-Security symmetrickey HTTPS Url
+   *
+   * @static
+   */
+  private static AutodiscoverSoapWsSecuritySymmetricKeyHttpsUrl: string = AutodiscoverService.AutodiscoverSoapHttpsUrl + "/wssecurity/symmetrickey";
+
+  /**
+   * Autodiscover SOAP WS-Security x509cert HTTPS Url
+   *
+   * @static
+   */
+  private static AutodiscoverSoapWsSecurityX509CertHttpsUrl: string = AutodiscoverService.AutodiscoverSoapHttpsUrl + "/wssecurity/x509cert";
+
+  /**
+   * Autodiscover request namespace
+   *
+   * @static
+   */
+  private static AutodiscoverRequestNamespace: string = "http://schemas.microsoft.com/exchange/autodiscover/outlook/requestschema/2006";
+
+  /**
+   * Legacy path regular expression.
+   *
+   * @static
+   */
+  private static readonly LegacyPathRegex: RegExp = new RegExp("\/autodiscover/([^/]+/)*autodiscover.xml");
+
+  /**
+   * Maximum number of Url (or address) redirections that will be followed by an Autodiscover call
+   *
+   * @static
+   */
+  static AutodiscoverMaxRedirections: number = 10;
+
+  /**
+   * HTTP header indicating that SOAP Autodiscover service is enabled.
+   *
+   * @static
+   */
+  private static AutodiscoverSoapEnabledHeaderName: string = "X-SOAP-Enabled";
+
+  /**
+   * HTTP header indicating that WS-Security Autodiscover service is enabled.
+   *
+   * @static
+   */
+  private static AutodiscoverWsSecurityEnabledHeaderName: string = "X-WSSecurity-Enabled";
+
+  /**
+   * HTTP header indicating that WS-Security/SymmetricKey Autodiscover service is enabled.
+   *
+   * @static
+   */
+  private static AutodiscoverWsSecuritySymmetricKeyEnabledHeaderName: string = "X-WSSecurity-SymmetricKey-Enabled";
+
+  /**
+   * HTTP header indicating that WS-Security/X509Cert Autodiscover service is enabled.
+   *
+   * @static
+   */
+  private static AutodiscoverWsSecurityX509CertEnabledHeaderName: string = "X-WSSecurity-X509Cert-Enabled";
+
+  /**
+   * HTTP header indicating that OAuth Autodiscover service is enabled.
+   *
+   * @static
+   */
+  private static AutodiscoverOAuthEnabledHeaderName: string = "X-OAuth-Enabled";
+
+  /**
+   * Minimum request version for Autodiscover SOAP service.
+   *
+   * @static
+   */
+  private static MinimumRequestVersionForAutoDiscoverSoapService: ExchangeVersion = ExchangeVersion.Exchange2010;
+  //#endregion
+
+  //#region static method for setting Office 365 specific autodiscover URl, can be used in O365 in China and govt community cloud
+  private static o365AutodiscoverUrl = "https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc";
+
+  /**
+   *  Set Autodiscover hard coded url for Office 365, useful in GCC and O365 in China. This is also helpful if O365 need changing url for some reason (beta testing, transition to different url), no need to update lib
+   *
+   * @static
+   * @type {string}
+   */
+  static get Office365AutodiscoverUrl(): string {
+    return this.o365AutodiscoverUrl;
+  }
+  static set Office365AutodiscoverUrl(value) {
+    this.o365AutodiscoverUrl = value;
+  }
+
+  private static o365AutodiscoverRedirectHeader = "x-federationtrusttokenissueruri";
+
+  /**
+   *  Set Autodiscover hard coded check for header when it is auto redirected (skip 302 and follow the redirect in lib, likely browsers)
+   *
+   * @static
+   * @type {string}
+   */
+  static get Office365AutodiscoverRedirectHeader(): string {
+    return this.o365AutodiscoverRedirectHeader;
+  }
+  static set Office365AutodiscoverRedirectHeader(value) {
+    this.o365AutodiscoverRedirectHeader = value;
+  }
+
+  private static o365AutodiscoverRedirectHeaderValue = "urn:federation:MicrosoftOnline";
+
+  /**
+   *  Set Autodiscover hard coded check for header value when it is auto redirected (skip 302 and follow the redirect in lib, likely browsers)
+   *
+   * @static
+   * @type {string}
+   */
+  static get Office365AutodiscoverRedirectHeaderValue(): string {
+    return this.o365AutodiscoverRedirectHeaderValue;
+  }
+  static set Office365AutodiscoverRedirectHeaderValue(value) {
+    this.o365AutodiscoverRedirectHeaderValue = value;
+  }
+  //#endregion
 
 
-    IsExternal: boolean;
-    RedirectionUrlValidationCallback: AutodiscoverRedirectionUrlValidationCallback;
-    DnsServerAddress: any;// System.Net.IPAddress;
-    EnableScpLookup: boolean;
-    GetScpUrlsForDomainCallback: Function;// System.Func<string, System.Collections.Generic.ICollection<string>>;
-    private domain: string;
-    private url: Uri;
-    //private isExternal: boolean;
-    //private redirectionUrlValidationCallback: AutodiscoverRedirectionUrlValidationCallback;
-    //private dnsClient: AutodiscoverDnsClient;
-    //private dnsServerAddress: any;// System.Net.IPAddress;
-    //private enableScpLookup: boolean;
-    get Domain(): string {
-        return this.domain;
+  //#region Private members
+  //ref: can not use initializer value due to super(0 call complexity)
+  private domain: string;
+  private url: Uri;
+  private isExternal: boolean;
+  private redirectionUrlValidationCallback: AutodiscoverRedirectionUrlValidationCallback;
+  private dnsClient: AutodiscoverDnsClient;
+  private dnsServerAddress: any;// System.Net.IPAddress;
+  private enableScpLookup: boolean;
+  //#endregion
+
+  //#region Properties | Getter/Setter
+  get Domain(): string {
+    return this.domain;
+  }
+  set Domain(value) {
+    this.domain = value;
+    if (value)
+      this.url = undefined;
+  }
+
+  get Url(): Uri {
+    return this.url;
+  }
+  set Url(value) {
+    this.url = value;
+  }
+
+  get IsExternal(): boolean | null {
+    return this.isExternal;
+  }
+  set IsExternal(value) {
+    this.isExternal = value;
+  }
+
+  get RedirectionUrlValidationCallback(): AutodiscoverRedirectionUrlValidationCallback {
+    return this.redirectionUrlValidationCallback;
+  }
+  set RedirectionUrlValidationCallback(value) {
+    this.redirectionUrlValidationCallback = value;
+  }
+
+  get DnsServerAddress(): any {
+    return this.dnsServerAddress;
+  }
+  set DnsServerAddress(value) {
+    this.dnsServerAddress = value;
+  }
+
+  get EnableScpLookup(): boolean {
+    return this.enableScpLookup;
+  }
+  set EnableScpLookup(value) {
+    this.enableScpLookup = value;
+  }
+  //#endregion
+
+  /**
+   * Initializes a new instance of the **AutodiscoverService** class.
+   */
+  constructor();
+  /**
+   * Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {ExchangeVersion}   requestedServerVersion   The requested server version.
+   */
+  constructor(requestedServerVersion: ExchangeVersion);
+  /**
+   * Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {string}    domain  The domain that will be used to determine the URL of the service.
+   */
+  constructor(domain: string);
+  /**
+   * Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {Uri}               url                      The URL of the service.
+   * @param   {string}            domain                   The domain that will be used to determine the URL of the service.
+   * @param   {ExchangeVersion}   requestedServerVersion   The requested server version.
+   */
+  constructor(domain: string, requestedServerVersion: ExchangeVersion);
+  /**
+   * Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {Uri}   url The URL of the service.
+   */
+  constructor(url: Uri);
+  /**
+   * Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {Uri}               url                      The URL of the service.
+   * @param   {ExchangeVersion}   requestedServerVersion   The requested server version.
+   */
+  constructor(url: Uri, requestedServerVersion: ExchangeVersion);
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {Uri}               url                      The URL of the service.
+   * @param   {string}            domain                   The domain that will be used to determine the URL of the service.
+   */
+  constructor(url: Uri, domain: string);
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {ExchangeServiceBase}   service                 The other service
+   * @param   {ExchangeVersion}       requestedServerVersion  The requested server version.
+   */
+  constructor(service: ExchangeServiceBase);
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {ExchangeServiceBase}   service                 The other service
+   * @param   {ExchangeVersion}       requestedServerVersion  The requested server version.
+   */
+  constructor(service: ExchangeServiceBase, requestedServerVersion: ExchangeVersion);
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverService** class.
+   *
+   * @param   {Uri}               url                      The URL of the service.
+   * @param   {string}            domain                   The domain that will be used to determine the URL of the service.
+   * @param   {ExchangeVersion}   requestedServerVersion   The requested server version.
+   */
+  constructor(url: Uri, domain: string, requestedServerVersion: ExchangeVersion);
+  constructor(
+    domainUrlServiceOrVersion: string | Uri | ExchangeServiceBase | ExchangeVersion = null,
+    domainOrVersion: string | ExchangeVersion = null,
+    version: ExchangeVersion = ExchangeVersion.Exchange2010
+  ) {
+    const argsLength = arguments.length;
+
+    if (argsLength > 3) {
+      throw new Error("AutodiscoverService.ts - ctor with " + argsLength + " parameters, invalid number of arguments, check documentation and try again.");
     }
-    set Domain(value) {
-        this.domain = value;
-        if (value)
-            this.url = undefined;
+
+    let service: ExchangeServiceBase = null;
+    let domain: string = null;
+    let url: Uri = null;
+    let requestedServerVersion: ExchangeVersion = version;
+    let hasService: boolean = false;
+    let hasVersion: boolean = false;
+
+    if (argsLength >= 1) {
+      if (domainUrlServiceOrVersion instanceof Uri) {
+        url = domainUrlServiceOrVersion;
+      }
+      else if (domainUrlServiceOrVersion instanceof ExchangeServiceBase) {
+        service = domainUrlServiceOrVersion;
+        hasService = true;
+      }
+      else if (typeof domainUrlServiceOrVersion === 'string') {
+        domain = domainUrlServiceOrVersion;
+      }
+      else if (typeof domainUrlServiceOrVersion === 'number') {
+        requestedServerVersion = domainUrlServiceOrVersion;
+        hasVersion = true;
+      }
     }
-    get Url(): Uri {
-        return this.url;
-    }
-    set Url(value) {
-        if (value)
-            this.domain = value.Host;
-        this.url = value;
-    }
-
-
-    constructor();
-    constructor(domain: string);
-    constructor(requestedServerVersion: ExchangeVersion);
-    constructor(service: ExchangeServiceBase);
-    constructor(url: Uri);
-    constructor(domain: string, requestedServerVersion: ExchangeVersion);
-    constructor(service: ExchangeServiceBase, requestedServerVersion: ExchangeVersion);
-    constructor(url: Uri, domain: string);
-    constructor(url: Uri, requestedServerVersion: ExchangeVersion);
-    constructor(url: Uri, domain: string, requestedServerVersion: ExchangeVersion);
-    constructor(
-        domainUrlServiceOrVersion?: string | Uri | ExchangeServiceBase | ExchangeVersion,
-        domainOrVersion?: string | ExchangeVersion,
-        version: ExchangeVersion = ExchangeVersion.Exchange2010
-    ) {
-        var argsLength = arguments.length;
-
-        if (argsLength > 3) {
-            throw new Error("AutodiscoverService.ts - ctor with " + argsLength + " parameters, invalid number of arguments, check documentation and try again.");
+    if (argsLength >= 2) {
+      if (typeof domainOrVersion === 'string') {
+        if (!(domainUrlServiceOrVersion instanceof Uri)) {
+          throw new Error("AutodiscoverService.ts - ctor with " + argsLength + " parameters - incorrect uses of parameter at 1st position, it must be Uri when using string at 2nd place");
         }
-        //EwsUtilities.ValidateDomainNameAllowNull(domainOrVersion, "domain");
-
-        var domain: string = null;
-        var url: Uri = null;
-        var service: ExchangeServiceBase = null;
-        var requestedServerVersion: ExchangeVersion = ExchangeVersion.Exchange2010;
-        var hasService: boolean = false;
-        var hasVersion: boolean = false;
-
-        if (argsLength >= 1) {
-            if (domainUrlServiceOrVersion instanceof Uri) {
-                url = domainUrlServiceOrVersion;
-            }
-            else if (domainUrlServiceOrVersion instanceof ExchangeServiceBase) {
-                service = domainUrlServiceOrVersion;
-                hasService = true;
-            }
-            else if (typeof domainUrlServiceOrVersion === 'string') {
-                domain = domainUrlServiceOrVersion;
-            }
-            else if (typeof domainUrlServiceOrVersion === 'number') {
-                requestedServerVersion = domainUrlServiceOrVersion;
-                hasVersion = true;
-            }
-        }
-        if (argsLength >= 2) {
-            if (typeof domainOrVersion === 'string') {
-                if (!(domainUrlServiceOrVersion instanceof Uri)) {
-                    throw new Error("AutodiscoverService.ts - ctor with " + argsLength + " parameters - incorrect uses of parameter at 1st position, it must be Uri when using string at 2nd place");
-                }
-                domain = domainOrVersion;
-            }
-            else if (typeof domainOrVersion === 'number') {
-                requestedServerVersion = domainOrVersion;
-            }
-        }
-        if (argsLength === 3) {
-            requestedServerVersion = version;
-        }
-
-        if (service !== null && typeof service !== 'undefined') {
-            super(service, requestedServerVersion);
-        }
-        else {
-            super(requestedServerVersion);
-            this.url = url;
-            this.domain = domain;
-        }
+        domain = domainOrVersion;
+      }
+      else if (typeof domainOrVersion === 'number') {
+        requestedServerVersion = domainOrVersion;
+      }
     }
 
-
-    CallRedirectionUrlValidationCallback(redirectionUrl: string): boolean {
-        var callback: AutodiscoverRedirectionUrlValidationCallback = (this.RedirectionUrlValidationCallback == null)
-            ? this.DefaultAutodiscoverRedirectionUrlValidationCallback
-            : this.RedirectionUrlValidationCallback;
-
-        return callback(redirectionUrl);
+    if (hasValue(service)) {
+      super(service, requestedServerVersion);
     }
-    DefaultAutodiscoverRedirectionUrlValidationCallback(redirectionUrl: string): boolean {
-        throw new AutodiscoverLocalException(StringHelper.Format("Autodiscover redirection is blocked for url: {0}"/*Strings.AutodiscoverRedirectBlocked*/, redirectionUrl));
+    else {
+      EwsUtilities.ValidateDomainNameAllowNull(domain, "domain");
+      super(requestedServerVersion);
+      this.url = url;
+      this.domain = domain;
     }
-    //DefaultGetScpUrlsForDomain(domainName: string): string[] { return null; }// System.Collections.Generic.ICollection<string>{ throw new Error("AutodiscoverService.ts - DefaultGetScpUrlsForDomain : Not implemented.");}
-    //DisableScpLookupIfDuplicateRedirection(emailAddress: string, redirectionEmailAddresses: string[]): any{ throw new Error("AutodiscoverService.ts - DisableScpLookupIfDuplicateRedirection : Not implemented.");}
-    GetAutodiscoverEndpointUrl(host: string): Promise<Uri> {
-        var autodiscoverUrlOut: IOutParam<Uri> = { outValue: null };
+    this.dnsClient = new AutodiscoverDnsClient(this);
+    this.isExternal = true;
+    this.enableScpLookup = false; // ref: no SCP for nodejs yet.
+  }
 
-        return this.TryGetAutodiscoverEndpointUrl(host, autodiscoverUrlOut)
-            .then<Uri>((value) => {
-                if (value) {
-                    return autodiscoverUrlOut.outValue;
-                }
-                else {
-                    throw new AutodiscoverLocalException("no soap or WsSecurity endpoint available"/*Strings.NoSoapOrWsSecurityEndpointAvailable*/);
-                }
-            }, (err) => {
-                throw new AutodiscoverLocalException("no soap or WsSecurity endpoint available"/*Strings.NoSoapOrWsSecurityEndpointAvailable*/);
-            });
+
+  /**
+   * Calls the redirection URL validation callback.
+   *
+   * @remark  If the redirection URL validation callback is null, use the default callback which does not allow following any redirections.
+   * @param   {string}    redirectionUrl   The redirection URL.
+   * @return  {boolean}   True if redirection should be followed.
+   */
+  private CallRedirectionUrlValidationCallback(redirectionUrl: string): boolean {
+    var callback: AutodiscoverRedirectionUrlValidationCallback = (this.RedirectionUrlValidationCallback == null)
+      ? this.DefaultAutodiscoverRedirectionUrlValidationCallback
+      : this.RedirectionUrlValidationCallback;
+
+    return callback(redirectionUrl);
+  }
+
+  /**
+   * Default implementation of AutodiscoverRedirectionUrlValidationCallback. Always returns true indicating that the URL can be used.
+  *
+  * @param   {string}     redirectionUrl   The redirection URL.
+  * @return  {boolean}    Returns true.
+  */
+  private DefaultAutodiscoverRedirectionUrlValidationCallback(redirectionUrl: string): boolean {
+    throw new AutodiscoverLocalException(StringHelper.Format("Autodiscover redirection is blocked for url: {0}"/*Strings.AutodiscoverRedirectBlocked*/, redirectionUrl));
+  }
+
+  /**
+   * Defaults the get autodiscover service urls for domain.
+   *
+   * @param   {string}    domainName   Name of the domain.
+   * @return  {string[]}  [description]
+   */
+  private DefaultGetScpUrlsForDomain(domainName: string): string[] { return []; }// System.Collections.Generic.ICollection<string>{ throw new Error("AutodiscoverService.ts - DefaultGetScpUrlsForDomain : Not implemented.");}
+
+  /**
+   * Disables SCP lookup if duplicate email address redirection.
+   *
+   * @param   {string}    emailAddress                The email address to use.
+   * @param   {string[]}  redirectionEmailAddresses   The list of prior redirection email addresses.
+   */
+  DisableScpLookupIfDuplicateRedirection(emailAddress: string, redirectionEmailAddresses: string[]): void {
+    // SMTP addresses are case-insensitive so entries are converted to lower-case.
+    emailAddress = emailAddress.toLowerCase();
+
+    if (redirectionEmailAddresses.includes(emailAddress)) {
+      this.EnableScpLookup = false;
     }
-
-    //--done
-    GetAutodiscoverServiceHosts(domainName: string): string[] {
-
-        var serviceHosts: string[] = [];
-        var urls = this.GetAutodiscoverServiceUrls(domainName);
-        for (var url of urls) {
-            serviceHosts.push(UriHelper.getHost(url));
-        }
-
-        return serviceHosts;
+    else {
+      redirectionEmailAddresses.push(emailAddress);
     }
-    //--done
-    GetAutodiscoverServiceUrls(domainName: string): string[] {// System.Collections.Generic.List<T>{
-        var urls: string[] = [];
+  }
 
-        if (this.EnableScpLookup) {
-            // Get SCP URLs
-            //Func < string, ICollection <string>> callback = this.GetScpUrlsForDomainCallback ?? this.DefaultGetScpUrlsForDomain;
-            //ICollection < string> scpUrls = callback(domainName);
-            //foreach(string str in scpUrls)
-            //{
-            //    urls.Add(new Uri(str));
-            //}
-        }
-        //scpHostCount = urls.length;
+  /**
+   * Gets the autodiscover endpoint URL.
+   *
+   * @param   {string}   host   The host.
+   * @return  {Promise<Uri>}  [description]
+   */
+  private async GetAutodiscoverEndpointUrl(host: string): Promise<Uri> {
+    const autodiscoverUrlOut: IOutParam<Uri> = { outValue: null };
 
-        // As a fallback, add autodiscover URLs base on the domain name.
-        urls.push(StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpsUrl, "autodiscover." + domainName));
-        urls.push(StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpsUrl, domainName));
-
-        return urls;
+    if (await this.TryGetAutodiscoverEndpointUrl(host, autodiscoverUrlOut)) {
+      return autodiscoverUrlOut.outValue;
     }
-    GetDomainSettings(domains: string[], settings: DomainSettingName[], requestedVersion: ExchangeVersion): Promise<GetDomainSettingsResponseCollection>;
-    GetDomainSettings(domains: string[], requestedVersion: ExchangeVersion, ...domainSettingNames: DomainSettingName[]): Promise<GetDomainSettingsResponseCollection>;
-    GetDomainSettings(domain: string, requestedVersion: ExchangeVersion, ...domainSettingNames: DomainSettingName[]): Promise<GetDomainSettingsResponse>
+    else {
+      throw new AutodiscoverLocalException(Strings.NoSoapOrWsSecurityEndpointAvailable);
+    }
+  }
 
-    GetDomainSettings(
-        domainOrDomainNames: string | string[],
-        settingsOrVersion: ExchangeVersion | DomainSettingName[],
-        versionOrSettingNames: ExchangeVersion | any //...params DomainSettingName[]
-    ): Promise<GetDomainSettingsResponse | GetDomainSettingsResponseCollection> {
+  /**
+   * @internal Gets the list of autodiscover service hosts.
+   *
+   * @param   {string}            domainName     Name of the domain.
+   * @param   {IOutParam<number>} scpHostCount   Count of SCP hosts that were found.
+   * @return  {string[]}          List of host names.
+   */
+  GetAutodiscoverServiceHosts(domainName: string, scpHostCount: IOutParam<number>): string[] {
 
-        // EwsUtilities.ValidateParam(domains, "domains");
-        // EwsUtilities.ValidateParam(settings, "settings");
-
-        var requestedVersion: ExchangeVersion = null;
-        var settings: DomainSettingName[] = [];
-        if (arguments.length <= 3) {
-            if (Array.isArray(settingsOrVersion)) {
-                settings = <DomainSettingName[]>settingsOrVersion;
-                requestedVersion = versionOrSettingNames;
-            }
-            else {
-                settings.push(arguments[2]);
-            }
-        }
-        else {
-            if (settingsOrVersion !== null && typeof settingsOrVersion !== 'number') {
-                throw new Error("AutodiscoverService.ts - GetDomainSettings with " + arguments.length + " incorrect uses of parameter at 2nd position, it must be ExchangeVersion or null when using DomainSettingName[] ...params at 3rd place");
-            }
-            for (var _i = 2; _i < arguments.length; _i++) {
-                settings[_i - 2] = arguments[_i];
-            }
-            requestedVersion = <ExchangeVersion>settingsOrVersion;
-        }
-        var isCollection: boolean = true;
-        var domains: string[] = <string[]>domainOrDomainNames;
-        if (!Array.isArray(domainOrDomainNames)) {
-            domains = [<string>domainOrDomainNames]
-            isCollection = false;
-        }
-
-
-        return this.GetSettings<GetDomainSettingsResponseCollection, DomainSettingName>(
-            domains,
-            settings,
-            requestedVersion,
-            this.InternalGetDomainSettings,
-            () => { return domains[0]; }).then((value: GetDomainSettingsResponseCollection) => {
-                if (isCollection) {
-                    return value;
-                }
-                else {
-                    return value.__thisIndexer(0);
-                }
-            }, (error) => {
-                throw error;
-            });
-
-        // var request = new GetDomainSettingsRequest(this, this.url);
-        // request.Settings = domainSettingNames;
-        // request.Domains = [domain];
-        // var response = request.Execute();
-        // return <any>response;
+    var serviceHosts: string[] = [];
+    var urls = this.GetAutodiscoverServiceUrls(domainName, scpHostCount);
+    for (var url of urls) {
+      serviceHosts.push(UriHelper.getHost(url));
     }
 
-    //previous name - GetEndpointsFromHttpWebResponse
-    private GetEndpointsFromHttpResponse(response: XMLHttpRequest): AutodiscoverEndpoints {
-        var endpoints: AutodiscoverEndpoints = AutodiscoverEndpoints.Legacy;
-        if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverSoapEnabledHeaderName))) {
-            endpoints |= AutodiscoverEndpoints.Soap;
-        }
-        if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverWsSecurityEnabledHeaderName))) {
-            endpoints |= AutodiscoverEndpoints.WsSecurity;
-        }
-        if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverWsSecuritySymmetricKeyEnabledHeaderName))) {
-            endpoints |= AutodiscoverEndpoints.WSSecuritySymmetricKey;
-        }
-        if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverWsSecurityX509CertEnabledHeaderName))) {
-            endpoints |= AutodiscoverEndpoints.WSSecurityX509Cert;
-        }
-        if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverOAuthEnabledHeaderName))) {
-            endpoints |= AutodiscoverEndpoints.OAuth;
-        }
-        return endpoints;
-    }
-    //GetLegacyUserSettings(emailAddress: string): any{ throw new Error("AutodiscoverService.ts - GetLegacyUserSettings : Not implemented.");}
-    //GetLegacyUserSettingsAtUrl(emailAddress: string, url: Uri): any{ throw new Error("AutodiscoverService.ts - GetLegacyUserSettingsAtUrl : Not implemented.");}
-    //GetRedirectionUrlFromDnsSrvRecord(domainName: string): Uri{ throw new Error("AutodiscoverService.ts - GetRedirectionUrlFromDnsSrvRecord : Not implemented.");}
-    GetRedirectUrl(domainName: string): Promise<Uri> {
-        var url: string = StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpUrl, "autodiscover." + domainName);
+    return serviceHosts;
+  }
 
+  /**
+   * @internal Gets the list of autodiscover service URLs.
+   *
+   * @param   {string}            domainName     Domain name.
+   * @param   {IOutParam<number>} scpHostCount   Count of hosts found via SCP lookup.
+   * @return  {string[]}          List of Autodiscover URLs.
+   */
+  GetAutodiscoverServiceUrls(domainName: string, scpHostCount: IOutParam<number>): string[] {
+    var urls: string[] = [];
+
+    if (this.EnableScpLookup) {
+      // Get SCP URLs
+      //Func < string, ICollection <string>> callback = this.GetScpUrlsForDomainCallback ?? this.DefaultGetScpUrlsForDomain;
+      //ICollection < string> scpUrls = callback(domainName);
+      //foreach(string str in scpUrls)
+      //{
+      //    urls.Add(new Uri(str));
+      //}
+    }
+    //scpHostCount = urls.length;
+
+    // As a fallback, add autodiscover URLs base on the domain name.
+    urls.push(StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpsUrl, `autodiscover.${domainName}`)); // hard coding for autodiscover domain name
+    urls.push(StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpsUrl, domainName));
+
+    return urls;
+  }
+
+  // ref: GetDomainSettings(domains: string[], settings: DomainSettingName[], requestedVersion: ExchangeVersion): Promise<GetDomainSettingsResponseCollection>; - not used, internal method and can be skipped implementing. Implementation is merged with other
+  /**
+   * Retrieves the specified settings for a set of domains.
+   *
+   * @param   {string[]}                  domains             The SMTP addresses of the domains.
+   * @param   {ExchangeVersion}           requestedVersion    Requested version of the Exchange service.
+   * @param   {...DomainSettingName[]}    domainSettingNames  The domain setting names.
+   * @return  {Promise<GetDomainSettingsResponseCollection>}  A GetDomainSettingsResponseCollection object containing the responses for each individual domain.
+   */
+  async GetDomainSettings(domains: string[], requestedVersion: ExchangeVersion, ...domainSettingNames: DomainSettingName[]): Promise<GetDomainSettingsResponseCollection>;
+  /**
+   * Retrieves the specified settings for a domain.
+   *
+   * @param   {string}                    domain               The domain.
+   * @param   {ExchangeVersion}           requestedVersion     Requested version of the Exchange service.
+   * @param   {...DomainSettingName[]}    domainSettingNames   The domain setting names.
+   * @return  {Promise<GetDomainSettingsResponse>}  A DomainResponse object containing the requested settings for the specified domain.
+   */
+  async GetDomainSettings(domain: string, requestedVersion: ExchangeVersion, ...domainSettingNames: DomainSettingName[]): Promise<GetDomainSettingsResponse>
+
+  async GetDomainSettings(
+    domainOrDomains: string | string[],
+    requestedVersion: ExchangeVersion,
+    ...settings: DomainSettingName[]
+  ): Promise<GetDomainSettingsResponse | GetDomainSettingsResponseCollection> {
+
+    let domains: string[];
+
+    let isCollection: boolean = true;
+    domains = <string[]>domainOrDomains;
+    if (!Array.isArray(domainOrDomains)) {
+      domains = [<string>domainOrDomains]
+      isCollection = false;
+    }
+
+    EwsUtilities.ValidateParam(domains, "domains");
+    EwsUtilities.ValidateParam(settings, "settings");
+
+    const result = await this.GetSettings<GetDomainSettingsResponseCollection, DomainSettingName>(
+      domains,
+      settings,
+      requestedVersion,
+      this.InternalGetDomainSettings.bind(this),
+      () => { return domains[0]; });
+
+    if (isCollection) {
+      return result;
+    }
+    else {
+      return result.__thisIndexer(0);
+    }
+  }
+
+  /**
+   * Gets the endpoints from HTTP web response.
+   *
+   * @param   {XMLHttpRequest}   response   The response.
+   * @return  {AutodiscoverEndpoints}              Endpoints enabled.
+   */
+  private GetEndpointsFromHttpWebResponse(response: XMLHttpRequest): AutodiscoverEndpoints {
+    var endpoints: AutodiscoverEndpoints = AutodiscoverEndpoints.Legacy;
+    if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverSoapEnabledHeaderName))) {
+      endpoints |= AutodiscoverEndpoints.Soap;
+    }
+    if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverWsSecurityEnabledHeaderName))) {
+      endpoints |= AutodiscoverEndpoints.WsSecurity;
+    }
+    if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverWsSecuritySymmetricKeyEnabledHeaderName))) {
+      endpoints |= AutodiscoverEndpoints.WSSecuritySymmetricKey;
+    }
+    if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverWsSecurityX509CertEnabledHeaderName))) {
+      endpoints |= AutodiscoverEndpoints.WSSecurityX509Cert;
+    }
+    if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.AutodiscoverOAuthEnabledHeaderName))) {
+      endpoints |= AutodiscoverEndpoints.OAuth;
+    }
+    return endpoints;
+  }
+
+  //GetLegacyUserSettings(emailAddress: string): any{ throw new Error("AutodiscoverService.ts - GetLegacyUserSettings : Not implemented.");}
+
+  //GetLegacyUserSettingsAtUrl(emailAddress: string, url: Uri): any{ throw new Error("AutodiscoverService.ts - GetLegacyUserSettingsAtUrl : Not implemented.");}
+
+  /**
+   * @internal Get an autodiscover SRV record in DNS and construct autodiscover URL.
+   *
+   * @param   {string}   domainName   Name of the domain.
+   * @return  {Promise<Uri>}                Autodiscover URL (may be null if lookup failed)
+   */
+  async GetRedirectionUrlFromDnsSrvRecord(domainName: string): Promise<Uri> {
+    this.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      StringHelper.Format("Trying to get Autodiscover host from DNS SRV record for {0}.", domainName));
+
+    const hostname: string = await this.dnsClient.FindAutodiscoverHostFromSrv(domainName);
+    if (!StringHelper.IsNullOrEmpty(hostname)) {
+      this.TraceMessage(
+        TraceFlags.AutodiscoverConfiguration,
+        StringHelper.Format("Autodiscover host {0} was returned.", hostname));
+
+      return new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpsUrl, hostname));
+    }
+    else {
+      this.TraceMessage(
+        TraceFlags.AutodiscoverConfiguration,
+        "No matching Autodiscover DNS SRV records were found.");
+
+      return null;
+    }
+  }
+
+  /**
+   * Gets a redirection URL to an SSL-enabled Autodiscover service from the standard non-SSL Autodiscover URL.
+   *
+   * @param   {string}   domainName   The name of the domain to call Autodiscover on.
+   * @return  {Promise<Uri>}                A valid SSL-enabled redirection URL. (May be null).
+   */
+  private async GetRedirectUrl(domainName: string): Promise<Uri> {
+    var url: string = StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpUrl, "autodiscover." + domainName);
+
+    this.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      StringHelper.Format("Trying to get Autodiscover redirection URL from {0}.", url));
+
+    var xhrOptions: IXHROptions = {
+      type: "GET",
+      url: url,
+      allowRedirect: false,
+    };
+
+    let response: XMLHttpRequest = null;
+    try {
+      response = await this.XHRApi.xhr(xhrOptions)
+    } catch (responseError) {
+      if (responseError.status === 0) {
+        //catch (IOException ex)
         this.TraceMessage(
-            TraceFlags.AutodiscoverConfiguration,
-            StringHelper.Format("Trying to get Autodiscover redirection URL from {0}.", url));
+          TraceFlags.AutodiscoverConfiguration,
+          StringHelper.Format("I/O error: {0}", "unable to connect"));
+        return null;
+      }
+      this.TraceMessage(
+        TraceFlags.AutodiscoverConfiguration,
+        StringHelper.Format("Request error: {0}", responseError.message || responseError.statusText || responseError.status));
 
-        var xhrOptions: IXHROptions = {
-            type: "GET",
-            url: url,
-        };
-        return this.XHRApi.xhr(xhrOptions)
-            .then<Uri>((response: XMLHttpRequest) => {
-                if (response != null) {
-
-                    this.TraceMessage(TraceFlags.All,
-                        "***hard checking for office 365 with node.js http request and presence of header x-federationtrusttokenissueruri= urn:federation:MicrosoftOnline");
-
-                    var redirectUrl: string = null;
-                    if (!StringHelper.IsNullOrEmpty(response.getResponseHeader("x-federationtrusttokenissueruri"))) {
-                        if (response.getResponseHeader("x-federationtrusttokenissueruri") === "urn:federation:MicrosoftOnline")
-                            redirectUrl = "https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc";
-                        return new Uri(redirectUrl);
-                    }
-                    //if (this.TryGetRedirectionResponse(response, redirectUrl)) {
-                    //    return redirectUrl;
-                    //}
-                }
-
-                this.TraceMessage(
-                    TraceFlags.AutodiscoverConfiguration,
-                    "No Autodiscover redirection URL was returned.");
-
-                return null;
-
-            }, (resperr: XMLHttpRequest) => {
-                if (resperr.status === 0) {
-                    //catch (IOException ex)
-                    this.TraceMessage(
-                        TraceFlags.AutodiscoverConfiguration,
-                        StringHelper.Format("I/O error: {0}", "unable to connect"));
-                } else {
-                    //catch (WebException ex)
-                    this.TraceMessage(
-                        TraceFlags.AutodiscoverConfiguration,
-                        StringHelper.Format("--Request error: {0}, {1}", resperr.status, resperr.statusText));
-
-                    //todo: possible?
-                    // The exception response factory requires a valid HttpWebResponse,
-                    // but there will be no web response if the web request couldn't be
-                    // actually be issued (e.g. due to DNS error).
-                    //if (ex.Response != null) {
-                    //    response = this.HttpWebRequestFactory.CreateExceptionResponse(ex);
-                    //}
-                }
-                if (resperr.status === 401) {//unauthorized in case it was redirected, checking header now
-                    this.TraceMessage(TraceFlags.All,
-                        "***hard checking for office 365 with node.js http request and presence of header x-federationtrusttokenissueruri= urn:federation:MicrosoftOnline");
-
-                    var redirectUrl: string = null;
-                    if (!StringHelper.IsNullOrEmpty(resperr.getResponseHeader("x-federationtrusttokenissueruri"))) {
-                        if (resperr.getResponseHeader("x-federationtrusttokenissueruri") === "urn:federation:MicrosoftOnline") {
-                            redirectUrl = "https://autodiscover-s.outlook.com/autodiscover/autodiscover.svc";
-                            this.TraceMessage(TraceFlags.All,
-                                "possible hard match for O365 based on federation header (could be any legitimate 302 redirect - less likely)\r\n trying to connect to O365 multitenent autodiscover url: " + redirectUrl);
-                        }
-                        return new Uri(redirectUrl);
-                    }
-                }
-                return null;
-            });
+      response = responseError;
     }
-    GetSettings<TGetSettingsResponseCollection, TSettingName>(
-        identities: string[], settings: TSettingName[], requestedVersion: ExchangeVersion,
-        getSettingsMethod: GetSettingsMethod<TGetSettingsResponseCollection, TSettingName>,
-        getDomainMethod: () => string): Promise<TGetSettingsResponseCollection> {
-        // Autodiscover service only exists in E14 or later.
-        if (this.RequestedServerVersion < AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService) {
-            throw new ServiceVersionException(
-                StringHelper.Format(
-                    Strings.AutodiscoverServiceIncompatibleWithRequestVersion,
-                    AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService));
-        }
 
-        var response: Promise<TGetSettingsResponseCollection> = null;
-        var autodiscoverUrlRef: IRefParam<Uri> = { getValue: () => this.Url, setValue: (url) => this.url = url };
+    if (response != null) {
+      const redirectUrl: IOutParam<Uri> = { outValue: null };
+      if (this.TryGetRedirectionResponse(response, redirectUrl)) {
+        return redirectUrl.outValue;
+      }
 
-        // If Url is specified, call service directly.
-        if (this.Url != null) {
+      // hard check for redirected office 365 url
+      this.TraceMessage(TraceFlags.All,
+        "***hard checking for office 365 with node.js http request and presence of header x-federationtrusttokenissueruri= urn:federation:MicrosoftOnline");
 
-            return getSettingsMethod(
-                identities,
-                settings,
-                requestedVersion,
-                autodiscoverUrlRef, this)
-                .then((response) => {
-                    this.Url = autodiscoverUrlRef.getValue();
-                    return response;
-                });
-        }
+      if (!StringHelper.IsNullOrEmpty(response.getResponseHeader(AutodiscoverService.Office365AutodiscoverRedirectHeader))) {
+        if (response.getResponseHeader(AutodiscoverService.Office365AutodiscoverRedirectHeader) === AutodiscoverService.Office365AutodiscoverRedirectHeaderValue)
+          redirectUrl.outValue = new Uri(AutodiscoverService.Office365AutodiscoverUrl);
+        return redirectUrl.outValue;
+      }
+    }
 
-        // If Domain is specified, determine endpoint Url and call service.
-        else if (!StringHelper.IsNullOrEmpty(this.Domain)) {
-            return this.GetAutodiscoverEndpointUrl(this.Domain)
-                .then<TGetSettingsResponseCollection>((adsvcurl) => {
-                    autodiscoverUrlRef = { getValue: () => adsvcurl };
-                    return getSettingsMethod(
-                        identities,
-                        settings,
-                        requestedVersion,
-                        autodiscoverUrlRef, this)
-                        .then((response) => {
-                            // If we got this far, response was successful, set Url.
-                            this.Url = autodiscoverUrlRef.getValue();
-                            return response;
-                        });
-                });
-        }
+    this.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      "No Autodiscover redirection URL was returned.");
 
-        // No Url or Domain specified, need to figure out which endpoint(s) to try.
-        else {
-            // Assume caller is not inside the Intranet, regardless of whether SCP Urls
-            // were returned or not. SCP Urls are only relevent if one of them returns
-            // valid Autodiscover settings.
+    return null;
+  }
 
-            this.IsExternal = true;
+  /**
+   * Gets user or domain settings using Autodiscover SOAP service.
+   *
+   * @typeparam {TGetSettingsResponseCollection}  Type of response collection to return.
+   * @typeparam {TSettingName}                    Type of setting name.
+   *
+   * @param   {string[]}                                                          identities          Either the domains or the SMTP addresses of the users.
+   * @param   {settings: TSettingName[]}                                          settings            The settings.
+   * @param   {ExchangeVersion}                                                   requestedVersion    Requested version of the Exchange service.
+   * @param   {GetSettingsMethod<TGetSettingsResponseCollection, TSettingName>}   getSettingsMethod   The method to use.
+   * @param   {() => string}                                                      getDomainMethod     The method to calculate the domain value.
+   * @return  {Promise<TGetSettingsResponseCollection>}                           [description]
+   */
+  private async GetSettings<TGetSettingsResponseCollection, TSettingName>(
+    identities: string[], settings: TSettingName[], requestedVersion: ExchangeVersion,
+    getSettingsMethod: GetSettingsMethod<TGetSettingsResponseCollection, TSettingName>,
+    getDomainMethod: () => string): Promise<TGetSettingsResponseCollection> {
 
-            var autodiscoverOutUrl: IOutParam<Uri> = { outValue: undefined };
+    // Autodiscover service only exists in E14 or later.
+    if (this.RequestedServerVersion < AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService) {
+      throw new ServiceVersionException(
+        StringHelper.Format(
+          Strings.AutodiscoverServiceIncompatibleWithRequestVersion,
+          AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService));
+    }
 
-            var domainName: string = getDomainMethod();
+    let response: TGetSettingsResponseCollection = null;
+    let urlRef = null;
+    let autodiscoverUrlRef: IRefParam<Uri> = { getValue: () => urlRef, setValue: (url) => urlRef = url };
 
-            var scpHostCount: number;
-            var hosts = this.GetAutodiscoverServiceHosts(domainName);//, scpHostCount);
+    // If Url is specified, call service directly.
+    if (this.Url != null) {
+      urlRef = this.url;
+      response = await getSettingsMethod(
+        identities,
+        settings,
+        requestedVersion,
+        autodiscoverUrlRef);
+      this.Url = urlRef;
+      return response;
+    } else if (!StringHelper.IsNullOrEmpty(this.Domain)) { // If Domain is specified, determine endpoint Url and call service.
+      urlRef = await this.GetAutodiscoverEndpointUrl(this.Domain)
+      response = await getSettingsMethod(
+        identities,
+        settings,
+        requestedVersion,
+        autodiscoverUrlRef)
 
-            if (hosts.length == 0) {
-                throw new ServiceValidationException("autodiscover service request requires domain or url"
-                    /*Strings.AutodiscoverServiceRequestRequiresDomainOrUrl*/);
+      // If we got this far, response was successful, set Url.
+      this.Url = urlRef;
+      return response;
+    } else { // No Url or Domain specified, need to figure out which endpoint(s) to try.
+
+      // Assume caller is not inside the Intranet, regardless of whether SCP Urls
+      // were returned or not. SCP Urls are only relevent if one of them returns
+      // valid Autodiscover settings.
+
+      this.IsExternal = true;
+
+      let autodiscoverUrlOut: IOutParam<Uri> = { outValue: null };
+      autodiscoverUrlRef = { getValue: () => autodiscoverUrlOut.outValue, setValue: (url) => { autodiscoverUrlOut.outValue = url; } };
+
+      let domainName: string = getDomainMethod();
+
+      let scpHostCount: IOutParam<number> = { outValue: 0 };
+      let hosts = this.GetAutodiscoverServiceHosts(domainName, scpHostCount);
+
+      if (hosts.length == 0) {
+        throw new ServiceValidationException(Strings.AutodiscoverServiceRequestRequiresDomainOrUrl);
+      }
+
+
+      for (let currentHostIndex = 0; currentHostIndex < hosts.length; currentHostIndex++) {
+        const host = hosts[currentHostIndex];
+        const isScpHost = currentHostIndex < scpHostCount.outValue;
+
+        if (await this.TryGetAutodiscoverEndpointUrl(host, autodiscoverUrlOut)) {
+          try {
+            response = await getSettingsMethod(
+              identities,
+              settings,
+              requestedVersion,
+              autodiscoverUrlRef);
+
+            // If we got this far, the response was successful, set Url.
+            this.Url = autodiscoverUrlOut.outValue;
+
+            // Not external if Autodiscover endpoint found via SCP returned the settings.
+            if (isScpHost) {
+              this.IsExternal = false;
             }
 
-
-
-            return this.GetSettingsRecursiveLookup(identities, settings, requestedVersion, getSettingsMethod, autodiscoverUrlRef, hosts).then((response) => {
-                return response;
-            }, (err) => {
-
-                this.TraceMessage(TraceFlags.DebugMessage,
-                    "--hard checking for office 365 with node.js http request and presence of header x-federationtrusttokenissueruri: urn:federation:MicrosoftOnline. All other redirection wil fail");
-                // Next-to-last chance: try unauthenticated GET over HTTP to be redirected to appropriate service endpoint.
-                return this.GetRedirectUrl(domainName).then((autodiscoverUrl) => {
-                    if ((autodiscoverUrl != null) &&
-                        this.CallRedirectionUrlValidationCallback(autodiscoverUrl.ToString())) {
-                        return this.TryGetAutodiscoverEndpointUrl(autodiscoverUrl.Host, { outValue: autodiscoverUrl }).then((value) => {
-                            if (value) {
-                                return getSettingsMethod(
-                                    identities,
-                                    settings,
-                                    requestedVersion,
-                                    { getValue: () => autodiscoverUrl }, this).then((response) => {
-                                        // If we got this far, response was successful, set Url.
-                                        this.Url = autodiscoverUrl;
-                                        return response;
-                                    });
-                            }
-                        });
-                    }
-                }, (err) => {
-                    throw new AutodiscoverLocalException("Autodiscover could not be located, skipped srv record lookup, not implement in this js version"/*Strings.AutodiscoverCouldNotBeLocated*/);
-                });
-            });
-
-
-
-
-            /// ------- SRV record resolution not implemented ------- /// Last Chance: try to read autodiscover SRV Record from DNS. If we find one, use
-            ////// the hostname returned to construct an Autodiscover endpoint URL.
-            ////autodiscoverUrl = this.GetRedirectionUrlFromDnsSrvRecord(domainName);
-            ////if ((autodiscoverUrl != null) &&
-            ////    this.CallRedirectionUrlValidationCallback(autodiscoverUrl.ToString()) &&
-            ////    this.TryGetAutodiscoverEndpointUrl(autodiscoverUrl.Host, out autodiscoverUrl)) {
-            ////    response = getSettingsMethod(
-            ////        identities,
-            ////        settings,
-            ////        requestedVersion,
-            ////        ref autodiscoverUrl);
-
-            ////    // If we got this far, the response was successful, set Url.
-            ////    this.Url = autodiscoverUrl;
-
-            ////    return response;
-            ////}
-            ////else {
-            ////    throw new AutodiscoverLocalException(Strings.AutodiscoverCouldNotBeLocated);
-            ////}
+            return response;
+          } catch (error) {
+            // skip
+          }
         }
+      }
+
+      this.TraceMessage(TraceFlags.DebugMessage,
+        "[Next-to-last chance: for autodiscover redirect] --hard checking for office 365 with node.js http request and presence of header x-federationtrusttokenissueruri: urn:federation:MicrosoftOnline. All other redirection wil fail");
+      // Next-to-last chance: try unauthenticated GET over HTTP to be redirected to appropriate service endpoint.
+      const autodiscoverUrl: IOutParam<Uri> = { outValue: null };
+      autodiscoverUrl.outValue = await this.GetRedirectUrl(domainName);
+      autodiscoverUrlRef = { getValue: () => autodiscoverUrl.outValue, setValue: (url) => { autodiscoverUrl.outValue = url; } };
+      if ((autodiscoverUrl.outValue != null) &&
+        this.CallRedirectionUrlValidationCallback(autodiscoverUrl.outValue.ToString()) &&
+        await this.TryGetAutodiscoverEndpointUrl(autodiscoverUrl.outValue.Host, autodiscoverUrl)) {
+        const response = await getSettingsMethod(
+          identities,
+          settings,
+          requestedVersion,
+          { getValue: () => autodiscoverUrl.outValue })
+        // If we got this far, response was successful, set Url.
+        this.Url = autodiscoverUrl.outValue;
+        return response;
+      }
+
+      // Last Chance: try to read autodiscover SRV Record from DNS. If we find one, use
+      // the hostname returned to construct an Autodiscover endpoint URL.
+      autodiscoverUrl.outValue = await this.GetRedirectionUrlFromDnsSrvRecord(domainName);
+      if ((autodiscoverUrl.outValue != null) &&
+        this.CallRedirectionUrlValidationCallback(autodiscoverUrl.outValue.ToString()) &&
+        await this.TryGetAutodiscoverEndpointUrl(autodiscoverUrl.outValue.Host, autodiscoverUrl)) {
+        response = await getSettingsMethod(
+          identities,
+          settings,
+          requestedVersion,
+          autodiscoverUrlRef);
+
+        // If we got this far, the response was successful, set Url.
+        this.Url = autodiscoverUrl.outValue;
+
+        return response;
+      }
+      // else block not needed, if we get this far that mean no autodiscover url can be located
+      throw new AutodiscoverLocalException(Strings.AutodiscoverCouldNotBeLocated);
+    }
+  }
+
+  /**
+   * @internal Gets the user settings using Autodiscover SOAP service.
+   *
+   * @param   {string[]}          smtpAddresses   The SMTP addresses of the users.
+   * @param   {UserSettingName[]} settings        The settings.
+   * @return  {Promise<GetUserSettingsResponseCollection>}  [description]
+   */
+  public async GetUserSettings(smtpAddresses: string[], settings: UserSettingName[]): Promise<GetUserSettingsResponseCollection>;
+  /**
+   * Retrieves the specified settings for single SMTP address.
+   * @remarks This method handles will run the entire Autodiscover "discovery" algorithm and will follow address and URL redirections.
+   * @param   {string}   userSmtpAddress    The SMTP addresses of the user.
+   * @param   {UserSettingName[]}   userSettingNames   The user setting names.
+   * @return  {Promise<GetUserSettingsResponse>} A UserResponse object containing the requested settings for the specified user.
+   */
+  public async GetUserSettings(userSmtpAddress: string, userSettingNames: UserSettingName[]): Promise<GetUserSettingsResponse>;
+  public async GetUserSettings(smtpAddresses: string | string[], userSettings: UserSettingName[]): Promise<GetUserSettingsResponse | GetUserSettingsResponseCollection> {
+    if (isNullOrUndefined(userSettings) || isNullOrUndefined(userSettings)) {
+      throw new ArgumentException(`AutodiscoverService.ts - GetUserSettings - Required parameters missing`);
     }
 
-    private GetSettingsRecursiveLookup<TGetSettingsResponseCollection, TSettingName>(
-        identities: string[], settings: TSettingName[], requestedVersion: ExchangeVersion,
-        getSettingsMethod: GetSettingsMethod<TGetSettingsResponseCollection, TSettingName>,
-        autodiscoverUrlRef: IRefParam<Uri>, hosts: string[], currentHostIndex: number = 0): Promise<TGetSettingsResponseCollection> {
-        //        for (var currentHostIndex = 0; currentHostIndex < hosts.length; currentHostIndex++) {
+    if (Array.isArray(smtpAddresses)) {
+      EwsUtilities.ValidateParam(smtpAddresses, "smtpAddresses");
+      EwsUtilities.ValidateParam(userSettings, "settings");
 
-        if (currentHostIndex >= hosts.length) throw new AutodiscoverLocalException("***cannot determine based on autodiscover host names");
-
-        var host = hosts[currentHostIndex];
-        // var isScpHost:bool = currentHostIndex < scpHostCount;
-        var autodiscoverUrlOut: IOutParam<Uri> = { outValue: null };
-        return this.TryGetAutodiscoverEndpointUrl(host, autodiscoverUrlOut)
-            .then<TGetSettingsResponseCollection>((value) => {
-                if (value) {
-                    // If we got this far, the response was successful, set Url.
-                    this.Url = autodiscoverUrlOut.outValue;
-
-                    return getSettingsMethod(
-                        identities,
-                        settings,
-                        requestedVersion,
-                        autodiscoverUrlRef, this).then((response) => {
-                            // Not external if Autodiscover endpoint found via SCP returned the settings.
-                            //if (isScpHost) {
-                            //    this.IsExternal = false;
-                            //}
-                            return response;
-                        });
-                } else {
-                    currentHostIndex++;
-                    return this.GetSettingsRecursiveLookup(identities, settings, requestedVersion, getSettingsMethod, autodiscoverUrlRef, hosts, currentHostIndex);
-                }
-            }, (err) => {
-                currentHostIndex++;
-                return this.GetSettingsRecursiveLookup(identities, settings, requestedVersion, getSettingsMethod, autodiscoverUrlRef, hosts, currentHostIndex);
-            });
+      return this.GetSettings<GetUserSettingsResponseCollection, UserSettingName>(
+        smtpAddresses,
+        userSettings,
+        null,
+        this.InternalGetUserSettings.bind(this),
+        () => { return EwsUtilities.DomainFromEmailAddress(smtpAddresses[0]); });
     }
 
-    /**internal method */
-    public GetUserSettings(smtpAddresses: string[], settings: UserSettingName[]): Promise<GetUserSettingsResponseCollection>;
-    /**
-     * Retrieves the specified settings for single SMTP address.
-     *
-     * @param   {string}   userSmtpAddress    The SMTP addresses of the user.
-     * @param   {UserSettingName[]}   userSettingNames   The user setting names.
-     * @return  {Promise<GetUserSettingsResponse>} A UserResponse object containing the requested settings for the specified user.
-     */
-    public GetUserSettings(userSmtpAddress: string, userSettingNames: UserSettingName[]): Promise<GetUserSettingsResponse>;
-    public GetUserSettings(userSmtpAddress: string, ...userSettingNames: UserSettingName[]): Promise<GetUserSettingsResponse>;
-    public GetUserSettings(smtpAddresses: string | string[], userSettings: any): Promise<GetUserSettingsResponse | GetUserSettingsResponseCollection> {
-        var userSettingNames: UserSettingName[] = [];
-        if (arguments.length === 2) {
-            if (Array.isArray(userSettings)) {
-                userSettingNames = userSettings;
-            }
-            else {
-                userSettingNames.push(arguments[1]);
-            }
-        }
-        else {
-            for (var _i = 1; _i < arguments.length; _i++) {
-                userSettingNames[_i - 1] = arguments[_i];
-            }
-        }
+    var userSmtpAddress: string = smtpAddresses;
 
-        if (Array.isArray(smtpAddresses)) {
-            //EwsUtilities.ValidateParam(smtpAddresses, "smtpAddresses");
-            //EwsUtilities.ValidateParam(settings, "settings");
+    if (StringHelper.IsNullOrEmpty(userSmtpAddress)) {
+      throw new ServiceValidationException(Strings.InvalidAutodiscoverSmtpAddress);
+    }
+    var requestedSettings = userSettings || [];
 
-            return this.GetSettings<GetUserSettingsResponseCollection, UserSettingName>(
-                <string[]>smtpAddresses,
-                userSettingNames,
-                null,
-                this.InternalGetUserSettings,
-                () => { return EwsUtilities.DomainFromEmailAddress(smtpAddresses[0]); });
-        }
-
-        var userSmtpAddress: string = <string>smtpAddresses;
-        //List < UserSettingName > requestedSettings = new List<UserSettingName>(userSettingNames);
-
-        if (StringHelper.IsNullOrEmpty(userSmtpAddress)) {
-            throw new ServiceValidationException("invalid autodiscover smtp address" /*Strings.InvalidAutodiscoverSmtpAddress*/);
-        }
-        var requestedSettings = userSettingNames || [];
-
-        if (requestedSettings.length == 0) {
-            throw new ServiceValidationException("invalid autodiscover setting count" /*Strings.InvalidAutodiscoverSettingsCount*/);
-        }
-
-        if (this.RequestedServerVersion < AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService) {
-            return this.InternalGetLegacyUserSettings(userSmtpAddress, requestedSettings);
-        }
-        else {
-            return this.InternalGetSoapUserSettings(userSmtpAddress, requestedSettings);
-        }
+    if (requestedSettings.length == 0) {
+      throw new ServiceValidationException(Strings.InvalidAutodiscoverSettingsCount);
     }
 
-    public GetUsersSettings(userSmtpAddresses: string[], ...userSettingNames: UserSettingName[]): Promise<GetUserSettingsResponseCollection> {
-
-        if (this.RequestedServerVersion < AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService) {
-            throw new ServiceVersionException(
-                StringHelper.Format(/*Strings.AutodiscoverServiceIncompatibleWithRequestVersion*/ "autodiscover service is incompatible with requested versio, minimum versi supported is {0}",
-                    AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService));
-        }
-
-        ////var smtpAddresses: string[] = []// new List<string>(userSmtpAddresses);
-        ////if (userSmtpAddresses)
-        ////    userSmtpAddresses.forEach((s) => smtpAddresses.push(s));
-        ////else throw new Error("invalid input");
-        ////var settingNames: UserSettingName[] = [];// List<UserSettingName>(userSettingNames);
-        ////if(userSettingNames)
-        ////userSettingNames.forEach((s)=> settingNames.push());
-
-        return this.GetUserSettings(userSmtpAddresses, userSettingNames); //calls getsettings
+    if (this.RequestedServerVersion < AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService) {
+      return this.InternalGetLegacyUserSettings(userSmtpAddress, requestedSettings);
     }
-    InternalGetDomainSettings(domains: string[], settings: DomainSettingName[], requestedVersion: ExchangeVersion, autodiscoverUrlRef: IRefParam<Uri>, thisref: AutodiscoverService, currentHop: number = 0): Promise<GetDomainSettingsResponseCollection> {
-
-        // The response to GetDomainSettings can be a redirection. Execute GetDomainSettings until we get back
-        // a valid response or we've followed too many redirections.
-        currentHop++;
-        if (currentHop > AutodiscoverService.AutodiscoverMaxRedirections) {
-            this.TraceMessage(
-                TraceFlags.AutodiscoverConfiguration,
-                StringHelper.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverService.AutodiscoverMaxRedirections));
-
-            throw new AutodiscoverLocalException(Strings.AutodiscoverCouldNotBeLocated);
-        }
-        //BUG  - Typescript bug, reference for "this" inside multiple layers of IPromise points to global this object;
-        //(may be not) - this functional is called as delegate under Promise chaining, loss poiters to this.
-        //var request: GetUserSettingsRequest = new GetUserSettingsRequest(this, autodiscoverUrlRef.refvalue);
-        var request = new GetDomainSettingsRequest(thisref, autodiscoverUrlRef.getValue());
-        request.Settings = settings;
-        request.Domains = domains;
-        return <any>request.Execute().then((response) => {
-            // Did we get redirected?
-            if (response.ErrorCode == AutodiscoverErrorCode.RedirectUrl && response.RedirectionUrl != null) {
-                this.TraceMessage(
-                    TraceFlags.AutodiscoverConfiguration,
-                    StringHelper.Format("Request to {0} returned redirection to {1}", autodiscoverUrlRef.getValue().ToString(), response.RedirectionUrl.ToString()));
-
-                // this url need be brought back to the caller.
-                //
-                autodiscoverUrlRef.setValue(response.RedirectionUrl);
-                return this.InternalGetDomainSettings(domains, settings, requestedVersion, autodiscoverUrlRef, thisref, currentHop);
-            }
-            else {
-                return response;
-            }
-        }, (err) => {
-
-        });
+    else {
+      return this.InternalGetSoapUserSettings(userSmtpAddress, requestedSettings);
     }
-    private InternalGetLegacyUserSettings(emailAddress: string, requestedSettings: UserSettingName[]): Promise<GetUserSettingsResponse> {
-        throw new Error("Not implemented.");
-    }
-    private InternalGetLegacyUserSettingsPrivate<Tsettings>(
-        emailAddress: string, redirectionEmailAddresses: string[],
-        currentHop: IRefParam<number>): Tsettings {
-        throw new Error("Not implemented.");
-    }
-    InternalGetSoapUserSettings(smtpAddress: string, requestedSettings: UserSettingName[]): Promise<GetUserSettingsResponse> {
-        var smtpAddresses: string[] = [];
-        smtpAddresses.push(smtpAddress);
+  }
 
-        var redirectionEmailAddresses: string[] = [];
-        redirectionEmailAddresses.push(smtpAddress.toLowerCase());
-        return this.InternalGetSoapUserSettingsRecursive(smtpAddresses, requestedSettings, redirectionEmailAddresses);
-    }
-    InternalGetSoapUserSettingsRecursive(smtpAddresses: string[], requestedSettings: UserSettingName[],
-        redirectionEmailAddresses: string[] = [], currentHop: number = 0): Promise<GetUserSettingsResponse> {
+  /**
+   * Retrieves the specified settings for a set of users.
+   *
+   * @param   {string[]}              userSmtpAddresses   The SMTP addresses of the users.
+   * @param   {...UserSettingName[]}  userSettingNames    The user setting names.
+   * @return  {Promise<GetUserSettingsResponseCollection>}    A GetUserSettingsResponseCollection object containing the responses for each individual user.
+   */
+  public async GetUsersSettings(userSmtpAddresses: string[], ...userSettingNames: UserSettingName[]): Promise<GetUserSettingsResponseCollection> {
 
-        currentHop++;
-        //if (currentHop > AutodiscoverService.AutodiscoverMaxRedirections)
-        //    throw new AutodiscoverLocalException(Strings.AutodiscoverCouldNotBeLocated);
-
-        return this.GetUserSettings(smtpAddresses, requestedSettings)
-            .then<GetUserSettingsResponse>((resp) => {
-                var response = resp.Responses[0];
-                switch (response.ErrorCode) {
-                    case AutodiscoverErrorCode.RedirectAddress:
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverResponse,
-                            StringHelper.Format("Autodiscover service returned redirection email address '{0}'.", response.RedirectTarget));
-
-                        smtpAddresses.splice(0);
-                        smtpAddresses.push(response.RedirectTarget.toLowerCase());
-                        this.Url = null;
-                        this.Domain = null;
-
-                        // If this email address was already tried, we may have a loop
-                        // in SCP lookups. Disable consideration of SCP records.
-                        this.ThrowIfDuplicateRedirection(response.RedirectTarget, { getValue: () => redirectionEmailAddresses });
-                        return this.InternalGetSoapUserSettingsRecursive(smtpAddresses, requestedSettings, redirectionEmailAddresses, currentHop);
-                        break;
-
-                    case AutodiscoverErrorCode.RedirectUrl:
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverResponse,
-                            StringHelper.Format("Autodiscover service returned redirection URL '{0}'.", response.RedirectTarget));
-
-                        this.Url = this.Credentials.AdjustUrl(new Uri(response.RedirectTarget));
-                        return this.InternalGetSoapUserSettingsRecursive(smtpAddresses, requestedSettings, redirectionEmailAddresses, currentHop);
-                        break;
-
-                    case AutodiscoverErrorCode.NoError:
-                    default:
-                        return response;
-                    //return IPromise.as(response);
-                }
-            }, (err) => {
-                throw err;
-            });
-
-
-    }
-    InternalGetUserSettings(smtpAddresses: string[], settings: UserSettingName[],
-        requestedVersion: ExchangeVersion, autodiscoverUrlRef: IRefParam<Uri>, thisref: AutodiscoverService, currentHop: number = 0): Promise<GetUserSettingsResponseCollection> {
-
-        // The response to GetUserSettings can be a redirection. Execute GetUserSettings until we get back
-        // a valid response or we've followed too many redirections.
-        //this function is called recursively for that
-        currentHop++;
-        if (currentHop > AutodiscoverService.AutodiscoverMaxRedirections) {
-            this.TraceMessage(
-                TraceFlags.AutodiscoverConfiguration,
-                StringHelper.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverService.AutodiscoverMaxRedirections));
-
-            throw new AutodiscoverLocalException("Autodiscover settings could not be located, max redirection reached"/*Strings.AutodiscoverCouldNotBeLocated*/);
-        }
-        //BUG  - Typescript bug, reference for "this" inside multiple layers of IPromise points to global this object;
-        //(may be not) - this functional is called as delegate under Promise chaining, loss poiters to this.
-        //var request: GetUserSettingsRequest = new GetUserSettingsRequest(this, autodiscoverUrlRef.refvalue);
-        var request: GetUserSettingsRequest = new GetUserSettingsRequest(thisref, autodiscoverUrlRef.getValue());
-
-        request.SmtpAddresses = smtpAddresses;
-        request.Settings = settings;
-        return <any>request.Execute().then((response) => {
-            // Did we get redirected?
-            if (response.ErrorCode == AutodiscoverErrorCode.RedirectUrl && response.RedirectionUrl != null) {
-                this.TraceMessage(
-                    TraceFlags.AutodiscoverConfiguration,
-                    StringHelper.Format("Request to {0} returned redirection to {1}", autodiscoverUrlRef.getValue().ToString(), response.RedirectionUrl.ToString()));
-
-                // this url need be brought back to the caller.
-                //
-                autodiscoverUrlRef.setValue(response.RedirectionUrl);
-                return this.InternalGetUserSettings(smtpAddresses, settings, requestedVersion, autodiscoverUrlRef, thisref, currentHop);
-            }
-            else {
-                return response;
-            }
-        }, (err) => {
-
-        });
-    }
-    //PrepareHttpWebRequestForUrl(url: Uri): Data.IEwsHttpWebRequest{ throw new Error("AutodiscoverService.ts - PrepareHttpWebRequestForUrl : Not implemented.");}
-    //ProcessHttpErrorResponse(httpWebResponse: Data.IEwsHttpWebResponse, webException: any): any{ throw new Error("AutodiscoverService.ts - ProcessHttpErrorResponse : Not implemented.");}
-    ProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest, webException: any): any { /*throw new Error("Not implemented.")*/; }
-    TraceResponse(response: XMLHttpRequest, memoryStream: any): any {
-        //todo: implement tracing
-
-        //this.ProcessHttpResponseHeaders(TraceFlags.AutodiscoverResponseHttpHeaders, response);
-
-        //if (this.TraceEnabled) {
-        //    if (!StringHelper.IsNullOrEmpty(response.ContentType) &&
-        //        (response.ContentType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) ||
-        //        response.ContentType.StartsWith("application/soap", StringComparison.OrdinalIgnoreCase))) {
-        //        this.TraceXml(TraceFlags.AutodiscoverResponse, memoryStream);
-        //    }
-        //    else {
-        //        this.TraceMessage(TraceFlags.AutodiscoverResponse, "Non-textual response");
-        //    }
-        //}
-    }
-    TryGetAutodiscoverEndpointUrl(host: string, url: IOutParam<Uri>): Promise<boolean> {
-        url.outValue = null;
-
-        var endpointsOut: IOutParam<AutodiscoverEndpoints> = { outValue: AutodiscoverEndpoints.None };
-        return this.TryGetEnabledEndpointsForHost({ getValue: () => host, setValue: (value) => host = value }, endpointsOut).then((value) => {
-            if (value) {
-                url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapHttpsUrl, host));
-                var endpoints = endpointsOut.outValue;
-                // Make sure that at least one of the non-legacy endpoints is available.
-                if (((endpoints & AutodiscoverEndpoints.Soap) != AutodiscoverEndpoints.Soap) &&
-                    ((endpoints & AutodiscoverEndpoints.WsSecurity) != AutodiscoverEndpoints.WsSecurity) &&
-                    ((endpoints & AutodiscoverEndpoints.WSSecuritySymmetricKey) != AutodiscoverEndpoints.WSSecuritySymmetricKey) &&
-                    ((endpoints & AutodiscoverEndpoints.WSSecurityX509Cert) != AutodiscoverEndpoints.WSSecurityX509Cert) &&
-                    ((endpoints & AutodiscoverEndpoints.OAuth) != AutodiscoverEndpoints.OAuth)) {
-                    this.TraceMessage(
-                        TraceFlags.AutodiscoverConfiguration,
-                        StringHelper.Format("No Autodiscover endpoints are available  for host {0}", host));
-
-                    return false;
-                }
-
-                // If we have WLID credentials, make sure that we have a WS-Security endpoint
-                return true;
-                if (this.Credentials instanceof WindowsLiveCredentials) {
-                    if ((endpoints & AutodiscoverEndpoints.WsSecurity) != AutodiscoverEndpoints.WsSecurity) {
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverConfiguration,
-                            StringHelper.Format("No Autodiscover WS-Security endpoint is available for host {0}", host));
-
-                        return false;
-                    }
-                    else {
-                        url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapWsSecurityHttpsUrl, host));
-                    }
-                }
-                else if (this.Credentials instanceof PartnerTokenCredentials) {
-                    if ((endpoints & AutodiscoverEndpoints.WSSecuritySymmetricKey) != AutodiscoverEndpoints.WSSecuritySymmetricKey) {
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverConfiguration,
-                            StringHelper.Format("No Autodiscover WS-Security/SymmetricKey endpoint is available for host {0}", host));
-
-                        return false;
-                    }
-                    else {
-                        url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapWsSecuritySymmetricKeyHttpsUrl, host));
-                    }
-                }
-                else if (this.Credentials instanceof X509CertificateCredentials) {
-                    if ((endpoints & AutodiscoverEndpoints.WSSecurityX509Cert) != AutodiscoverEndpoints.WSSecurityX509Cert) {
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverConfiguration,
-                            StringHelper.Format("No Autodiscover WS-Security/X509Cert endpoint is available for host {0}", host));
-
-                        return false;
-                    }
-                    else {
-                        url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapWsSecurityX509CertHttpsUrl, host));
-                    }
-                }
-                else if (this.Credentials instanceof OAuthCredentials) {
-                    // If the credential is OAuthCredentials, no matter whether we have
-                    // the corresponding x-header, we will go with OAuth.
-                    url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapHttpsUrl, host));
-                }
-
-                return true;
-            }
-            else {
-                this.TraceMessage(
-                    TraceFlags.AutodiscoverConfiguration,
-                    StringHelper.Format("No Autodiscover endpoints are available for host {0}", host));
-
-                return false;
-            }
-        }, (err) => { throw err; });
+    if (this.RequestedServerVersion < AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService) {
+      throw new ServiceVersionException(
+        StringHelper.Format(Strings.AutodiscoverServiceIncompatibleWithRequestVersion,
+          AutodiscoverService.MinimumRequestVersionForAutoDiscoverSoapService));
     }
 
-    private TryGetEnabledEndpointsForHost(host: IRefParam<string>, endpoints: IOutParam<AutodiscoverEndpoints>, currentHop: number = 0): Promise<boolean> {
+    return this.GetUserSettings(userSmtpAddresses, userSettingNames); //calls getsettings
+  }
 
+  /**
+   * Gets settings for one or more domains.
+   *
+   * @param   {string[]}              domains            The domains.
+   * @param   {DomainSettingName[]}   settings           The settings.
+   * @param   {ExchangeVersion}       requestedVersion   Requested version of the Exchange service.
+   * @param   {IRefParam<Uri>}        autodiscoverUrl    The autodiscover URL.
+   * @return  {AutodiscoverService}   GetDomainSettingsResponse collection.
+   */
+  private async InternalGetDomainSettings(domains: string[], settings: DomainSettingName[], requestedVersion: ExchangeVersion, autodiscoverUrlRef: IRefParam<Uri>): Promise<GetDomainSettingsResponseCollection> {
+
+    // The response to GetDomainSettings can be a redirection. Execute GetDomainSettings until we get back
+    // a valid response or we've followed too many redirections.
+    for (let currentHop = 0; currentHop < AutodiscoverService.AutodiscoverMaxRedirections; currentHop++) {
+
+      //BUG  - Typescript bug, reference for "this" inside multiple layers of IPromise points to global this object;
+      //(may be not) - this functional is called as delegate under Promise chaining, loss poiters to this.
+      //var request: GetUserSettingsRequest = new GetUserSettingsRequest(this, autodiscoverUrlRef.refvalue);
+      var request = new GetDomainSettingsRequest(this, autodiscoverUrlRef.getValue());
+      request.Domains = domains;
+      request.Settings = settings;
+      request.RequestedVersion = requestedVersion;
+      const response: GetDomainSettingsResponseCollection = await request.Execute();
+      // Did we get redirected?
+      if (response.ErrorCode == AutodiscoverErrorCode.RedirectUrl && response.RedirectionUrl != null) {
+
+        autodiscoverUrlRef.setValue(response.RedirectionUrl);
+      }
+      else {
+        return response;
+      }
+    }
+
+    this.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      StringHelper.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverService.AutodiscoverMaxRedirections));
+
+    throw new AutodiscoverLocalException(Strings.MaximumRedirectionHopsExceeded);
+  }
+
+
+  private async InternalGetLegacyUserSettings(emailAddress: string, requestedSettings: UserSettingName[]): Promise<GetUserSettingsResponse> {
+    throw new Error("Not implemented.");
+  }
+
+
+  private InternalGetLegacyUserSettingsPrivate<Tsettings>(
+    emailAddress: string, redirectionEmailAddresses: string[],
+    currentHop: IRefParam<number>): Tsettings {
+    throw new Error("Not implemented.");
+  }
+
+  /**
+   * @internal Calls the SOAP Autodiscover service for user settings for a single SMTP address.
+   *
+   * @param   {string}            smtpAddress         SMTP address.
+   * @param   {UserSettingName[]} requestedSettings   The requested settings.
+   * @return  {Promise<GetUserSettingsResponse>}                       [description]
+   */
+  async InternalGetSoapUserSettings(smtpAddress: string, requestedSettings: UserSettingName[]): Promise<GetUserSettingsResponse> {
+    const smtpAddresses: string[] = [smtpAddress];
+
+    const redirectionEmailAddresses: string[] = [smtpAddress.toLowerCase()];
+
+    for (let currentHop = 0; currentHop < AutodiscoverService.AutodiscoverMaxRedirections; currentHop++) {
+      const response: GetUserSettingsResponse = (await this.GetUserSettings(smtpAddresses, requestedSettings)).Responses[0];
+      // const responses: GetUserSettingsResponseCollection = await this.GetUserSettings(smtpAddresses, requestedSettings);
+      // const response: GetUserSettingsResponse =responses[0];
+      switch (response.ErrorCode) {
+        case AutodiscoverErrorCode.RedirectAddress:
+          this.TraceMessage(
+            TraceFlags.AutodiscoverResponse,
+            StringHelper.Format("Autodiscover service returned redirection email address '{0}'.", response.RedirectTarget));
+
+          smtpAddresses.splice(0);
+          smtpAddresses.push(response.RedirectTarget.toLowerCase());
+          this.Url = null;
+          this.Domain = null;
+
+          // If this email address was already tried, we may have a loop
+          // in SCP lookups. Disable consideration of SCP records.
+          this.ThrowIfDuplicateRedirection(response.RedirectTarget, { getValue: () => redirectionEmailAddresses });
+          break;
+
+        case AutodiscoverErrorCode.RedirectUrl:
+          this.TraceMessage(
+            TraceFlags.AutodiscoverResponse,
+            StringHelper.Format("Autodiscover service returned redirection URL '{0}'.", response.RedirectTarget));
+
+          this.Url = this.Credentials.AdjustUrl(new Uri(response.RedirectTarget));
+          break;
+
+        case AutodiscoverErrorCode.NoError:
+        default:
+          return response;
+      }
+    }
+    throw new AutodiscoverLocalException(Strings.AutodiscoverCouldNotBeLocated);
+  }
+
+  /**
+   * Gets settings for one or more users.
+   *
+   * @param   {string[]}            smtpAddresses      The SMTP addresses of the users.
+   * @param   {UserSettingName[]}   settings           The settings.
+   * @param   {ExchangeVersion}     requestedVersion   Requested version of the Exchange service.
+   * @param   {IRefParam<Uri>}      autodiscoverUrl    The autodiscover URL.
+   * @return  {Promise<GetUserSettingsResponseCollection>}                      GetUserSettingsResponse collection.
+   */
+  private async InternalGetUserSettings(smtpAddresses: string[], settings: UserSettingName[],
+    requestedVersion: ExchangeVersion, autodiscoverUrlRef: IRefParam<Uri>): Promise<GetUserSettingsResponseCollection> {
+
+    // The response to GetUserSettings can be a redirection. Execute GetUserSettings until we get back
+    // a valid response or we've followed too many redirections.
+    for (let currentHop = 0; currentHop < AutodiscoverService.AutodiscoverMaxRedirections; currentHop++) {
+      //BUG  - Typescript bug, reference for "this" inside multiple layers of IPromise points to global this object;
+      //(may be not) - this functional is called as delegate under Promise chaining, loss poiters to this.
+      //var request: GetUserSettingsRequest = new GetUserSettingsRequest(this, autodiscoverUrlRef.refvalue);
+      var request: GetUserSettingsRequest = new GetUserSettingsRequest(this, autodiscoverUrlRef.getValue());
+
+      request.SmtpAddresses = smtpAddresses;
+      request.Settings = settings;
+      const response: GetUserSettingsResponseCollection = await request.Execute();
+      // Did we get redirected?
+      if (response.ErrorCode == AutodiscoverErrorCode.RedirectUrl && response.RedirectionUrl != null) {
         this.TraceMessage(
-            TraceFlags.AutodiscoverConfiguration,
-            StringHelper.Format("Determining which endpoints are enabled for host {0}", host.getValue()));
-        currentHop++;
+          TraceFlags.AutodiscoverConfiguration,
+          StringHelper.Format("Request to {0} returned redirection to {1}", autodiscoverUrlRef.getValue().ToString(), response.RedirectionUrl.ToString()));
 
-        // We may get redirected to another host. And therefore need to limit the number
-        // of redirections we'll tolerate.
-        if (currentHop > AutodiscoverService.AutodiscoverMaxRedirections) {
-            this.TraceMessage(
-                TraceFlags.AutodiscoverConfiguration,
-                StringHelper.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverService.AutodiscoverMaxRedirections));
-
-            throw new AutodiscoverLocalException("Maximum redirection hop reached"/*Strings.MaximumRedirectionHopsExceeded*/);
-        }
-
-        var autoDiscoverUrl: string = StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpsUrl, host.getValue());
-
-        endpoints.outValue = AutodiscoverEndpoints.None;
-
-        var xhrOptions: IXHROptions = {
-            type: "GET",
-            url: autoDiscoverUrl,
-        };
-
-
-        //todo - optimize code, need to apply logic in failed errors as 401 go to onerror of xhr;
-        return this.XHRApi.xhr(xhrOptions)
-            .then<boolean>((response: XMLHttpRequest) => {
-                if (response != null) {
-                    var redirectUrl: any = null;;
-                    if ( /*"returns false aleways"*/ this.TryGetRedirectionResponse(response, { outValue: redirectUrl })) {
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverConfiguration,
-                            StringHelper.Format("Host returned redirection to host '{0}'", redirectUrl.Host));
-
-                        host.setValue(UriHelper.getHost(redirectUrl));
-                    } else {
-                        endpoints.outValue = this.GetEndpointsFromHttpResponse(response);
-
-                        this.TraceMessage(
-                            TraceFlags.AutodiscoverConfiguration,
-                            StringHelper.Format("Host returned enabled endpoint flags: {0}", EnumHelper.ToString(AutodiscoverEndpoints, endpoints.outValue)));
-                        return true;
-                    }
-                } else {
-                    return false;
-                }
-
-            }, (resperr: XMLHttpRequest) => {
-
-                if (resperr.status === 0) {
-                    //catch (IOException ex)
-                    this.TraceMessage(
-                        TraceFlags.AutodiscoverConfiguration,
-                        StringHelper.Format("I/O error: {0}", "unable to connect"));
-                } else if (resperr.status === 401) {
-                    endpoints.outValue = this.GetEndpointsFromHttpResponse(resperr);
-
-                    this.TraceMessage(
-                        TraceFlags.AutodiscoverConfiguration,
-                        StringHelper.Format("Host returned enabled endpoint flags: {0}", EnumHelper.ToString(AutodiscoverEndpoints, endpoints.outValue)));
-                    return true;
-                } else {
-                    //catch (WebException ex)
-                    this.TraceMessage(
-                        TraceFlags.AutodiscoverConfiguration,
-                        StringHelper.Format("Request error: {0}, {1}", resperr.status, resperr.statusText));
-
-                    //todo: possible?
-                    // The exception response factory requires a valid HttpWebResponse,
-                    // but there will be no web response if the web request couldn't be
-                    // actually be issued (e.g. due to DNS error).
-                    //if (ex.Response != null) {
-                    //    response = this.HttpWebRequestFactory.CreateExceptionResponse(ex);
-                    //}
-                }
-                return false;
-            });
-
-    }
-    ThrowIfDuplicateRedirection(emailAddress: string, redirectionEmailAddresses: IRefParam<string[]>): void {
-
-        // SMTP addresses are case-insensitive so entries are converted to lower-case.
-        emailAddress = emailAddress.toLowerCase();
-
-        if (redirectionEmailAddresses.getValue().indexOf(emailAddress) >= 0) {
-            //this.EnableScpLookup = false;
-            throw new AutodiscoverLocalException("Detected redirection loop, Redirection address already tried");
-        }
-        else {
-            var oldcount = redirectionEmailAddresses.getValue().length;
-            redirectionEmailAddresses.getValue().push(emailAddress);
-            if (oldcount === redirectionEmailAddresses.getValue().length) {
-                throw new Error("AutodiscoverService.ts - error in ref param logic, need to fix array type getter");
-            }
-            EwsLogging.Assert(false,
-                "AutodiscoverService.ts - ThrowIfDuplicateRedirection",
-                "AutodiscoverService.ts - array getter worked:), remove this message and throw statement");
-        }
-
+        // this url need be brought back to the caller.
+        //
+        autodiscoverUrlRef.setValue(response.RedirectionUrl);
+      }
+      else {
+        return response;
+      }
     }
 
-    //TryGetPartnerAccess(targetTenantDomain: string, partnerAccessCredentials: any, targetTenantAutodiscoverUrl: any): boolean{ throw new Error("AutodiscoverService.ts - TryGetPartnerAccess : Not implemented.");}
-    TryGetRedirectionResponse(response: XMLHttpRequest, redirectUrl: IOutParam<Uri>): boolean {
-        this.TraceMessage(TraceFlags.DebugMessage,
-            "cant determine redirectionResponse, 302 redirect code does not work in browser xhr and in Node.js http response");
+    this.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      StringHelper.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverService.AutodiscoverMaxRedirections));
+
+    throw new AutodiscoverLocalException(Strings.AutodiscoverCouldNotBeLocated);
+  }
 
 
-        //redirectUrl.outValue = null;
-        //if (AutodiscoverRequest.IsRedirectionResponse(response)) {
-        //    // Get the redirect location and verify that it's valid.
-        //    var location = response.getResponseHeader("Location");//. [HttpResponseHeader.Location];
+  //PrepareHttpWebRequestForUrl(url: Uri): Data.IEwsHttpWebRequest{ throw new Error("AutodiscoverService.ts - PrepareHttpWebRequestForUrl : Not implemented.");}
+  //ProcessHttpErrorResponse(httpWebResponse: Data.IEwsHttpWebResponse, webException: any): any{ throw new Error("AutodiscoverService.ts - ProcessHttpErrorResponse : Not implemented.");}
+  ProcessHttpErrorResponse(httpWebResponse: XMLHttpRequest, webException: any): any { /*throw new Error("Not implemented.")*/; }
 
-        //    if (!StringHelper.IsNullOrEmpty(location)) {
-        //        try
-        //        {
-        //            redirectUrl.outValue = location;
+  TraceResponse(response: XMLHttpRequest, memoryStream: any): any {
+    //todo: implement tracing
 
-        //            // Check if URL is SSL and that the path matches.
-        //            var match =  LegacyPathRegex.Match(redirectUrl.AbsolutePath);
-        //            if ((redirectUrl.Scheme == UriHelper.UriSchemeHttps) &&
-        //                match.Success) {
-        //                this.TraceMessage(
-        //                    TraceFlags.AutodiscoverConfiguration,
-        //                    StringHelper.Format("Redirection URL found: '{0}'", redirectUrl));
+    //this.ProcessHttpResponseHeaders(TraceFlags.AutodiscoverResponseHttpHeaders, response);
 
-        //                return true;
-        //            }
-        //        }
-        //        catch (UriFormatException) {
-        //            this.TraceMessage(
-        //                TraceFlags.AutodiscoverConfiguration,
-        //                StringHelper.Format("Invalid redirection URL was returned: '{0}'", location));
-        //            return false;
-        //        }
-        //    }
-        //}
+    //if (this.TraceEnabled) {
+    //    if (!StringHelper.IsNullOrEmpty(response.ContentType) &&
+    //        (response.ContentType.StartsWith("text/", StringComparison.OrdinalIgnoreCase) ||
+    //        response.ContentType.StartsWith("application/soap", StringComparison.OrdinalIgnoreCase))) {
+    //        this.TraceXml(TraceFlags.AutodiscoverResponse, memoryStream);
+    //    }
+    //    else {
+    //        this.TraceMessage(TraceFlags.AutodiscoverResponse, "Non-textual response");
+    //    }
+    //}
+  }
+
+  /**
+   * Tries the get Autodiscover Service endpoint URL.
+   *
+   * @param   {string}          host   The host.
+   * @param   {IOutParam<Uri>}  url    The URL.
+   * @return  {Promise<boolean>}         [description]
+   */
+  private async TryGetAutodiscoverEndpointUrl(hostref: string, url: IOutParam<Uri>): Promise<boolean> {
+    url.outValue = null;
+    const endpointsOut: IOutParam<AutodiscoverEndpoints> = { outValue: AutodiscoverEndpoints.None };
+    let host = hostref;
+    const hostRefParam: IRefParam<string> = { getValue: () => host, setValue: (value) => { host = value; } }
+    if (await this.TryGetEnabledEndpointsForHost(hostRefParam, endpointsOut)) {
+      // host = hostref;
+      url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapHttpsUrl, host));
+      const endpoints = endpointsOut.outValue;
+      // Make sure that at least one of the non-legacy endpoints is available.
+      if (((endpoints & AutodiscoverEndpoints.Soap) != AutodiscoverEndpoints.Soap) &&
+        ((endpoints & AutodiscoverEndpoints.WsSecurity) != AutodiscoverEndpoints.WsSecurity) &&
+        ((endpoints & AutodiscoverEndpoints.WSSecuritySymmetricKey) != AutodiscoverEndpoints.WSSecuritySymmetricKey) &&
+        ((endpoints & AutodiscoverEndpoints.WSSecurityX509Cert) != AutodiscoverEndpoints.WSSecurityX509Cert) &&
+        ((endpoints & AutodiscoverEndpoints.OAuth) != AutodiscoverEndpoints.OAuth)) {
+        this.TraceMessage(
+          TraceFlags.AutodiscoverConfiguration,
+          StringHelper.Format("No Autodiscover endpoints are available  for host {0}", host));
 
         return false;
+      }
+
+      // If we have WLID credentials, make sure that we have a WS-Security endpoint
+      if (this.Credentials instanceof WindowsLiveCredentials) {
+        if ((endpoints & AutodiscoverEndpoints.WsSecurity) != AutodiscoverEndpoints.WsSecurity) {
+          this.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            StringHelper.Format("No Autodiscover WS-Security endpoint is available for host {0}", host));
+
+          return false;
+        }
+        else {
+          url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapWsSecurityHttpsUrl, host));
+        }
+      }
+      else if (this.Credentials instanceof PartnerTokenCredentials) {
+        if ((endpoints & AutodiscoverEndpoints.WSSecuritySymmetricKey) != AutodiscoverEndpoints.WSSecuritySymmetricKey) {
+          this.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            StringHelper.Format("No Autodiscover WS-Security/SymmetricKey endpoint is available for host {0}", host));
+
+          return false;
+        }
+        else {
+          url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapWsSecuritySymmetricKeyHttpsUrl, host));
+        }
+      }
+      else if (this.Credentials instanceof X509CertificateCredentials) {
+        if ((endpoints & AutodiscoverEndpoints.WSSecurityX509Cert) != AutodiscoverEndpoints.WSSecurityX509Cert) {
+          this.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            StringHelper.Format("No Autodiscover WS-Security/X509Cert endpoint is available for host {0}", host));
+
+          return false;
+        }
+        else {
+          url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapWsSecurityX509CertHttpsUrl, host));
+        }
+      }
+      else if (this.Credentials instanceof OAuthCredentials) {
+        // If the credential is OAuthCredentials, no matter whether we have
+        // the corresponding x-header, we will go with OAuth.
+        url.outValue = new Uri(StringHelper.Format(AutodiscoverService.AutodiscoverSoapHttpsUrl, host));
+      }
+
+      return true;
     }
-    //TryLastChanceHostRedirection(emailAddress: string, redirectionUrl: string, settings: any): boolean{ throw new Error("AutodiscoverService.ts - TryLastChanceHostRedirection : Not implemented.");}
-    //WriteLegacyAutodiscoverRequest(emailAddress: string, settings: ConfigurationSettingsBase, writer: any): any{ throw new Error("AutodiscoverService.ts - WriteLegacyAutodiscoverRequest : Not implemented.");}
+    else {
+      this.TraceMessage(
+        TraceFlags.AutodiscoverConfiguration,
+        StringHelper.Format("No Autodiscover endpoints are available for host {0}", host));
+
+      return false;
+    }
+  }
+
+  /**
+   * Gets the enabled autodiscover endpoints on a specific host.
+   *
+   * @param   {host: IRefParam<string>}   host        The host.
+   * @param   {IOutParam<AutodiscoverEndpoints>}   endpoints   Endpoints found for host.
+   */
+  private async TryGetEnabledEndpointsForHost(host: IRefParam<string>, endpoints: IOutParam<AutodiscoverEndpoints>): Promise<boolean> {
+
+    this.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      StringHelper.Format("Determining which endpoints are enabled for host {0}", host.getValue()));
+
+    // We may get redirected to another host. And therefore need to limit the number
+    // of redirections we'll tolerate.
+    for (let currentHop = 0; currentHop < AutodiscoverService.AutodiscoverMaxRedirections; currentHop++) {
+
+      const autoDiscoverUrl: string = StringHelper.Format(AutodiscoverService.AutodiscoverLegacyHttpsUrl, host.getValue());
+
+      endpoints.outValue = AutodiscoverEndpoints.None;
+
+      var xhrOptions: IXHROptions = {
+        type: "GET",
+        url: autoDiscoverUrl,
+        allowRedirect: false,
+      };
+
+      let response = null;
+
+      try {
+        // try get response, in most cases this will not be a status 200.
+        response = await this.XHRApi.xhr(xhrOptions);
+      } catch (responseError) {
+        if (responseError.status === 0) {
+          //catch (IOException ex) and return false
+          this.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            StringHelper.Format("I/O error: {0}", "unable to connect"));
+          return false;
+        }
+
+        this.TraceMessage(
+          TraceFlags.AutodiscoverConfiguration,
+          StringHelper.Format("Request error: {0}", responseError.message || responseError.statusText || responseError.status));
+        // assign error to response
+        response = responseError;
+      }
+
+      if (response != null) {
+        // check redirect url if any for next hop
+        var redirectUrl: IOutParam<Uri> = { outValue: null };
+        if (this.TryGetRedirectionResponse(response, redirectUrl)) {
+          this.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            StringHelper.Format("Host returned redirection to host '{0}'", redirectUrl.outValue.Host));
+
+          host.setValue(redirectUrl.outValue.Host);
+        } else {
+          endpoints.outValue = this.GetEndpointsFromHttpWebResponse(response);
+
+          this.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            StringHelper.Format("Host returned enabled endpoint flags: {0}", EnumHelper.ToString(AutodiscoverEndpoints, endpoints.outValue)));
+          return true;
+
+          // hold it for bug reports, if not delete after few version later (0.10)
+          // if (resperr.status === 401) {
+          //   endpoints.outValue = this.GetEndpointsFromHttpWebResponse(resperr);
+
+          //   this.TraceMessage(
+          //     TraceFlags.AutodiscoverConfiguration,
+          //     StringHelper.Format("Host returned enabled endpoint flags: {0}", EnumHelper.ToString(AutodiscoverEndpoints, endpoints.outValue)));
+          //   return true;
+          // } else {
+          //   //catch (WebException ex)
+          //   this.TraceMessage(
+          //     TraceFlags.AutodiscoverConfiguration,
+          //     StringHelper.Format("Request error: {0}, {1}", resperr.status, resperr.statusText));
+          // }
+          // return false;
+        }
+      } else {
+        return false;
+      }
+    }
+
+    this.TraceMessage(
+      TraceFlags.AutodiscoverConfiguration,
+      StringHelper.Format("Maximum number of redirection hops {0} exceeded", AutodiscoverService.AutodiscoverMaxRedirections));
+
+    throw new AutodiscoverLocalException(Strings.MaximumRedirectionHopsExceeded);
+  }
+
+  ThrowIfDuplicateRedirection(emailAddress: string, redirectionEmailAddresses: IRefParam<string[]>): void {
+
+    // SMTP addresses are case-insensitive so entries are converted to lower-case.
+    emailAddress = emailAddress.toLowerCase();
+
+    if (redirectionEmailAddresses.getValue().includes(emailAddress)) {
+      //this.EnableScpLookup = false;
+      throw new AutodiscoverLocalException("Detected redirection loop, Redirection address already tried");
+    }
+    else {
+      var oldcount = redirectionEmailAddresses.getValue().length;
+      redirectionEmailAddresses.getValue().push(emailAddress);
+      if (oldcount === redirectionEmailAddresses.getValue().length) {
+        throw new Error("AutodiscoverService.ts - error in ref param logic, need to fix array type getter");
+      }
+      EwsLogging.Assert(false,
+        "AutodiscoverService.ts - ThrowIfDuplicateRedirection",
+        "AutodiscoverService.ts - array getter worked:), remove this message and throw statement");
+    }
+
+  }
+
+  //TryGetPartnerAccess(targetTenantDomain: string, partnerAccessCredentials: any, targetTenantAutodiscoverUrl: any): boolean{ throw new Error("AutodiscoverService.ts - TryGetPartnerAccess : Not implemented.");}
+
+  /**
+   * Tries the get redirection response.
+   *
+   * @param   {XMLHttpRequest}  response      The response.
+   * @param   {IOutParam<Uri>}  redirectUrl   The redirect URL.
+   * @return  {boolean}         True if a valid redirection URL was found.
+   */
+  private TryGetRedirectionResponse(response: XMLHttpRequest, redirectUrl: IOutParam<Uri>): boolean {
+
+    redirectUrl.outValue = null;
+    if (AutodiscoverRequest.IsRedirectionResponse(response)) {
+      // Get the redirect location and verify that it's valid.
+      const location = response.getResponseHeader("Location"); // HttpResponseHeader.Location
+
+      if (!StringHelper.IsNullOrEmpty(location)) {
+        try {
+          redirectUrl.outValue = new Uri(location);
+
+          // Check if URL is SSL and that the path matches.
+          const match = AutodiscoverService.LegacyPathRegex.test(redirectUrl.outValue.AbsoluteUri);
+          if ((redirectUrl.outValue.Scheme == Uri.UriSchemeHttps) &&
+            match) {
+            this.TraceMessage(
+              TraceFlags.AutodiscoverConfiguration,
+              StringHelper.Format("Redirection URL found: '{0}'", redirectUrl.outValue));
+            return true;
+          }
+        }
+        catch (UriFormatException) {
+          this.TraceMessage(
+            TraceFlags.AutodiscoverConfiguration,
+            StringHelper.Format("Invalid redirection URL was returned: '{0}'", location));
+          return false;
+        }
+      }
+    }
+
+    return false;
+  }
+  //TryLastChanceHostRedirection(emailAddress: string, redirectionUrl: string, settings: any): boolean{ throw new Error("AutodiscoverService.ts - TryLastChanceHostRedirection : Not implemented.");}
+  //WriteLegacyAutodiscoverRequest(emailAddress: string, settings: ConfigurationSettingsBase, writer: any): any{ throw new Error("AutodiscoverService.ts - WriteLegacyAutodiscoverRequest : Not implemented.");}
 }
 
 //ref: converted to delegate type interface
 export interface GetSettingsMethod<TGetSettingsResponseCollection, TSettingName> {
-    (smtpAddresses: string[], settings: TSettingName[], requestedVersion: ExchangeVersion, autodiscoverUrl: IRefParam<Uri>, thisref: AutodiscoverService): Promise<TGetSettingsResponseCollection>
+  (smtpAddresses: string[], settings: TSettingName[], requestedVersion: ExchangeVersion, autodiscoverUrl: IRefParam<Uri>): Promise<TGetSettingsResponseCollection>
 }
 //class GetSettingsMethod<TGetSettingsResponseCollection, TSettingName> extends System.MulticastDelegate {
 //    BeginInvoke(smtpAddresses: System.Collections.Generic.List<string>, settings: System.Collections.Generic.List<T>, requestedVersion: Data.ExchangeVersion, autodiscoverUrl: any, callback: System.AsyncCallback, object: any): System.IAsyncResult { throw new Error("AutodiscoverService.ts - BeginInvoke : Not implemented."); }
@@ -69144,6 +70344,23 @@ export interface GetSettingsMethod<TGetSettingsResponseCollection, TSettingName>
 //}
 
 
+
+// delete - function getAutodiscoverConstructorSuperParameters(
+//     domainUrlServiceOrVersion: string | Uri | ExchangeServiceBase | ExchangeVersion = null,
+//     domainOrVersion: string | ExchangeVersion = null,
+//     version: ExchangeVersion = ExchangeVersion.Exchange2010
+// ) {
+//     const service: ExchangeServiceBase = domainUrlServiceOrVersion instanceof ExchangeServiceBase ? domainUrlServiceOrVersion : null;
+//     let serviceVersion: ExchangeVersion = version;
+//     if(service) {
+//         serviceVersion = service.RequestedServerVersion;
+//     }
+//     if(typeof domainOrVersion === 'number') {
+//         serviceVersion = domainOrVersion;
+//     }
+
+//     return { service, version };
+// }
 export interface AutodiscoverRedirectionUrlValidationCallback {
     (redirectionUrl: string): boolean;
 }
@@ -69152,8 +70369,29 @@ export interface AutodiscoverRedirectionUrlValidationCallback {
 //    EndInvoke(result: System.IAsyncResult): boolean { throw new Error("AutodiscoverServiceDelegates.ts - EndInvoke : Not implemented."); }
 //    Invoke(redirectionUrl: string): boolean { throw new Error("AutodiscoverServiceDelegates.ts - Invoke : Not implemented."); }
 //}
+
+/**
+ * @internal Represents a set of helper methods for performing string comparisons.
+ * @static
+ */
 export class ComparisonHelpers {
-    CaseInsensitiveContains(collection: any[] /*System.Collections.ICollection*/, match: string): boolean { throw new Error("ComparisonHelpers.ts - CaseInsensitiveContains : Not implemented."); }
+  /**
+   * Case insensitive check if the collection contains the string.
+   *
+   * @param   {any[]}   collection   The collection of objects, only strings are checked
+   * @param   {string}  match        String to match
+   * @return  {boolean}                true, if match contained in the collection
+   */
+  CaseInsensitiveContains(collection: any[], match: string): boolean {
+    for (let obj of collection) {
+      const str = obj as string;
+      if (str != null) {
+        if (StringHelper.Compare(str, match, true) == 0) {
+          return true;
+        }
+      }
+    }
+  }
 }
 
 
@@ -69175,245 +70413,538 @@ export class DirectoryHelper {
 
 
 
+/**
+ * Represents a sharing location.
+ * @sealed
+ */
 export class DocumentSharingLocation {
-    ServiceUrl: string;
-    LocationUrl: string;
-    DisplayName: string;
-    SupportedFileExtensions: string[];// System.Collections.Generic.IEnumerable<string>;
-    ExternalAccessAllowed: boolean;
-    AnonymousAccessAllowed: boolean;
-    CanModifyPermissions: boolean;
-    IsDefault: boolean;
-    private serviceUrl: string;
-    private locationUrl: string;
-    private displayName: string;
-    private supportedFileExtensions: string[];// System.Collections.Generic.IEnumerable<string>;
-    private externalAccessAllowed: boolean;
-    private anonymousAccessAllowed: boolean;
-    private canModifyPermissions: boolean;
-    private isDefault: boolean;
-    //LoadFromXml(reader: EwsXmlReader): DocumentSharingLocation { throw new Error("DocumentSharingLocation.ts - LoadFromXml : Not implemented."); }
-    static LoadFromJson(obj: any): DocumentSharingLocation { throw new Error("this was skipped at dev time, fix this"); }
+  /**
+   * The URL of the web service to use to manipulate documents at the sharing location.
+   */
+  private serviceUrl: string = null;
 
+  /**
+   * The URL of the sharing location (for viewing the contents in a web browser).
+   */
+  private locationUrl: string = null;
+
+  /**
+   * The display name of the location.
+   */
+  private displayName: string = null;
+
+  /**
+   * The set of file extensions that are allowed at the location.
+   */
+  private supportedFileExtensions: string[] = [];
+
+  /**
+   * Indicates whether external users (outside the enterprise/tenant) can view documents at the location.
+   */
+  private externalAccessAllowed: boolean = false;
+
+  /**
+   * Indicates whether anonymous users can view documents at the location.
+   */
+  private anonymousAccessAllowed: boolean = false;
+
+  /**
+   * Indicates whether the user can modify permissions for documents at the location.
+   */
+  private canModifyPermissions: boolean = false;
+
+  /**
+   * Indicates whether this location is the user's default location. This will generally be their My Site.
+   */
+  private isDefault: boolean = false;
+
+  // ref: no need to have setter for all properties as all of them are private, can directly be assigned to private variables.
+
+  /**
+   * Gets the URL of the web service to use to manipulate documents at the sharing location.
+   */
+  get ServiceUrl(): string {
+    return this.serviceUrl;
+  }
+
+  /**
+   * Gets the URL of the sharing location (for viewing the contents in a web browser).
+   */
+  get LocationUrl(): string {
+    return this.locationUrl;
+  }
+
+  /**
+   * Gets the display name of the location.
+   */
+  get DisplayName(): string {
+    return this.displayName;
+  }
+
+  /**
+   * Gets the space-separated list of file extensions that are allowed at the location.
+   * @remarks Example:  "docx pptx xlsx"
+   */
+  get SupportedFileExtensions(): string[] {
+    return this.supportedFileExtensions;
+  }
+
+  /**
+   * Gets a flag indicating whether external users (outside the enterprise/tenant) can view documents at the location.
+   */
+  get ExternalAccessAllowed(): boolean {
+    return this.externalAccessAllowed;
+  }
+
+  /**
+   * Gets a flag indicating whether anonymous users can view documents at the location.
+   */
+  get AnonymousAccessAllowed(): boolean {
+    return this.anonymousAccessAllowed;
+  }
+
+  /**
+   * Gets a flag indicating whether the user can modify permissions for documents at the location.
+   * @remarks This will be true for the user's "My Site," for example. However, documents at team and project sites will typically be ACLed by the site owner, so the user will not be able to modify permissions. This will most likely by false even if the caller is the owner, to avoid surprises. They should go to SharePoint to modify permissions for team and project sites.
+   */
+  get CanModifyPermissions(): boolean {
+    return this.canModifyPermissions;
+  }
+
+  /**
+   * Gets a flag indicating whether this location is the user's default location.  This will generally be their My Site.
+   */
+  get IsDefault(): boolean {
+    return this.isDefault;
+  }
+
+  /**
+   * Initializes a new instance of the **DocumentSharingLocation** class.
+   */
+  private constructor() {
+  }
+
+  /**
+   * @internal Loads DocumentSharingLocation instance.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  static LoadFromXmlJsObject(jsObject: any): DocumentSharingLocation {
+    EwsLogging.Assert(false, "DocumentSharingLocation.LoadFromXmlJsObject", "Please provide feedback if this is successful or failed.", true);
+    const location: DocumentSharingLocation = new DocumentSharingLocation();
+    location.serviceUrl = jsObject[XmlElementNames.ServiceUrl];
+    location.locationUrl = jsObject[XmlElementNames.LocationUrl];
+    location.displayName = jsObject[XmlElementNames.DisplayName];
+    location.supportedFileExtensions = [];
+    const supportedFileExtensions = jsObject[XmlElementNames.SupportedFileExtensions];
+    let extensions = supportedFileExtensions[XmlElementNames.FileExtension];
+    if (!Array.isArray(extensions)) {
+      extensions = [extensions]
+    }
+    for (let i = 0; i < extensions.length; i++) {
+      location.supportedFileExtensions.push(extensions[i]);
+    }
+    jsObject[XmlElementNames.SupportedFileExtensions];
+    location.externalAccessAllowed = Convert.toBool(jsObject[XmlElementNames.ExternalAccessAllowed]);
+    location.anonymousAccessAllowed = Convert.toBool(jsObject[XmlElementNames.AnonymousAccessAllowed]);
+    location.canModifyPermissions = Convert.toBool(jsObject[XmlElementNames.CanModifyPermissions]);
+    location.isDefault = Convert.toBool(jsObject[XmlElementNames.IsDefault]);
+    return location;
+  }
 }
 
+/**
+ * Represents a user setting that is a collection of alternate mailboxes.
+ * @sealed
+ */
 export class DocumentSharingLocationCollection {
-    Entries: DocumentSharingLocation[] = [];//System.Collections.Generic.List<DocumentSharingLocation>;
-    /**@internal */
-    static LoadFromXml(reader: EwsXmlReader): DocumentSharingLocationCollection { throw new Error("Not implemented. Depricated, use LoadFromJson"); }
-    static LoadFromJson(obj: any): DocumentSharingLocationCollection {
-        var instance = new DocumentSharingLocationCollection();
 
-        var element = XmlElementNames.AlternateMailbox;
-        var responses = undefined;
-        if (Object.prototype.toString.call(obj[element]) === "[object Array]")
-            responses = obj[element];
-        else
-            responses = [obj[element]];
+  private entries: DocumentSharingLocation[];
 
-        for (var i = 0; i < responses.length; i++) {
-            instance.Entries.push(responses[i]); //skipped processing individual objects in collection against DocumentSharingLocation, fix if there is parsing error later
-            //DocumentSharingLocation.LoadFromJson(responses[i]);
-            //instance.Entries.push(responses);
-        }
+  /**
+   * Gets the collection of alternate mailboxes.
+   */
+  get Entries(): DocumentSharingLocation[] {
+    return this.entries
+  }
 
-        return instance;
+  /**
+  * @internal Initializes a new instance of the **DocumentSharingLocationCollection** class.
+  */
+  constructor() {
+    this.entries = [];
+  }
 
+  /**
+   * @internal Loads instance of DocumentSharingLocationCollection.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   * @returns {DocumentSharingLocationCollection}
+   */
+  static LoadFromXmlJsObject(jsObject: any): DocumentSharingLocationCollection {
+    const instance = new DocumentSharingLocationCollection();
+
+    const element = XmlElementNames.DocumentSharingLocation;
+    let responses = undefined;
+    if (Array.isArray(jsObject[element]))
+      responses = jsObject[element];
+    else
+      responses = [jsObject[element]];
+
+    for (let i = 0; i < responses.length; i++) {
+      instance.Entries.push(DocumentSharingLocation.LoadFromXmlJsObject(responses[i]));
     }
+
+    return instance;
+
+  }
 }
 
+/**
+ * Represents an error from a GetDomainSettings request.
+ * @sealed
+ */
 export class DomainSettingError {
-    ErrorCode: AutodiscoverErrorCode;
-    ErrorMessage: string;
-    SettingName: string;
-    //private errorCode: AutodiscoverErrorCode;
-    //private errorMessage: string;
-    //private settingName: string;
-    LoadFromObject(obj: any): void {
-        var errorstring: string = obj[XmlElementNames.ErrorCode];
-        this.ErrorCode = AutodiscoverErrorCode[errorstring];
-        this.ErrorMessage = obj[XmlElementNames.ErrorMessage];
-        this.SettingName = obj[XmlElementNames.SettingName];
-    }
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader): void {
-        var parent = reader.CurrentNode;
-        do {
-            reader.Read();
+  private errorCode: AutodiscoverErrorCode;
+  private errorMessage: string;
+  private settingName: string;
 
-            if (reader.NodeType == Node.ELEMENT_NODE) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.ErrorCode:
-                        var errorstring = reader.ReadElementValue();
-                        this.ErrorCode = AutodiscoverErrorCode[errorstring];
-                        break;
-                    case XmlElementNames.ErrorMessage:
-                        this.ErrorMessage = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.SettingName:
-                        this.SettingName = reader.ReadElementValue();
-                        break;
-                }
-            }
-        }
-        while (reader.HasRecursiveParentNode(parent, parent.localName));
-        reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
-    }
+  /**
+   * Gets the error code.
+   */
+  get ErrorCode(): AutodiscoverErrorCode {
+    return this.errorCode;
+  }
 
+  /**
+   * Gets the error message.
+   */
+  get ErrorMessage(): string {
+    return this.errorMessage;
+  }
+
+  /**
+   * Gets the name of the setting.
+   */
+  get SettingName(): string {
+    return this.settingName;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **DomainSettingError** class.
+   */
+  constructor() {
+  }
+
+  /**
+   * @internal Loads settings error from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  LoadFromXmlJsObject(jsObject: any): void {
+    const errorstring: string = jsObject[XmlElementNames.ErrorCode];
+    this.errorCode = AutodiscoverErrorCode[errorstring] || AutodiscoverErrorCode.NoError;
+    this.errorMessage = jsObject[XmlElementNames.ErrorMessage] || null;
+    this.settingName = jsObject[XmlElementNames.SettingName] || null;
+  }
 }
 
+/**
+ * Represents the email Protocol connection settings for pop/imap/smtp protocols.
+ * @sealed
+ */
 export class ProtocolConnection {
-    EncryptionMethod: string;
-    Hostname: string;
-    Port: number;
-    //private encryptionMethod: string;
-    //private hostname: string;
-    //private port: number;
-    //LoadFromXml(reader: EwsXmlReader): ProtocolConnection { throw new Error("ProtocolConnection.ts - LoadFromXml : Not implemented."); }
+  private encryptionMethod: string;
+  private hostname: string;
+  private port: number;
+
+  /**
+   * Gets or sets the encryption method.
+   */
+  get EncryptionMethod(): string {
+    return this.encryptionMethod;
+  }
+  set EncryptionMethod(value: string) {
+    this.encryptionMethod = value;
+  }
+
+  /**
+   * Gets or sets the Hostname.
+   */
+  get Hostname(): string {
+    return this.hostname;
+  }
+  set Hostname(value: string) {
+    this.hostname = value;
+  }
+
+  /**
+   * Gets or sets the port number.
+   */
+  get Port(): number {
+    return this.port;
+  }
+  set Port(value: number) {
+    this.port = value;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **ProtocolConnection** class.
+   */
+  constructor();
+  /**
+   * @internal Initializes a new instance of the **ProtocolConnection** class.
+   *
+   * @param   {string}   encryptionMethod   The encryption method.
+   * @param   {string}   hostname           The hostname.
+   * @param   {number}   port               The port number to use for the portocol.
+   */
+  constructor(encryptionMethod: string, hostname: string, port: number);
+  constructor(encryptionMethod: string = null, hostname: string = null, port: number = 0) {
+    this.encryptionMethod = encryptionMethod;
+    this.hostname = hostname;
+    this.port = port;
+  }
+
+  /**
+   * @internal Read user setting with ProtocolConnectionCollection value.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  static LoadFromXmlJsObject(jsObject: any): ProtocolConnection {
+    const connection = new ProtocolConnection();
+    connection.encryptionMethod = jsObject[XmlElementNames.EncryptionMethod] || null;
+    connection.hostname = jsObject[XmlElementNames.Hostname] || null;
+    connection.port = parseInt(jsObject[XmlElementNames.Port]) || 0;
+    return connection;
+  }
 }
 
+/**
+ * Represents a user setting that is a collection of protocol connection.
+ * @sealed
+ */
 export class ProtocolConnectionCollection {
-    Connections: ProtocolConnection[] = [];//System.Collections.Generic.List<ProtocolConnection>;
-    //private connections: ProtocolConnection[];//System.Collections.Generic.List<ProtocolConnection>;
-    constructor() { }
-    /**@internal */
-    static LoadFromXml(reader: EwsXmlReader): ProtocolConnectionCollection { throw new Error("Not implemented. - depricated for JS api, use LoadFromJson"); }
-    static LoadFromJson(obj: any): ProtocolConnectionCollection {
-        var instance = new ProtocolConnectionCollection();
+  private connections: ProtocolConnection[];
 
-        var element = XmlElementNames.ProtocolConnection;
-        var responses = undefined;
-        if (Object.prototype.toString.call(obj[element]) === "[object Array]")
-            responses = obj[element];
-        else
-            responses = [obj[element]];
+  get Connections(): ProtocolConnection[] {
+    return this.connections;
+  }
+  set Connections(value) {
+    this.connections = value;
+  }
 
-        for (var i = 0; i < responses.length; i++) {
-            instance.Connections.push(responses[i]);
-            //var response: = this.CreateResponseInstance();
-            //response.LoadFromObject(responses[i], this.GetResponseInstanceXmlElementName());
-            //instance.Urls.push(responses);
-        }
+  /**
+   * @internal Initializes a new instance of the **ProtocolConnectionCollection** class.
+   */
+  constructor() {
+    this.connections = []
+  }
 
-        return instance;
+  /**
+   * @internal Read user setting with ProtocolConnectionCollection value.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   * @returns {ProtocolConnectionCollection}
+   */
+  static LoadFromXmlJsObject(jsObject: any): ProtocolConnectionCollection {
+    const value = new ProtocolConnectionCollection();
+
+    const element = XmlElementNames.ProtocolConnection;
+    let responses = undefined;
+    if (Array.isArray(jsObject[element]))
+      responses = jsObject[element];
+    else
+      responses = [jsObject[element]];
+
+    for (let i = 0; i < responses.length; i++) {
+      const connection = ProtocolConnection.LoadFromXmlJsObject(responses[i])
+      value.Connections.push(connection);
     }
 
+    return value;
+  }
 }
 
+/**
+ * Represents an error from a GetUserSettings request.
+ * @sealed
+ */
 export class UserSettingError {
-    ErrorCode: AutodiscoverErrorCode;
-    ErrorMessage: string;
-    SettingName: string;
-    /**@internal */
-    LoadFromXml(reader: EwsXmlReader): any {
-        var parent = reader.CurrentNode;
-        do {
-            reader.Read();
+  private errorCode: AutodiscoverErrorCode;
+  private errorMessage: string;
+  private settingName: string;
 
-            if (reader.NodeType == Node.ELEMENT_NODE) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.ErrorCode:
-                        var errorstring = reader.ReadElementValue();
-                        this.ErrorCode = AutodiscoverErrorCode[errorstring];
-                        break;
-                    case XmlElementNames.ErrorMessage:
-                        this.ErrorMessage = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.SettingName:
-                        this.SettingName = reader.ReadElementValue();
-                        break;
-                }
-            }
-        }
-        while (reader.HasRecursiveParentNode(parent, parent.localName));
-        reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
-    }
+  /**
+   * Gets the error code.
+   */
+  get ErrorCode(): AutodiscoverErrorCode {
+    return this.errorCode;
+  }
+  /** @internal */
+  set ErrorCode(value) {
+    this.errorCode = value;
+  }
 
-    LoadFromJson(obj: any): any {
-        var errorstring: string = obj[XmlElementNames.ErrorCode];
-        this.ErrorCode = AutodiscoverErrorCode[errorstring];
-        this.ErrorMessage = obj[XmlElementNames.ErrorMessage];
-        this.SettingName = obj[XmlElementNames.SettingName];
-    }
+  /**
+   * Gets the error message.
+   */
+  get ErrorMessage(): string {
+    return this.errorMessage;
+  }
+  /** @internal */
+  set ErrorMessage(value) {
+    this.errorMessage = value;
+  }
+
+  /**
+   * Gets the name of the setting.
+   */
+  get SettingName(): string {
+    return this.settingName;
+  }
+  /** @internal */
+  set SettingName(value) {
+    this.settingName = value;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **UserSettingError** class.
+   */
+  constructor();
+  /**
+   * @internal Initializes a new instance of the **UserSettingError** class.
+   *
+   * @param   {AutodiscoverErrorCode}   errorCode      The error code.
+   * @param   {string}                  errorMessage   The error message.
+   * @param   {string}                  settingName    Name of the setting.
+   */
+  constructor(errorCode: AutodiscoverErrorCode, errorMessage: string, settingName: string);
+  constructor(errorCode: AutodiscoverErrorCode = AutodiscoverErrorCode.NoError, errorMessage: string = null, settingName: string = null) {
+    this.errorCode = errorCode;
+    this.errorMessage = errorMessage;
+    this.settingName = settingName;
+  }
+
+  /**
+   * @internal Loads settings error from XML jsObject.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   */
+  LoadFromXmlJsObject(jsObject: any): any {
+    var errorstring: string = jsObject[XmlElementNames.ErrorCode];
+    this.errorCode = AutodiscoverErrorCode[errorstring] || AutodiscoverErrorCode.NoError;
+    this.errorMessage = jsObject[XmlElementNames.ErrorMessage] || null;
+    this.settingName = jsObject[XmlElementNames.SettingName] || null;
+  }
 }
 
+/**
+ * Represents the URL of the Exchange web client.
+ * @sealed
+ */
 export class WebClientUrl {
-    AuthenticationMethods: string;
-    Url: string;
-    //private authenticationMethods: string;
-    //private url: string;
-    static LoadFromJson(obj: any): WebClientUrl {
-        var webClientUrl = new WebClientUrl();
-        webClientUrl.AuthenticationMethods = obj[XmlElementNames.AuthenticationMethods];
-        webClientUrl.Url = obj[XmlElementNames.Url];
-        return webClientUrl;
-    }
-    /**@internal */
-    static LoadFromXml(reader: EwsXmlReader): WebClientUrl {
-        var webClientUrl = new WebClientUrl();
-        var parent = reader.CurrentNode;
-        do {
-            reader.Read();
+  private authenticationMethods: string;
+  private url: string;
 
-            if (reader.NodeType == Node.ELEMENT_NODE) {
-                switch (reader.LocalName) {
-                    case XmlElementNames.AuthenticationMethods:
-                        webClientUrl.AuthenticationMethods = reader.ReadElementValue();
-                        break;
-                    case XmlElementNames.Url:
-                        webClientUrl.Url = reader.ReadElementValue();
-                        break;
-                }
-            }
-        }
-        while (reader.HasRecursiveParentNode(parent, parent.localName));
-        //reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
+  /**
+   * Gets the authentication methods.
+   */
+  get AuthenticationMethods(): string {
+    return this.authenticationMethods;
+  }
+  /** @internal set */
+  set AuthenticationMethods(value: string) {
+    this.authenticationMethods = value;
+  }
 
-        return webClientUrl;
-    }
+  /**
+   * Gets the URL.
+   */
+  get Url(): string {
+    return this.url;
+  }
+  /** @internal set */
+  set Url(value: string) {
+    this.url = value;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **WebClientUrl** class.
+   */
+  constructor();
+  /**
+   * @internal Initializes a new instance of the **WebClientUrl** class.
+   *
+   * @param   {string}   authenticationMethods   The authentication methods.
+   * @param   {string}   url                     The URL.
+   */
+  constructor(authenticationMethods: string, url: string);
+  constructor(authenticationMethods: string = null, url: string = null) {
+    this.authenticationMethods = authenticationMethods;
+    this.url = url;
+  }
+
+  /**
+   * @internal Loads WebClientUrl instance
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   * @returns {WebClientUrl}  WebClientUrl.
+   */
+  static LoadFromXmlJsObject(jsObject: any): WebClientUrl {
+    const webClientUrl = new WebClientUrl();
+    webClientUrl.AuthenticationMethods = jsObject[XmlElementNames.AuthenticationMethods];
+    webClientUrl.Url = jsObject[XmlElementNames.Url];
+    return webClientUrl;
+  }
 }
 
+/**
+ * Represents a user setting that is a collection of Exchange web client URLs.
+ * @sealed
+ */
 export class WebClientUrlCollection {
-    Urls: WebClientUrl[] = [];// new Array<WebClientUrl>();// System.Collections.Generic.List<WebClientUrl>;
-    //private urls: WebClientUrl[];// System.Collections.Generic.List<WebClientUrl>;
-    static LoadFromJson(obj: any): WebClientUrlCollection {
-        var instance = new WebClientUrlCollection();
 
-        var element = XmlElementNames.WebClientUrl;
-        var responses = undefined;
-        if (Object.prototype.toString.call(obj[element]) === "[object Array]")
-            responses = obj[element];
-        else
-            responses = [obj[element]];
+  private urls: WebClientUrl[] = null;
 
-        for (var i = 0; i < responses.length; i++) {
-            instance.Urls.push(responses[i]);
-            //var response: = this.CreateResponseInstance();
-            //response.LoadFromObject(responses[i], this.GetResponseInstanceXmlElementName());
-            //instance.Urls.push(responses);
-        }
+  /**
+   * Gets the URLs.
+   */
+  get Urls(): WebClientUrl[] {
+    return this.urls;
+  }
 
-        return instance;
+  /**
+   * @internal Initializes a new instance of the **WebClientUrlCollection** class.
+   */
+  constructor() {
+    this.urls = [];
+  }
+
+  /**
+   * @internal Loads instance of WebClientUrlCollection.
+   *
+   * @param   {any} jsObject  Json Object converted from XML.
+   * @returns {WebClientUrlCollection}
+   */
+  static LoadFromXmlJsObject(jsObject: any): WebClientUrlCollection {
+    const instance = new WebClientUrlCollection();
+
+    const element = XmlElementNames.WebClientUrl;
+    let responses = undefined;
+    if (Array.isArray(jsObject[element]))
+      responses = jsObject[element];
+    else
+      responses = [jsObject[element]];
+
+    for (let i = 0; i < responses.length; i++) {
+
+      instance.Urls.push(WebClientUrl.LoadFromXmlJsObject(responses[i]));
     }
-    /**@internal */
-    static LoadFromXml(reader: EwsXmlReader): WebClientUrlCollection {
-        var instance = new WebClientUrlCollection();
-        var parent = reader.CurrentNode;
-        do {
-            reader.Read();
 
-            if ((reader.NodeType == 1/*Node.ELEMENT_NODE*/) && (reader.LocalName == XmlElementNames.WebClientUrl)) {
-                instance.Urls.push(WebClientUrl.LoadFromXml(reader));
-            }
-        }
-        while (reader.HasRecursiveParentNode(parent, parent.localName));
-        reader.SeekLast();// fix xml treewalker to go back last node, next do..while loop will come back to current node.
-
-        return instance;
-    }
+    return instance;
+  }
 }
-
-
 //todo: not converted initially - pending
 //export = BasicAuthModuleForUTF8;
 
@@ -69653,7 +71184,7 @@ export class DnsRecord {
 	RecordType: DnsRecordType;
 	Name: string;
 	TimeToLive: any /*System.TimeSpan*/;
-	private name: string;
+	public name: string;
 	private timeToLive: number;
 	Load(header: DnsRecordHeader, dataPointer: number): void{ throw new Error("DnsRecord.ts - Load : Not implemented.");}
 }
@@ -69661,8 +71192,6 @@ export class DnsRecord {
 
 
 //------------modulename->Microsoft.Exchange.WebServices.Dns------------
-
-
 
 
 /** @internal */
@@ -69673,8 +71202,8 @@ export class DnsSrvRecord extends DnsRecord {
 	Weight: number;
 	Port: number;
 	private target: string;
-	private priority: number;
-	private weight: number;
+	public priority: number;
+	public weight: number;
 	private port: number;
 	Load(header: DnsRecordHeader, dataPointer: number): void{ throw new Error("DnsSrvRecord.ts - Load : Not implemented.");}
 }
@@ -70174,13 +71703,87 @@ export class AccountIsLockedException extends ServiceRemoteException {
         this.AccountUnlockUrl = accountUnlockUrl;
     }
 }
+
+/**
+ * Represents an exception that is thrown when the Autodiscover service returns an error.
+ */
 export class AutodiscoverRemoteException extends ServiceRemoteException {
-    Error: AutodiscoverError;
-    //private error: AutodiscoverError;
+  private error: AutodiscoverError;
+
+  /**
+   * Gets the error.
+   *  @value the Error
+   */
+  get Error(): AutodiscoverError {
+    return this.error;
+  }
+
+  /**
+   * Initializes a new instance of the **AutodiscoverRemoteException** class.
+   *
+   * @param   {AutodiscoverError} error   The error.
+   */
+  constructor(error: AutodiscoverError);
+  /**
+   * Initializes a new instance of the **AutodiscoverRemoteException** class.
+   *
+   * @param   {string}            message     The message.
+   * @param   {AutodiscoverError} error       The error.
+   */
+  constructor(message: string, error: AutodiscoverError);
+  /**
+   * Initializes a new instance of the **AutodiscoverRemoteException** class.
+   *
+   * @param   {string}            message          The message.
+   * @param   {AutodiscoverError} error            The error.
+   * @param   {Exception}         innerException   The inner exception.
+   */
+  constructor(message: string, error: AutodiscoverError, innerException: Exception);
+  constructor(errorOrMessage: AutodiscoverError | string, error: AutodiscoverError = null, innerException: Exception = null) {
+    let _error: AutodiscoverError = null;
+    let message: string = null;
+    if (arguments.length === 1 && errorOrMessage instanceof AutodiscoverError) {
+      error = errorOrMessage;
+    }
+    if (arguments.length >= 2) {
+      if (typeof errorOrMessage === 'string') {
+        message = errorOrMessage;
+        _error = error;
+      }
+    }
+    super(message, innerException);
+    this.error = _error;
+  }
 }
+
+/**
+ * Represents an exception from an autodiscover error response.
+ *
+ * @extends {ServiceRemoteException}
+ */
 export class AutodiscoverResponseException extends ServiceRemoteException {
-    ErrorCode: AutodiscoverErrorCode;
-    private errorCode: AutodiscoverErrorCode;
+  /**
+   * Error code when Autodiscover service operation failed remotely.
+   */
+  private errorCode: AutodiscoverErrorCode;
+
+  /**
+   * Gets the ErrorCode for the exception.
+   */
+  get ErrorCode(): AutodiscoverErrorCode {
+    return this.errorCode;
+  }
+
+  /**
+   * @internal Initializes a new instance of the **AutodiscoverResponseException** class.
+   *
+   * @param   {AutodiscoverErrorCode} errorCode   The error code.
+   * @param   {string}                message     The message.
+   */
+  constructor(errorCode: AutodiscoverErrorCode, message: string) {
+    super(message);
+    this.errorCode = errorCode;
+  }
 }
 
 /**
@@ -73375,7 +74978,7 @@ export interface CustomXmlSerializationDelegate {
 //}
 
 export interface ResponseHeadersCapturedHandler {
-    (responseHeaders: any /*System.Net.WebHeaderCollection*/): any;
+    (responseHeaders: Dictionary<string, string>): void;
 }
 //class ResponseHeadersCapturedHandler extends System.MulticastDelegate {
 //    //BeginInvoke(responseHeaders: System.Net.WebHeaderCollection, callback: System.AsyncCallback, object: any): System.IAsyncResult{ throw new Error("DelegateTypes.ts - BeginInvoke : Not implemented.");}
@@ -73416,17 +75019,17 @@ export interface GetPropertyDefinitionCallback {
 export interface CreateComplexPropertyDelegate<TComplexProperty extends ComplexProperty> {
     (): TComplexProperty;
 }
-    //class GetPropertyDefinitionCallback extends System.MulticastDelegate {
-    //    //BeginInvoke(version: ExchangeVersion, callback: System.AsyncCallback, object: any): System.IAsyncResult{ throw new Error("DelegateTypes.ts - BeginInvoke : Not implemented.");}
-    //    //EndInvoke(result: System.IAsyncResult): PropertyDefinition{ throw new Error("DelegateTypes.ts - EndInvoke : Not implemented.");}
-    //    //Invoke(version: ExchangeVersion): PropertyDefinition{ throw new Error("DelegateTypes.ts - Invoke : Not implemented.");}
-    //}
+//class GetPropertyDefinitionCallback extends System.MulticastDelegate {
+//    //BeginInvoke(version: ExchangeVersion, callback: System.AsyncCallback, object: any): System.IAsyncResult{ throw new Error("DelegateTypes.ts - BeginInvoke : Not implemented.");}
+//    //EndInvoke(result: System.IAsyncResult): PropertyDefinition{ throw new Error("DelegateTypes.ts - EndInvoke : Not implemented.");}
+//    //Invoke(version: ExchangeVersion): PropertyDefinition{ throw new Error("DelegateTypes.ts - Invoke : Not implemented.");}
+//}
 
-    //class CreateComplexPropertyDelegate<TComplexProperty> extends System.MulticastDelegate {
-    //    //BeginInvoke(callback: System.AsyncCallback, object: any): System.IAsyncResult{ throw new Error("DelegateTypes.ts - BeginInvoke : Not implemented.");}
-    //    //EndInvoke(result: System.IAsyncResult): TComplexProperty{ throw new Error("DelegateTypes.ts - EndInvoke : Not implemented.");}
-    //    //Invoke(): TComplexProperty{ throw new Error("DelegateTypes.ts - Invoke : Not implemented.");}
-    //}
+//class CreateComplexPropertyDelegate<TComplexProperty> extends System.MulticastDelegate {
+//    //BeginInvoke(callback: System.AsyncCallback, object: any): System.IAsyncResult{ throw new Error("DelegateTypes.ts - BeginInvoke : Not implemented.");}
+//    //EndInvoke(result: System.IAsyncResult): TComplexProperty{ throw new Error("DelegateTypes.ts - EndInvoke : Not implemented.");}
+//    //Invoke(): TComplexProperty{ throw new Error("DelegateTypes.ts - Invoke : Not implemented.");}
+//}
 
 
 export interface CreateServiceObjectWithServiceParam {
@@ -73448,17 +75051,40 @@ export interface CreateServiceObjectWithAttachmentParam {
     //    Invoke(srv: ExchangeService): any{ throw new Error("DelegateTypes.ts - Invoke : Not implemented.");}
     //}
 
+/**
+ * @internal EwsTraceListener logs request/responses to a text writer.
+ */
 export class EwsTraceListener {
-	private writer: any /*System.IO.TextWriter*/;
-	Trace(traceType: string, traceMessage: string): void{ throw new Error("EwsTraceListener.ts - Trace : Not implemented.");}
+  private writer: TextWriter = null;
+
+  /**
+   * @internal Initializes a new instance of the **EwsTraceListener** class.
+   */
+  constructor();
+  /**
+   * @internal Initializes a new instance of the **EwsTraceListener** class.
+   *
+   * @param   {}   writer   The writer.
+   */
+  constructor(writer: TextWriter);
+  constructor(writer: TextWriter = { Write: console.log }) {
+    this.writer = writer;
+  }
+
+	/**
+	 * Handles a trace message
+	 *
+	 * @param   {string}   traceType      Type of trace message.
+	 * @param   {string}   traceMessage   The trace message.
+	 */
+  Trace(traceType: string, traceMessage: string): void {
+    this.writer.Write(traceMessage);
+  }
 }
 
-
-
-
-
-
-
+export interface TextWriter {
+  Write(message): void;
+}
 
 /**
  * Represents the results of an ExpandGroup operation.
@@ -73645,7 +75271,6 @@ export class FolderIdWrapperList implements IEnumerable<AbstractFolderIdWrapper>
         }
     }
 }
-//import ExchangeService = require("../Core/ExchangeService");
 //
 // class HangingTraceStream extends System.IO.Stream {
 //	CanRead: boolean;
@@ -79292,7 +80917,7 @@ export class OrderByCollection implements IEnumerable<PropertyDefinitionSortDire
             for (var keyValuePair of this.propDefSortOrderPairList) {
                 writer.WriteStartElement(XmlNamespace.Types, XmlElementNames.FieldOrder);
 
-                writer.WriteAttributeValue(XmlAttributeNames.Order, keyValuePair.value);
+                writer.WriteAttributeValue(XmlAttributeNames.Order,  SortDirection[keyValuePair.value]);
                 keyValuePair.key.WriteToXml(writer);
 
                 writer.WriteEndElement(); // FieldOrder
