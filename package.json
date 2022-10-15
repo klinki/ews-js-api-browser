@@ -26,10 +26,10 @@
   },
   "homepage": "https://github.com/gautamsi/ews-javascript-api",
   "dependencies": {
-    "base64-js": "^1.2.0",
+    "base64-js": "^1.5.1",
     "moment": "^2.17.1",
     "moment-timezone": "^0.5.11",
-    "uuid": "^3.1.0"
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@types/moment-timezone": "^0.2.34",
