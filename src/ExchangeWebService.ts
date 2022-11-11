@@ -6,7 +6,7 @@ import * as b64 from 'base64-js';
 import { v4 as uuidv4 } from 'uuid';
 import * as moment from 'moment-timezone';
 
-
+// HTTP status codes as per RFC 2616.
 export const enum HttpStatusCode {
     // Informational 1xx
     Continue = 100,
@@ -971,6 +971,7 @@ enum momentValidity {
     milliseconds,
 }
 
+
 export module StringHelper {
     export function IsNullOrEmpty(str: string): boolean {
         return str == null || typeof str === 'undefined' || str === '';
@@ -1538,7 +1539,6 @@ export module base64Helper {
     }
 }
 
-
 /** Guid proxy class */
 export class Guid {
 
@@ -1626,28 +1626,8 @@ export interface IXHRApi {
 	disconnect(): void;
 	apiName?: string;
 }
-
-// export type PromiseConstructor = PromiseConstructorLike;
-// export let Promise: PromiseConstructor = window.Promise as any;
-
-// class PromiseType<T> {
-//     constructor() {
-//         throw new NotSupportedException("Promise implementation missing.\nPlease use ConfigurePromise function to assign Promise Object\n" +
-//             "bluebird: ConfigurePromise(require('bluebird))\n" +
-//             "Q: ConfigurePromise(require('q').Promise)\n" +
-//             "winjs-node: ConfigurePromise(require('winjs-node').Promise)")
-//     }
-// }
-
-// try {
-//     var promise = require('bluebird');
-//     Promise = promise;
-// } catch (e) {
-//     Promise = <any>PromiseType;
-// }
-
 export function ConfigurePromise(promise: PromiseConstructor) {
-    Promise = promise;
+    window.Promise = promise;
 }
 export class Strings {
     static CannotRemoveSubscriptionFromLiveConnection: string = "Subscriptions can't be removed from an open connection.";
@@ -68841,6 +68821,13 @@ export class AlternateMailboxCollection {
   }
 }
 
+interface IDnsSrvRecord {
+  priority: number;
+  weight: number;
+  port: number;
+  name: string;
+}
+
 /**
  * @internal Class that reads AutoDiscover configuration information from DNS.
  */
@@ -68893,7 +68880,7 @@ export class AutodiscoverDnsClient {
   async FindAutodiscoverHostFromSrv(domain: string): Promise<string> {
     const domainToMatch: string = AutodiscoverDnsClient.AutoDiscoverSrvPrefix + domain;
 
-    const dnsSrvRecord: DnsSrvRecord = await this.FindBestMatchingSrvRecord(domainToMatch);
+    const dnsSrvRecord: IDnsSrvRecord = await this.FindBestMatchingSrvRecord(domainToMatch);
 
     if ((dnsSrvRecord == null) || StringHelper.IsNullOrEmpty(dnsSrvRecord.name)) {
       this.service.TraceMessage(
@@ -68914,12 +68901,18 @@ export class AutodiscoverDnsClient {
    * Finds the best matching SRV record.
    *
    * @param   {string}   domain   The domain.
-   * @return  {Promise<DnsSrvRecord>}      DnsSrvRecord(will be null if lookup failed).
+   * @return  {Promise<IDnsSrvRecord>}      DnsSrvRecord(will be null if lookup failed).
    */
-  private async FindBestMatchingSrvRecord(domain: string): Promise<DnsSrvRecord> {
+  private async FindBestMatchingSrvRecord(domain: string): Promise<IDnsSrvRecord> {
     return new Promise((resolve, reject) => {
+      if (window) {
+        // we are in browser, cannot do DNS
+        resolve(null);
+        return;
+      }
 
-      let dnsSrvRecordList: DnsSrvRecord[];
+
+      let dnsSrvRecordList: IDnsSrvRecord[];
       let dns = null;
       try {
         // try to get the dns client, only works on nodejs, not valid in browser\
@@ -68982,7 +68975,7 @@ export class AutodiscoverDnsClient {
 
         // If we have multiple records with the same priority and weight, randomly pick one.
         const recordIndex = bestDnsSrvRecordList.length > 1 ? Math.floor(Math.random() * Math.floor(bestDnsSrvRecordList.length)) : 0;
-        const bestDnsSrvRecord: DnsSrvRecord = bestDnsSrvRecordList[recordIndex];
+        const bestDnsSrvRecord: IDnsSrvRecord = bestDnsSrvRecordList[recordIndex];
         const traceMessage = StringHelper.Format(
           "Returning SRV record {0} of {1} records. Target: {2}, Priority: {3}, Weight: {4}",
           recordIndex,
@@ -71184,7 +71177,7 @@ export class DnsRecord {
 	RecordType: DnsRecordType;
 	Name: string;
 	TimeToLive: any /*System.TimeSpan*/;
-	public name: string;
+	private name: string;
 	private timeToLive: number;
 	Load(header: DnsRecordHeader, dataPointer: number): void{ throw new Error("DnsRecord.ts - Load : Not implemented.");}
 }
@@ -71192,6 +71185,9 @@ export class DnsRecord {
 
 
 //------------modulename->Microsoft.Exchange.WebServices.Dns------------
+
+
+
 
 
 /** @internal */
@@ -71202,8 +71198,8 @@ export class DnsSrvRecord extends DnsRecord {
 	Weight: number;
 	Port: number;
 	private target: string;
-	public priority: number;
-	public weight: number;
+	private priority: number;
+	private weight: number;
 	private port: number;
 	Load(header: DnsRecordHeader, dataPointer: number): void{ throw new Error("DnsSrvRecord.ts - Load : Not implemented.");}
 }
@@ -71211,10 +71207,6 @@ export class DnsSrvRecord extends DnsRecord {
 
 
 //------------modulename->Microsoft.Exchange.WebServices.Dns------------
-
-
-
-
 
 /**
  * Represents retention policy tag object.
